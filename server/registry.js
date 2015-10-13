@@ -21,8 +21,8 @@ ReactionCore.registerPackage({
       route: 'dashboard/advanced-fulfillment',
       provides: 'settings',
       container: 'dashboard',
-      template: 'stripeSettings'
-    },
+      template: 'advancedFulfillmentSettings'
+    }
   ],
   permissions: [
     {

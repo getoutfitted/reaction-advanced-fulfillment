@@ -16,6 +16,10 @@ Package.onUse(function (api) {
 
 
   api.addFiles('server/registry.js', ['server']);
+
+  api.addFiles([
+    'client/templates/settings/settings.html'
+  ], 'client');
 });
 
 

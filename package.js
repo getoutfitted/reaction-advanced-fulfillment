@@ -15,11 +15,19 @@ Package.onUse(function (api) {
   api.use('iron:router@1.0.12');
 
 
-  api.addFiles('server/registry.js', ['server']);
+  api.addFiles([
+    'server/registry.js',
+    'server/hooks/after_copyCartToOrder.js'
+  ], 'server');
 
   api.addFiles([
-    'client/templates/settings/settings.html'
+    'client/templates/settings/settings.html',
+    'client/templates/fulfillmentOrders/fulfillmentOrders.html'
   ], 'client');
+
+  api.addFiles([
+    'common/router.js'
+  ], ['client', 'server']);
 });
 
 

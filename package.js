@@ -26,7 +26,8 @@ Package.onUse(function (api) {
   ], 'client');
 
   api.addFiles([
-    'common/router.js'
+    'common/router.js',
+    'common/collections.js'
   ], ['client', 'server']);
 });
 

@@ -1,8 +1,16 @@
 <template name="fulfillmentOrders">
   <div class='container'>
-    {{#each orders}}
-      {{_id}}
-      {{email}}
-    {{/each}}
+    <h1>Orders Waiting to Be Shipped</h1>
   </div>
+  <div class='container'>
+    <ul>
+      {{#each orders}}
+        {{> fulfillmentOrder}}
+      {{/each}}
+    </ul>
+  </div>
+</template>
+
+<template name='fulfillmentOrder'>
+  <li>Order #{{_id}} - {{advancedFulfillment.workflow.status}} - <strong>{{shippingDate}}</strong></li>
 </template>

@@ -30,7 +30,10 @@ Package.onUse(function (api) {
 
   api.addFiles([
     'client/templates/settings/settings.html',
-    'client/templates/fulfillmentOrders/fulfillmentOrders.html'
+    'client/templates/fulfillmentOrders/fulfillmentOrders.html',
+    'client/templates/fulfillmentOrders/fulfillmentOrders.js',
+    'client/templates/dashboard/dashboard.html',
+    'client/templates/dashboard/dashboard.js'
   ], 'client');
 
   api.addFiles([

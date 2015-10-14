@@ -1,0 +1,10 @@
+<template name='dashboardAdvancedFulfillmment'>
+  <div class='container'>
+    <div class='row'>
+      <a class='btn btn-default' href="{{pathFor 'allShipping'}}">View All Orders Waiting to Be Shipped</a>
+    </div>
+    <div class='row'>
+      <a class='btn btn-default' href="{{pathFor 'dateShipping' date=dateToday}}">All Orders that need to be shipped today</a>
+    </div>
+  </div>
+</template>

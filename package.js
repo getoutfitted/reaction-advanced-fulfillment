@@ -21,6 +21,7 @@ Package.onUse(function (api) {
   api.use('iron:router@1.0.12');
   api.use('momentjs:moment@2.10.6');
   api.use('momentjs:twix@0.7.2');
+  api.use("standard-minifiers");
 
 
   api.addFiles([

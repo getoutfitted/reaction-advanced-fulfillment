@@ -5,25 +5,30 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema([ReactionCore.Sc
   }
 }]);
 
-ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schemas.Order, {
+ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
+  shipmentDate: {
+    type: Date,
+    optional: true
+  },
+  returnDate: {
+    type: Date,
+    optional: true
+  },
+  workflow: {
+    type: ReactionCore.Schemas.Workflow,
+    optional: true
+  },
+  items: {
+    type: [ReactionCore.Schemas.AdvancedFulfillmentItem],
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schemas.Orders, {
   advancedFulfillment: {
-    shipmentDate: {
-      type: Date,
-      optional: true
-    },
-    returnDate: {
-      type: Date,
-      optional: true
-    },
-    workflow: {
-      type: ReactionCore.Schemas.Workflow,
-      optional: true
-    },
-    items: {
-      type: [ReactionCore.Schemas.AdvancedFulfillmentItem],
-      optional: true
-    }
+    type: ReactionCore.Schemas.AdvancedFulfillmentObject,
+    optional: true
   }
 }]);
 
-ReactionCore.Schemas.Orders.attachSchema(ReactionCore.Schemas.AdvancedFulfillment);
+ReactionCore.Collections.Orders.attachSchema(ReactionCore.Schemas.AdvancedFulfillment);

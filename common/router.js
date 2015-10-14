@@ -11,7 +11,7 @@ advancedFulfillmentController = ShopAdminController.extend({
   }
 });
 
-Router.route('dashboard/advanced-fulfillment', {
+Router.route('dashboard/advanced-fulfillment/shipping', {
   controller: advancedFulfillmentController,
   template: 'fulfillmentOrders',
   waitOn: function () {
@@ -21,7 +21,7 @@ Router.route('dashboard/advanced-fulfillment', {
     return {orders: ReactionCore.Collections.Orders.find()};
   }
 });
-Router.route('dashboard/advanced-fulfillment/:date', {
+Router.route('dashboard/advanced-fulfillment/shipping/:date', {
   controller: advancedFulfillmentController,
   template: 'fulfillmentOrders',
   waitOn: function () {
@@ -30,5 +30,14 @@ Router.route('dashboard/advanced-fulfillment/:date', {
   data: function () {
     let date = this.params.date;
     return {orders: ReactionCore.Collections.Orders.find()};
+  },
+  onBeforeAction: function () {
+    let date = this.params.date;
+    let validDate = moment(date, 'MM-DD-YYYY').isValid();
+    if (validDate) {
+      this.next();
+    }  else {
+      this.render('notFound');
+    }
   }
 });

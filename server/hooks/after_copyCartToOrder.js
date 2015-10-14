@@ -1,7 +1,20 @@
 ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
   console.log("===============ORDER");
-
   let orderId = options.result;
+  let itemList = ReactionCore.Collections.Orders.findOne(orderId).items;
+  let items = _.map(itemList, function (item) {
+    return {
+      _id: item._id,
+      productId: item.productId,
+      shopId: item.shopId,
+      quantity: item.quantity,
+      variantId: item.variants._id,
+      workflow: {
+        status: 'In Stock',
+        workflow: []
+      }
+    };
+  });
   console.log("ORDER", orderId);
   ReactionCore.Collections.Orders.update({_id: orderId}, {
     $set: {
@@ -9,8 +22,12 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       'advancedFulfillment.workflow.workflow': [],
       'advancedFulfillment.shipmentDate': moment().add(2, 'days')._d,
       'advancedFulfillment.returnDate': moment().add(7, 'days')._d
+    },
+    $addToSet: {
+      'advancedFulfillment.items': {
+        $each: items
+      }
     }
-    // $addToSet:{ 'advancedFulfillment.'
 
     // }
   });

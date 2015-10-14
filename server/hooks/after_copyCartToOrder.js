@@ -1,5 +1,4 @@
 ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
-  console.log("===============ORDER");
   let orderId = options.result;
   let itemList = ReactionCore.Collections.Orders.findOne(orderId).items;
   let items = _.map(itemList, function (item) {
@@ -15,7 +14,6 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       }
     };
   });
-  console.log("ORDER", orderId);
   ReactionCore.Collections.Orders.update({_id: orderId}, {
     $set: {
       'advancedFulfillment.workflow.status': 'orderCreated',

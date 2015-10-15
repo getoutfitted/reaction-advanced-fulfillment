@@ -3,14 +3,40 @@
     <h1>Orders Waiting to Be Shipped</h1>
   </div>
   <div class='container'>
-    <ul>
       {{#each orders}}
         {{> fulfillmentOrder}}
       {{/each}}
-    </ul>
   </div>
 </template>
 
 <template name='fulfillmentOrder'>
-  <li>Order #{{_id}} - {{advancedFulfillment.workflow.status}} - <strong>{{shippingDate}}</strong></li>
+  <a href="{{pathFor 'orderDetails' _id=this._id}}">
+    <div>
+      <div class="row orderBox">
+        <div class='col-sm-6'>
+          <h3>Order: {{_id}} </h3>
+        </div>
+        <div class='col-sm-6'>
+          <h3>Date Shipping: <strong>{{shippingDate}} </strong></h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class='col-sm-6 {{status}}'>
+          Current Status: <strong class='{{status}}'>{{status}}</strong>
+        </div>
+        <div class='col-sm-6'>
+          Contact Info: {{contactInfo}}
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-6'>
+          Number of  Different Items in Order {{uniqueItemsCount}}
+        </div>
+        <div class='col-sm-6'>
+          Number of Indvidual Items in Order {{totalItemsCount}}
+        </div>
+      </div>
+      <hr>
+    </div>
+  </a>
 </template>

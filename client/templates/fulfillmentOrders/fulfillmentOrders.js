@@ -17,6 +17,9 @@ Template.fulfillmentOrder.helpers({
       return sum + item.quantity;
     }, 0);
     return total;
+  },
+  orderId: function () {
+    return this._id;
   }
 });
 

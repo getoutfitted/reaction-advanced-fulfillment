@@ -62,3 +62,17 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
     }
   }
 });
+
+Router.route('dashboard/advanced-fulfillment/order/:_id', {
+  name: 'orderDetails',
+  template: 'orderDetails',
+  controller: advancedFulfillmentController,
+  waitOn: function () {
+    return this.subscribe('Orders');
+  },
+  data: function () {
+    let orderId = this.params.order;
+    return ReactionCore.Collections.Orders.find({id: orderId});
+  }
+});
+

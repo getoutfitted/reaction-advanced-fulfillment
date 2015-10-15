@@ -71,8 +71,8 @@ Router.route('dashboard/advanced-fulfillment/order/:_id', {
     return this.subscribe('Orders');
   },
   data: function () {
-    let orderId = this.params.order;
-    return ReactionCore.Collections.Orders.find({id: orderId});
+    let orderId = this.params._id;
+    return ReactionCore.Collections.Orders.findOne({_id: orderId});
   }
 });
 

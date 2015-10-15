@@ -1,5 +1,22 @@
 <template name='orderDetails'>
   <div class='container'>
     <h1>Order Details for {{_id}}</h1>
+    <hr>
+    {{> pickerSlip}}
+  </div>
+</template>
+
+<template name='pickerSlip'>
+  <div class='pickSlip'>
+    <div class='row'>
+      <h1 class='text-center'>Order # {{_id}}</h1>
+    </div>
+    <div class='row'>
+      <div class='col-sm-5'>
+        <p>Shipping Address:</p>
+        <p>{{shippingTo}}</p>
+        <p>{{shippingAddress}}</p>
+      </div>
+    </div>
   </div>
 </template>

@@ -21,7 +21,7 @@ Template.pickerSlip.helpers({
     return this.shipping[0].address.postal;
   },
   items: function () {
-    return this.items;
+    return this.advancedFulfillment.items;
   }
 
 });

@@ -8,6 +8,7 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       shopId: item.shopId,
       quantity: item.quantity,
       variantId: item.variants._id,
+      itemDescription: item.variants.title,
       workflow: {
         status: 'In Stock',
         workflow: []

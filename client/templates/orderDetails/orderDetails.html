@@ -30,11 +30,11 @@
       <div class="col-sm-2">
         <h4><strong>Location</strong></h4>
       </div>
-      <div class="col-sm-2">
-        <h4><strong>UID</strong></h4>
-      </div>
       <div class="col-sm-1">
         <h4><strong>Quantity</strong></h4>
+      </div>
+      <div class="col-sm-2">
+        <h4><strong>UID</strong></h4>
       </div>
       <div class="col-sm-2">
         <h4><strong>Variant ID</strong></h4>
@@ -53,14 +53,14 @@
           <div class="col-sm-2">
             MT-L1-C10
           </div>
-          <div class="col-sm-2">
-            {{item._id}}
-          </div>
           <div class="col-sm-1">
             {{item.quantity}}
           </div>
           <div class="col-sm-2">
-            {{item.variants._id}}
+            {{item._id}}
+          </div>
+          <div class="col-sm-2">
+            {{item.variantId}}
           </div>
           <div class="col-sm-2">
             {{item.variants.title}}

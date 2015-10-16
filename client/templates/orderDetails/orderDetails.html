@@ -1,5 +1,8 @@
 <template name='orderDetails'>
   <div class='container'>
+    <div>
+      <a class='btn btn-block btn-primary' href='#'>Assign {{currentUser.username}} to move order to: {{nextStatus}}</a>
+    </div>
     <div class='row'>
       <div class='col-sm-7'>
         <h1>Order # {{_id}}</h1>

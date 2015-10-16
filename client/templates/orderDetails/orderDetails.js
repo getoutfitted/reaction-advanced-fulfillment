@@ -9,6 +9,12 @@ Template.orderDetails.helpers({
   returnDate: function () {
     let date = this.advancedFulfillment.returnDate;
     return moment(date).format('MMMM Do, YYYY');
+  },
+  nextStatus: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let options = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let indexOfStatus = _.indexOf(options, currentStatus);
+    return options[indexOfStatus + 1];
   }
 });
 Template.itemDetails.helpers({

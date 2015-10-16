@@ -1,11 +1,19 @@
 <template name='orderDetails'>
   <div class='container'>
-    <div class="row">
+    <div class='row'>
       <div class='col-sm-7'>
         <h1>Order # {{_id}}</h1>
       </div>
       <div class='col-sm-5'>
         <h1>Status: {{status}}</h1>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-sm-7'>
+        <h3>Ship: {{shippingDate}}</h3>
+      </div>
+      <div class='col-sm-5'>
+        <h3>Return: {{returnDate}}</h3>
       </div>
     </div>
     <hr>
@@ -26,47 +34,53 @@
     </div>
     <hr>
     <div class='row'>
-    <h1>Items in this Order:</h1>
-    <div class="row">
-      <div class="col-sm-2">
-        <h4><strong>SKU (ProductID)</strong></h4>
-      </div>
-      <div class="col-sm-2">
-        <h4><strong>Location</strong></h4>
-      </div>
-      <div class="col-sm-1">
-        <h4><strong>Quantity</strong></h4>
-      </div>
-      <div class="col-sm-2">
-        <h4><strong>UID</strong></h4>
-      </div>
-      <div class="col-sm-2">
-        <h4><strong>Variant ID</strong></h4>
-      </div>
-      <div class="col-sm-3">
-        <h4><strong>Item Description</strong></h4>
-      </div>
+      <h1>Items in this Order:</h1>
+      <div class='row text-center'>
+        <div class='col-sm-2'>
+          <h4><strong>SKU(ProductID)</strong></h4>
+        </div>
+        <div class='col-sm-1'>
+          <h4><strong>Status</strong></h4>
+        </div>
+        <div class='col-sm-1'>
+          <h4><strong>Location</strong></h4>
+        </div>
+        <div class='col-sm-1'>
+          <h4><strong>Quantity</strong></h4>
+        </div>
+        <div class='col-sm-2'>
+          <h4><strong>UID</strong></h4>
+        </div>
+        <div class='col-sm-2'>
+          <h4><strong>Variant ID</strong></h4>
+        </div>
+        <div class='col-sm-2'>
+          <h4><strong>Item Description</strong></h4>
+        </div>
 
-    </div>
-    <hr>
+      </div>
+      <hr>
       {{#each item in items}}
-        <div class="row">
-          <div class="col-sm-2">
+        <div class='row text-center'>
+          <div class='col-sm-2'>
             {{item.productId}}
           </div>
-          <div class="col-sm-2">
+          <div class='col-sm-1'>
+            {{item.workflow.status}}
+          </div>
+          <div class='col-sm-1'>
             MT-L1-C10
           </div>
-          <div class="col-sm-1">
+          <div class='col-sm-1'>
             {{item.quantity}}
           </div>
-          <div class="col-sm-2">
+          <div class='col-sm-2'>
             {{item._id}}
           </div>
-          <div class="col-sm-2">
+          <div class='col-sm-2'>
             {{item.variantId}}
           </div>
-          <div class="col-sm-2">
+          <div class='col-sm-2'>
             {{item.itemDescription}}
           </div>
           <hr>

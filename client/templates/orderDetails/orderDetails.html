@@ -1,7 +1,7 @@
 <template name='orderDetails'>
   <div class='container'>
     <div>
-      <a class='btn btn-block btn-primary' href='#'>Assign {{currentUser.username}} to move order to: {{nextStatus}}</a>
+      <a class='btn btn-block btn-primary advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to move order to: {{nextStatus}}</a>
     </div>
     <div class='row'>
       <div class='col-sm-7'>

@@ -37,7 +37,6 @@ Template.fulfillmentOrder.events({
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   }
-
 });
 
 

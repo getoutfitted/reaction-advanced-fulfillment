@@ -17,6 +17,17 @@ Template.orderDetails.helpers({
     return options[indexOfStatus + 1];
   }
 });
+
+Template.orderDetails.events({
+  'click .advanceOrder': function (event) {
+    event.preventDefault();
+    let currentStatus = event.target.dataset.status;
+    let orderId = this._id;
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+  }
+});
+
 Template.itemDetails.helpers({
   shippingTo: function () {
     return this.shipping[0].address.fullName;

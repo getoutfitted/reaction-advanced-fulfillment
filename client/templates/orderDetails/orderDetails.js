@@ -1,4 +1,23 @@
-Template.pickerSlip.helpers({
+Template.orderDetails.helpers({
+  status: function () {
+    return this.advancedFulfillment.workflow.status;
+  },
+  shippingDate: function () {
+    let date = this.advancedFulfillment.shipmentDate;
+    return moment(date).format('MMMM Do, YYYY');
+  },
+  returnDate: function () {
+    let date = this.advancedFulfillment.returnDate;
+    return moment(date).format('MMMM Do, YYYY');
+  },
+  nextStatus: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let options = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let indexOfStatus = _.indexOf(options, currentStatus);
+    return options[indexOfStatus + 1];
+  }
+});
+Template.itemDetails.helpers({
   shippingTo: function () {
     return this.shipping[0].address.fullName;
   },
@@ -23,5 +42,4 @@ Template.pickerSlip.helpers({
   items: function () {
     return this.advancedFulfillment.items;
   }
-
 });

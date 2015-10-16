@@ -20,7 +20,24 @@ Template.fulfillmentOrder.helpers({
   },
   orderId: function () {
     return this._id;
+  },
+  nextStatus: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let options = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let indexOfStatus = _.indexOf(options, currentStatus);
+    return options[indexOfStatus + 1];
   }
+});
+
+Template.fulfillmentOrder.events({
+  'click .advanceOrder': function (event) {
+    event.preventDefault();
+    let currentStatus = event.target.dataset.status;
+    let orderId = this._id;
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+  }
+
 });
 
 

@@ -26,7 +26,8 @@ Package.onUse(function (api) {
 
   api.addFiles([
     'server/registry.js',
-    'server/hooks/after_copyCartToOrder.js'
+    'server/hooks/after_copyCartToOrder.js',
+    'server/methods/orderDetail.js'
   ], 'server');
 
   api.addFiles([

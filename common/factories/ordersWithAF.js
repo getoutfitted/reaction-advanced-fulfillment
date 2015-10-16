@@ -6,6 +6,7 @@ let itemsList = _.times(num, function () {
     shopId: Random.id(),
     variantId: Random.id(),
     quantity: _.random(1, 5),
+    itemDescriptionL: 'this is the item description',
     workflow: {
       status: 'In Stock',
       workflow: []

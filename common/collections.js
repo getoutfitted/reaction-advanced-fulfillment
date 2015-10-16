@@ -17,7 +17,12 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
     min: 0
   },
   variantId: {
-    type: String
+    type: String,
+    optional: true
+  },
+  itemDescription: {
+    type: String,
+    optional: true
   },
   workflow: {
     type: ReactionCore.Schemas.Workflow,

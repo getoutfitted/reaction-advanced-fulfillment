@@ -1,13 +1,20 @@
 <template name='orderDetails'>
   <div class='container'>
-    <h1>Order # {{_id}}</h1>
+    <div class="row">
+      <div class='col-sm-7'>
+        <h1>Order # {{_id}}</h1>
+      </div>
+      <div class='col-sm-5'>
+        <h1>Status: {{status}}</h1>
+      </div>
+    </div>
     <hr>
-    {{> pickerSlip}}
+    {{> itemDetails}}
   </div>
 </template>
 
-<template name='pickerSlip'>
-  <div class='pickSlip'>
+<template name='itemDetails'>
+  <div class='itemDetails'>
     <div class='row'>
       <div class='col-sm-5'>
         <p>Shipping Address:</p>

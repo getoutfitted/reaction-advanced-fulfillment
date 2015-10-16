@@ -1,4 +1,9 @@
-Template.pickerSlip.helpers({
+Template.orderDetails.helpers({
+  status: function () {
+    return this.advancedFulfillment.workflow.status;
+  }
+});
+Template.itemDetails.helpers({
   shippingTo: function () {
     return this.shipping[0].address.fullName;
   },
@@ -23,5 +28,4 @@ Template.pickerSlip.helpers({
   items: function () {
     return this.advancedFulfillment.items;
   }
-
 });

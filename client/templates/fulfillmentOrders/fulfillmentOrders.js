@@ -31,7 +31,11 @@ Template.fulfillmentOrder.helpers({
 
 Template.fulfillmentOrder.events({
   'click .advanceOrder': function (event) {
-    debugger;
+    event.preventDefault();
+    let currentStatus = event.target.dataset.status;
+    let orderId = this._id;
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   }
 
 });

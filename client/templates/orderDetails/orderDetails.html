@@ -1,6 +1,6 @@
 <template name='orderDetails'>
   <div class='container'>
-    <h1>Order Details for {{_id}}</h1>
+    <h1>Order # {{_id}}</h1>
     <hr>
     {{> pickerSlip}}
   </div>
@@ -8,9 +8,6 @@
 
 <template name='pickerSlip'>
   <div class='pickSlip'>
-    <div class='row'>
-      <h1 class='text-center'>Order # {{_id}}</h1>
-    </div>
     <div class='row'>
       <div class='col-sm-5'>
         <p>Shipping Address:</p>
@@ -63,11 +60,8 @@
             {{item.variantId}}
           </div>
           <div class="col-sm-2">
-            {{item.variants.title}}
+            {{item.itemDescription}}
           </div>
-
-
-
           <hr>
         </div>
       {{/each}}

@@ -55,6 +55,14 @@ Template.itemDetails.helpers({
   },
   orderId: function () {
     return this._id;
+  },
+  nextItemStatus: function (currentStatus) {
+    let status = {
+      'In Stock': 'Pick Item',
+      picked: 'Pack Item',
+      packed: 'Item Fulfilled'
+    };
+    return status[currentStatus]
   }
 });
 

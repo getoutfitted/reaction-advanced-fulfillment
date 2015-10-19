@@ -69,7 +69,7 @@
       {{#each item in items}}
         <div class='row text-center'>
           <div class='col-md-2 col-sm-2 col-md-offset-1'>
-            <a class='btn btn-block btn-primary center-block item-picked' data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href="#">Pick Item</a>
+            <a class='btn btn-block btn-primary center-block item-picked' data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href="#">{{nextItemStatus item.workflow.status}}</a>
           </div>
           <div class='col-md-1 col-sm-2'>
             {{item.productId}}

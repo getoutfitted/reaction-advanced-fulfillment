@@ -52,5 +52,20 @@ Template.itemDetails.helpers({
   },
   items: function () {
     return this.advancedFulfillment.items;
+  },
+  orderId: function () {
+    return this._id;
   }
 });
+
+Template.itemDetails.events({
+  'click .item-picked': function (event) {
+    event.preventDefault();
+
+    let itemId = event.target.dataset.itemId;
+    let orderId = this._id;
+    let itemStatus = event.target.dataset.itemStatus;
+    Meteor.call('advancedFulfillment/updateItemWorkflow', orderId, itemId, itemStatus);
+  }
+});
+

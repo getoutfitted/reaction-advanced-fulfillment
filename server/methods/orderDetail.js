@@ -23,5 +23,19 @@ Meteor.methods({
         'advancedFulfillment.workflow.status': workflow[status]
       }
     });
+  },
+  'advancedFulfillment/updateItemWorkflow': function (orderId, itemId, itemStatus) {
+    check(orderId, String);
+    check(itemId, String);
+    check(itemStatus, String);
+    let workflow = {
+      'In Stock': 'picked',
+      picked: 'packed',
+      packed: 'completed'
+    };
+    ReactionCore.Collections.Orders.update({_id: orderId, 'advancedFulfillment.items._id': itemId}, {
+      $set: { 'advancedFulfillment.items.$.workflow.status': workflow[itemStatus] },
+      $addToSet: {'advancedFulfillment.items.$.workflow.workflow': itemStatus }
+    });
   }
 });

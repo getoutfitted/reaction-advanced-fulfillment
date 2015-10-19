@@ -60,9 +60,10 @@ Template.itemDetails.helpers({
     let status = {
       'In Stock': 'Pick Item',
       picked: 'Pack Item',
-      packed: 'Item Fulfilled'
+      packed: 'Item Fulfilled',
+      completed: 'Item Fulfilled'
     };
-    return status[currentStatus]
+    return status[currentStatus];
   }
 });
 

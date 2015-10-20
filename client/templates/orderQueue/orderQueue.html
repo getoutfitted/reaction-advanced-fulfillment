@@ -1,0 +1,43 @@
+<template name='orderQueue'>
+  <div class='container'>
+    <h1>My Orders</h1>
+    <div class='row'>
+      <div class='row'>
+        <div class='col-sm-12'>
+          <h3>Picking Orders Assigned to Me</h3>
+          {{#each myCurrentPickingOrders}}
+            {{> fulfillmentOrder}}
+          {{/each}}
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-12'>
+          <h3>Packing Orders Assigned to Me</h3>
+          {{#each  myCurrentPackingOrders}}
+            {{> fulfillmentOrder}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class='row'>
+      <h1>My Past Orders</h1>
+      <div class='col-sm-12'>
+        <h3>Orders I have Picked</h3>
+        {{#each myPickedOrders}}
+        <div>
+          {{> fulfillmentOrder}}
+        </div>
+        {{/each}}
+      </div>
+      <div class='row'>
+        <div class='col-sm-12'>
+          <h3>Orders I have Packed</h3>
+          {{#each myPackedOrders}}
+            {{> fulfillmentOrder}}
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

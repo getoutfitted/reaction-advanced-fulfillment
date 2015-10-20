@@ -1,5 +1,7 @@
-let num = _.random(1, 5);
-let itemsList = _.times(num, function () {
+function num() {
+  return _.random(1, 5);
+}
+let newItemsList = _.times(num(), function () {
   return {
     _id: Random.id(),
     productId: Random.id(),
@@ -10,6 +12,51 @@ let itemsList = _.times(num, function () {
     workflow: {
       status: 'In Stock',
       workflow: []
+    }
+  };
+});
+
+let pickedItemsList = _.times(num(), function () {
+  return {
+    _id: Random.id(),
+    productId: Random.id(),
+    shopId: Random.id(),
+    variantId: Random.id(),
+    quantity: _.random(1, 5),
+    itemDescription: 'this is the item description',
+    workflow: {
+      status: 'picked',
+      workflow: ['In Stock']
+    }
+  };
+});
+
+let packedItemsList = _.times(num(), function () {
+  return {
+    _id: Random.id(),
+    productId: Random.id(),
+    shopId: Random.id(),
+    variantId: Random.id(),
+    quantity: _.random(1, 5),
+    itemDescription: 'this is the item description',
+    workflow: {
+      status: 'packed',
+      workflow: ['In Stock', 'picked']
+    }
+  };
+});
+
+let completedItemsList = _.times(num(), function () {
+  return {
+    _id: Random.id(),
+    productId: Random.id(),
+    shopId: Random.id(),
+    variantId: Random.id(),
+    quantity: _.random(1, 5),
+    itemDescription: 'this is the item description',
+    workflow: {
+      status: 'completed',
+      workflow: ['In Stock', 'picked', 'packed']
     }
   };
 });
@@ -30,7 +77,7 @@ Factory.define('newOrder', ReactionCore.Collections.Orders,
         status: 'orderCreated',
         workflow: []
       },
-      items: itemsList
+      items: newItemsList
     }
   })
 );
@@ -44,7 +91,7 @@ Factory.define('pickingOrder', ReactionCore.Collections.Orders,
         status: 'orderPicking',
         workflow: ['orderCreated']
       },
-      items: itemsList
+      items: pickedItemsList
     }
   })
 );
@@ -58,10 +105,11 @@ Factory.define('packingOrder', ReactionCore.Collections.Orders,
         status: 'orderPacking',
         workflow: ['orderCreated', 'orderPicking']
       },
-      items: itemsList
+      items: packedItemsList
     }
   })
 );
+
 
 Factory.define('fulfilledOrder', ReactionCore.Collections.Orders,
   Factory.extend('orderForAF', {
@@ -72,7 +120,7 @@ Factory.define('fulfilledOrder', ReactionCore.Collections.Orders,
         status: 'orderFulfilled',
         workflow: ['orderCreated', 'orderPicking', 'orderPacking']
       },
-      items: itemsList
+      items: completedItemsList
     }
   })
 );

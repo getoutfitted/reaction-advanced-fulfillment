@@ -6,7 +6,7 @@ let itemsList = _.times(num, function () {
     shopId: Random.id(),
     variantId: Random.id(),
     quantity: _.random(1, 5),
-    itemDescriptionL: 'this is the item description',
+    itemDescription: 'this is the item description',
     workflow: {
       status: 'In Stock',
       workflow: []
@@ -14,15 +14,18 @@ let itemsList = _.times(num, function () {
   };
 });
 
-let shipmentDate = moment().add(_.random(1, 3), 'days')._d;
-let returnDate = moment().add(_.random(4, 6), 'days')._d;
+function shipmentDate() {
+  return moment().add(_.random(1, 3), 'days')._d;
+}
+function returnDate() {
+  return moment().add(_.random(4, 6), 'days')._d;
+}
 
-
-Factory.define('orderWithAF', ReactionCore.Collections.Orders,
-  Factory.extend('orderAF', {
+Factory.define('newOrder', ReactionCore.Collections.Orders,
+  Factory.extend('orderForAF', {
     advancedFulfillment: {
-      shipmentDate: shipmentDate,
-      returnDate: returnDate,
+      shipmentDate: shipmentDate(),
+      returnDate: returnDate(),
       workflow: {
         status: 'orderCreated',
         workflow: []
@@ -32,11 +35,11 @@ Factory.define('orderWithAF', ReactionCore.Collections.Orders,
   })
 );
 
-Factory.define('PickingOrderWithAF', ReactionCore.Collections.Orders,
-  Factory.extend('orderAF', {
+Factory.define('pickingOrder', ReactionCore.Collections.Orders,
+  Factory.extend('orderForAF', {
     advancedFulfillment: {
-      shipmentDate: shipmentDate,
-      returnDate: returnDate,
+      shipmentDate: shipmentDate(),
+      returnDate: returnDate(),
       workflow: {
         status: 'orderPicking',
         workflow: ['orderCreated']
@@ -46,11 +49,11 @@ Factory.define('PickingOrderWithAF', ReactionCore.Collections.Orders,
   })
 );
 
-Factory.define('PackingOrderWithAF', ReactionCore.Collections.Orders,
-  Factory.extend('orderAF', {
+Factory.define('packingOrder', ReactionCore.Collections.Orders,
+  Factory.extend('orderForAF', {
     advancedFulfillment: {
-      shipmentDate: shipmentDate,
-      returnDate: returnDate,
+      shipmentDate: shipmentDate(),
+      returnDate: returnDate(),
       workflow: {
         status: 'orderPacking',
         workflow: ['orderCreated', 'orderPicking']
@@ -60,11 +63,11 @@ Factory.define('PackingOrderWithAF', ReactionCore.Collections.Orders,
   })
 );
 
-Factory.define('FulfilledOrderWithAF', ReactionCore.Collections.Orders,
-  Factory.extend('orderAF', {
+Factory.define('fulfilledOrder', ReactionCore.Collections.Orders,
+  Factory.extend('orderForAF', {
     advancedFulfillment: {
-      shipmentDate: shipmentDate,
-      returnDate: returnDate,
+      shipmentDate: shipmentDate(),
+      returnDate: returnDate(),
       workflow: {
         status: 'orderFulfilled',
         workflow: ['orderCreated', 'orderPicking', 'orderPacking']

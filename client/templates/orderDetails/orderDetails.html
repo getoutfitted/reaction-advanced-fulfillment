@@ -1,8 +1,12 @@
 <template name='orderDetails'>
   <div class='container-fluid'>
     <div>
+    {{#if readyForAssignment}}
+
       <a class='btn btn-block btn-primary advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to move order to: {{nextStatus}}</a>
+     {{/if}}
     </div>
+
     <div class='row'>
       <div class='col-sm-7'>
         <h1>Order # {{_id}}</h1>

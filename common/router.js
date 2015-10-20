@@ -76,3 +76,18 @@ Router.route('dashboard/advanced-fulfillment/order/:_id', {
   }
 });
 
+Router.route('dashboard/advanced-fulfillment/order-queue', {
+  name: 'orderQueue',
+  template: 'orderQueue',
+  controller: advancedFulfillmentController,
+  waitOn: function () {
+    return this.subscribe('Orders');
+  }
+  // data: function () {
+  //   let userId = Meteor.userId();
+  //   let orders = ReactionCore.Collections.Orders.find({'history.userId': userId});
+  //   debugger;
+  //   return orders;
+  // }
+});
+

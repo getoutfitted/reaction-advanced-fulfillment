@@ -15,7 +15,30 @@ Template.orderDetails.helpers({
     let options = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
-  }
+  },
+  readyForAssignment: function () {
+    let status = this.advancedFulfillment.workflow.status;
+    let itemsArray = this.advancedFulfillment.items;
+    let itemsPicked = _.every(itemsArray, function (item) {
+      return item.workflow.status === 'picked';
+    });
+    let itemsPacked = _.every(itemsArray, function (item) {
+      return item.workflow.status === 'packed';
+    });
+    let result = false;
+    switch (status) {
+    case 'orderCreated':
+      result = true;
+      break;
+    case 'orderPicking':
+      result = itemsPicked;
+      break;
+    case 'orderPacking':
+      result = itemsPacked;
+      break;
+    }
+    return result;
+  },
 });
 
 Template.orderDetails.events({
@@ -60,9 +83,10 @@ Template.itemDetails.helpers({
     let status = {
       'In Stock': 'Pick Item',
       picked: 'Pack Item',
-      packed: 'Item Fulfilled'
+      packed: 'Item Fulfilled',
+      completed: 'Item Fulfilled'
     };
-    return status[currentStatus]
+    return status[currentStatus];
   }
 });
 

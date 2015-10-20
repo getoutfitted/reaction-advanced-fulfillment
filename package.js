@@ -37,7 +37,9 @@ Package.onUse(function (api) {
     'client/templates/dashboard/dashboard.html',
     'client/templates/dashboard/dashboard.js',
     'client/templates/orderDetails/orderDetails.html',
-    'client/templates/orderDetails/orderDetails.js'
+    'client/templates/orderDetails/orderDetails.js',
+    'client/templates/orderQueue/orderQueue.html',
+    'client/templates/orderQueue/orderQueue.js'
   ], 'client');
 
   api.addFiles([

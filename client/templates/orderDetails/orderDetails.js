@@ -36,9 +36,12 @@ Template.orderDetails.helpers({
     case 'orderPacking':
       result = itemsPacked;
       break;
+    default:
+      result = false;
+      break;
     }
     return result;
-  },
+  }
 });
 
 Template.orderDetails.events({
@@ -82,11 +85,21 @@ Template.itemDetails.helpers({
   nextItemStatus: function (currentStatus) {
     let status = {
       'In Stock': 'Pick Item',
-      picked: 'Pack Item',
-      packed: 'Item Fulfilled',
-      completed: 'Item Fulfilled'
+      'picked': 'Pack Item',
+      'packed': 'Item Fulfilled',
+      'completed': 'Item Fulfilled'
     };
     return status[currentStatus];
+  },
+  allowedToUpdateItem: function () {
+
+    let status = this.advancedFulfillment.workflow.status;
+    let history = this.history;
+    let userId = Meteor.userId();
+    let result = _.some(history, function (hist) {
+      return (hist.event === status) && (hist.userId === userId);
+    });
+    return result;
   }
 });
 

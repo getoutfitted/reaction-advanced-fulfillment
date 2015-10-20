@@ -2,7 +2,6 @@
   <div class='container-fluid'>
     <div>
     {{#if readyForAssignment}}
-
       <a class='btn btn-block btn-primary advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to move order to: {{nextStatus}}</a>
      {{/if}}
     </div>
@@ -24,6 +23,7 @@
       </div>
     </div>
     <hr>
+
     {{> itemDetails}}
   </div>
 </template>
@@ -71,9 +71,15 @@
       </div>
       <hr>
       {{#each item in items}}
+
         <div class='row text-center'>
+
           <div class='col-md-2 col-sm-2 col-md-offset-1'>
-            <a class='btn btn-block btn-primary center-block item-picked' data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href="#">{{nextItemStatus item.workflow.status}}</a>
+            {{#if allowedToUpdateItem}}
+              <a class='btn btn-block btn-primary center-block item-picked' data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href="#">{{nextItemStatus item.workflow.status}}</a>
+            {{else}}
+              <p>Waiting to be Assigned</p>
+            {{/if}}
           </div>
           <div class='col-md-1 col-sm-2'>
             {{item.productId}}

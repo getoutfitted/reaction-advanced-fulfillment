@@ -1,9 +1,34 @@
-ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema([ReactionCore.Schemas.ShipmentItem, {
+ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
+  _id: {
+    type: String,
+    optional: true
+  },
+  productId: {
+    type: String,
+    index: 1
+  },
+  shopId: {
+    type: String,
+    index: 1,
+    optional: true
+  },
+  quantity: {
+    type: Number,
+    min: 0
+  },
+  variantId: {
+    type: String,
+    optional: true
+  },
+  itemDescription: {
+    type: String,
+    optional: true
+  },
   workflow: {
     type: ReactionCore.Schemas.Workflow,
     optional: true
   }
-}]);
+});
 
 ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   shipmentDate: {

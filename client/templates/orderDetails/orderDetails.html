@@ -1,0 +1,117 @@
+<template name='orderDetails'>
+  <div class='container-fluid'>
+    <div>
+    {{#if readyForAssignment}}
+      <a class='btn btn-block btn-primary advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to move order to: {{nextStatus}}</a>
+     {{/if}}
+    </div>
+
+    <div class='row'>
+      <div class='col-sm-7'>
+        <h1>Order # {{_id}}</h1>
+      </div>
+      <div class='col-sm-5'>
+        <h1>Status: {{status}}</h1>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-sm-7'>
+        <h3>Ship: {{shippingDate}}</h3>
+      </div>
+      <div class='col-sm-5'>
+        <h3>Return: {{returnDate}}</h3>
+      </div>
+    </div>
+    <hr>
+
+    {{> itemDetails}}
+  </div>
+</template>
+
+<template name='itemDetails'>
+  <div class='itemDetails'>
+    <div class='row'>
+      <div class='col-sm-5'>
+        <p>Shipping Address:</p>
+        <p>{{shippingTo}}</p>
+        <p>{{shippingAddress1}}</p>
+        <p>{{shippingAddress2}}</p>
+        <p>{{city}} {{state}}, {{zipcode}}</p>
+      </div>
+    </div>
+    <hr>
+    <div class='row'>
+      <h1>Items in this Order:</h1>
+      <div class='row text-center'>
+        <div class='col-md-2 col-sm-2 col-md-offset-1'>
+          <h4><strong>Pick this item</strong></h4>
+        </div>
+        <div class='col-md-1 col-sm-2'>
+          <h4><strong>SKU(ProductID)</strong></h4>
+        </div>
+        <div class='col-md-1 col-sm-2'>
+          <h4><strong>Status</strong></h4>
+        </div>
+        <div class='col-md-1 col-sm-2'>
+          <h4><strong>Location</strong></h4>
+        </div>
+        <div class='col-md-1 col-sm-2'>
+          <h4><strong>Quantity</strong></h4>
+        </div>
+        <div class='col-md-1 col-sm-2'>
+          <h4><strong>UID</strong></h4>
+        </div>
+        <div class='col-md-1 col-sm-2'>
+          <h4><strong>Variant ID</strong></h4>
+        </div>
+        <div class='col-md-2 col-sm-2'>
+          <h4><strong>Item Description</strong></h4>
+        </div>
+
+      </div>
+      <hr>
+      {{#each item in items}}
+
+
+        <div class='row text-center'>
+
+          <div class='col-md-2 col-sm-2 col-md-offset-1'>
+            {{#if allowedToUpdateItem}}
+              {{#if itemUpdateable item}}
+                <a class='btn btn-block btn-primary center-block item-picked' data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
+              {{else}}
+                <p>{{item.workflow.status}}</p>
+              {{/if}}
+            {{else}}
+              <p>{{item.workflow.status}}</p>
+            {{/if}}
+          </div>
+          <div class='col-md-1 col-sm-2'>
+            {{item.productId}}
+          </div>
+          <div class='col-md-1 col-sm-2'>
+            {{item.workflow.status}}
+          </div>
+          <div class='col-md-1 col-sm-2'>
+            MT-L1-C10
+          </div>
+          <div class='col-md-1 col-sm-2'>
+            {{item.quantity}}
+          </div>
+          <div class='col-md-1 col-sm-2'>
+            {{item._id}}
+          </div>
+          <div class='col-md-1 col-sm-2'>
+            {{item.variantId}}
+          </div>
+          <div class='col-md-2 col-sm-2'>
+            {{item.itemDescription}}
+          </div>
+        </div>
+        <hr>
+
+      {{/each}}
+    </div>
+  </div>
+</template>
+

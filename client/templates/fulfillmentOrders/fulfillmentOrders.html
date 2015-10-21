@@ -1,8 +1,49 @@
 <template name="fulfillmentOrders">
   <div class='container'>
-    {{#each orders}}
-      {{_id}}
-      {{email}}
-    {{/each}}
+    <h1>Orders Waiting to Be Shipped</h1>
   </div>
+  <div class='container'>
+      {{#each orders}}
+        {{> fulfillmentOrder}}
+      {{/each}}
+  </div>
+</template>
+
+<template name='fulfillmentOrder'>
+  <a href="{{pathFor 'orderDetails' _id=this._id}}">
+    <div>
+      <div class="row orderBox">
+        <div class='col-sm-6'>
+          <h3>Order: {{_id}} </h3>
+        </div>
+        <div class='col-sm-6'>
+          <h3>Date Shipping: <strong>{{shippingDate}} </strong></h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class='col-sm-6 {{status}}'>
+          Current Status: <strong class='{{status}}'>{{status}}</strong>
+        </div>
+        <div class='col-sm-6'>
+          Contact Info: {{contactInfo}}
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-sm-6'>
+          Number of  Different Items in Order {{uniqueItemsCount}}
+        </div>
+        <div class='col-sm-6'>
+          Number of Indvidual Items in Order {{totalItemsCount}}
+        </div>
+      </div>
+      {{#if readyForAssignment}}
+      <div class="row">
+        <div class='col-sm-12'>
+          <a class='btn btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to advance order to: {{nextStatus}}</a>
+        </div>
+      </div>
+      {{/if}}
+      <hr>
+    </div>
+  </a>
 </template>

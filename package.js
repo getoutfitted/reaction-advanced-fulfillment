@@ -6,7 +6,7 @@ Package.describe({
 });
 
 Npm.depends({
-  'faker': '3.0.1'
+  faker: '3.0.1'
 });
 
 
@@ -52,14 +52,16 @@ Package.onUse(function (api) {
 
 
 Package.onTest(function (api) {
-  api.use('sanjo:jasmine@0.19.0');
+  api.use('sanjo:jasmine@0.20.2');
   api.use('underscore');
   api.use('dburles:factory@0.3.10');
   api.use('velocity:html-reporter@0.9.0');
   api.use('velocity:console-reporter@0.1.3');
 
-
   api.use('reactioncommerce:core@0.9.0');
   api.use('reactioncommerce:bootstrap-theme');
   api.use('getoutfitted:reaction-advanced-fulfillment');
+
+  api.addFiles('tests/jasmine/server/integration/methods.js', 'server');
+  api.addFiles('tests/jasmine/server/integration/hooks.js', 'server');
 });

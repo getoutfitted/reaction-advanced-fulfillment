@@ -92,7 +92,6 @@ Template.itemDetails.helpers({
     return status[currentStatus];
   },
   allowedToUpdateItem: function () {
-
     let status = this.advancedFulfillment.workflow.status;
     let history = this.history;
     let userId = Meteor.userId();

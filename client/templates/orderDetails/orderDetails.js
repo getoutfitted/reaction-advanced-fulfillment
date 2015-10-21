@@ -82,6 +82,22 @@ Template.itemDetails.helpers({
   orderId: function () {
     return this._id;
   },
+  itemUpdateable: function (item) {
+    let itemId = item._id;
+    let status = this.advancedFulfillment.workflow.status;
+    let items = this.advancedFulfillment.items;
+    let thisItem = _.findWhere(items, {_id: itemId});
+    let statusKey = {
+      orderCreated: 'In Stock',
+      orderPicking: 'picked',
+      orderPacking: 'packed',
+      orderCompleted: 'itemFulfilled'
+    };
+    if (thisItem.workflow.status === statusKey[status]) {
+      return false;
+    }
+    return true;
+  },
   nextItemStatus: function (currentStatus) {
     let status = {
       'In Stock': 'Pick Item',
@@ -92,12 +108,21 @@ Template.itemDetails.helpers({
     return status[currentStatus];
   },
   allowedToUpdateItem: function () {
-
     let status = this.advancedFulfillment.workflow.status;
     let history = this.history;
     let userId = Meteor.userId();
+    let statusKey = {
+      orderCompleted: 'In Stock',
+      orderPicking: 'picked',
+      orderPacking: 'packed'
+    };
+    let items = this.advancedFulfillment.items;
+    let allItemStatus = _.every(items, function (item) {
+      return item.workflow.status === statusKey[status];
+    });
+
     let result = _.some(history, function (hist) {
-      return (hist.event === status) && (hist.userId === userId);
+      return (hist.event === status) && (hist.userId === userId) && !allItemStatus;
     });
     return result;
   }

@@ -86,4 +86,44 @@ describe('getoutfitted:reaction-advanced-fulfillment methods', function () {
       expect(thisOrder.advancedFulfillment.workflow.status).toBe('orderPacking');
     });
   });
+  describe('advancedFulfillment/updateItemWorkflow', function () {
+    beforeEach(function () {
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should update the order when it is called', function () {
+      let OrderWithItems = Factory.create('newOrder');
+      let itemId = OrderWithItems.advancedFulfillment.items[0]._id;
+      let itemStatus = OrderWithItems.advancedFulfillment.workflow.status;
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      Meteor.call('advancedFulfillment/updateItemWorkflow', OrderWithItems._id, itemId, itemStatus);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+    });
+    it('should update the items workflow when called', function () {
+      let User = Factory.create('user');
+      let OrderWithItems = Factory.create('newOrder', {
+        'advancedFulfillment.workflow.status': 'orderPicking',
+        'history': [{
+          event: 'orderCreated',
+          userId: User._id,
+          updatedAt: new Date()
+        }, {
+          event: 'orderPicking',
+          userId: User._id,
+          updatedAt: new Date()
+        }]
+      });
+      let items = OrderWithItems.advancedFulfillment.items;
+      let itemId = OrderWithItems.advancedFulfillment.items[0]._id;
+      let thisItem = _.findWhere(items, {_id: itemId});
+      expect(thisItem.workflow.status).toBe('In Stock');
+      let itemStatus = OrderWithItems.advancedFulfillment.items[0].workflow.status;
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      Meteor.call('advancedFulfillment/updateItemWorkflow', OrderWithItems._id, itemId, itemStatus);
+      let thisOrder = ReactionCore.Collections.Orders.findOne(OrderWithItems._id);
+      let thisitems = thisOrder.advancedFulfillment.items;
+      let thisitemId = thisOrder.advancedFulfillment.items[0]._id;
+      let thisItem2 = _.findWhere(thisitems, {_id: thisitemId});
+      expect(thisItem2.workflow.status).toBe('picked');
+    });
+  });
 });

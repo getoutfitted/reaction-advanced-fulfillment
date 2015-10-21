@@ -62,7 +62,7 @@ let completedItemsList = _.times(num(), function () {
 });
 
 function shipmentDate() {
-  return moment().add(_.random(1, 3), 'days')._d;
+  return moment().add(_.random(0, 3), 'days')._d;
 }
 function returnDate() {
   return moment().add(_.random(4, 6), 'days')._d;

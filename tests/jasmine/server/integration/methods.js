@@ -1,3 +1,7 @@
+beforeAll(function () {
+  VelocityHelpers.exportGlobals();
+});
+
 describe('getoutfitted:reaction-advanced-fulfillment methods', function () {
   describe('advancedFulfillment/updateOrderWorkflow', function () {
     beforeEach(function () {

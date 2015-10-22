@@ -57,6 +57,7 @@ Package.onTest(function (api) {
   api.use('dburles:factory@0.3.10');
   api.use('velocity:html-reporter@0.9.0');
   api.use('velocity:console-reporter@0.1.3');
+  api.use('velocity:helpers');
 
   api.use('reactioncommerce:core@0.9.0');
   api.use('reactioncommerce:bootstrap-theme');

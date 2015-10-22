@@ -91,3 +91,22 @@ Router.route('dashboard/advanced-fulfillment/order-queue', {
   // }
 });
 
+Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
+  controller: PrintController,
+  path: 'dashboard/advanced-fulfillment/order/pdf/:_id',
+  template: 'advancedFulfillmentPDF',
+  onBeforeAction() {
+    this.layout('print');
+    return this.next();
+  },
+  subscriptions: function () {
+    this.subscribe('Orders');
+  },
+  data: function () {
+    if (this.ready()) {
+      return ReactionCore.Collections.Orders.findOne({
+        _id: this.params._id
+      });
+    }
+  }
+});

@@ -41,20 +41,7 @@ Template.orderDetails.helpers({
       break;
     }
     return result;
-  }
-});
-
-Template.orderDetails.events({
-  'click .advanceOrder': function (event) {
-    event.preventDefault();
-    let currentStatus = event.target.dataset.status;
-    let orderId = this._id;
-    let userId = Meteor.userId();
-    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
-  }
-});
-
-Template.itemDetails.helpers({
+  },
   shippingTo: function () {
     return this.shipping[0].address.fullName;
   },
@@ -76,6 +63,30 @@ Template.itemDetails.helpers({
   zipcode: function () {
     return this.shipping[0].address.postal;
   },
+});
+
+Template.orderDetails.onRendered(function () {
+  let orderId = Router.current().params._id;
+  $('#barcode').barcode(orderId, 'code128', {
+    barWidth: 2,
+    barHeight: 150,
+    moduleSize: 15,
+    showHRI: true,
+    fontSize: 14
+  });
+});
+
+Template.orderDetails.events({
+  'click .advanceOrder': function (event) {
+    event.preventDefault();
+    let currentStatus = event.target.dataset.status;
+    let orderId = this._id;
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+  }
+});
+
+Template.itemDetails.helpers({
   items: function () {
     return this.advancedFulfillment.items;
   },

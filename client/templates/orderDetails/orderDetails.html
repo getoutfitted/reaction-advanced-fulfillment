@@ -23,23 +23,27 @@
       </div>
     </div>
     <hr>
-
+    <div class='row'>
+      <div class='col-sm-5'>
+        <p><strong>Shipping Address:</strong></p>
+        <p>{{shippingTo}}</p>
+        <p>{{shippingAddress1}}</p>
+        <p>{{shippingAddress2}}</p>
+        <p>{{city}} {{state}}, {{zipcode}}</p>
+      </div>
+      <div class='col-sm-5 col-sm-offset-2'>
+        <div id='barcode'></div>
+      </div>
+    </div>
+    <hr>
     {{> itemDetails}}
   </div>
 </template>
 
 <template name='itemDetails'>
   <div class='itemDetails'>
-    <div class='row'>
-      <div class='col-sm-5'>
-        <p>Shipping Address:</p>
-        <p>{{shippingTo}}</p>
-        <p>{{shippingAddress1}}</p>
-        <p>{{shippingAddress2}}</p>
-        <p>{{city}} {{state}}, {{zipcode}}</p>
-      </div>
-    </div>
-    <hr>
+
+
     <div class='row'>
       <h1>Items in this Order:</h1>
       <div class='row text-center'>

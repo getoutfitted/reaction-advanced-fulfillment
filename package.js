@@ -22,6 +22,7 @@ Package.onUse(function (api) {
   api.use('momentjs:moment@2.10.6');
   api.use('momentjs:twix@0.7.2');
   api.use('standard-minifiers');
+  api.use('steeve:jquery-barcode');
 
 
   api.addFiles([
@@ -39,7 +40,9 @@ Package.onUse(function (api) {
     'client/templates/orderDetails/orderDetails.html',
     'client/templates/orderDetails/orderDetails.js',
     'client/templates/orderQueue/orderQueue.html',
-    'client/templates/orderQueue/orderQueue.js'
+    'client/templates/orderQueue/orderQueue.js',
+    'client/templates/pdf/advancedFulfillment.html',
+    'client/templates/pdf/advancedFulfillment.js'
   ], 'client');
 
   api.addFiles([
@@ -57,6 +60,7 @@ Package.onTest(function (api) {
   api.use('dburles:factory@0.3.10');
   api.use('velocity:html-reporter@0.9.0');
   api.use('velocity:console-reporter@0.1.3');
+  api.use('velocity:helpers');
 
   api.use('reactioncommerce:core@0.9.0');
   api.use('reactioncommerce:bootstrap-theme');

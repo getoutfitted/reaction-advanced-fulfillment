@@ -46,7 +46,7 @@ Template.orderDetails.helpers({
 
 Template.orderDetails.onRendered(function () {
   let orderId = Router.current().params._id;
-  $('#demo').barcode(orderId, 'code128', {
+  $('#barcode').barcode(orderId, 'code128', {
     barWidth: 2,
     barHeight: 150,
     moduleSize: 15,

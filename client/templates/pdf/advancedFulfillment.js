@@ -14,3 +14,14 @@ Template.advancedFulfillmentPDF.helpers({
     return this.billing[0].address;
   }
 });
+
+Template.advancedFulfillmentPDF.onRendered(function () {
+  let orderId = Router.current().params._id;
+  $('#barcode').barcode(orderId, 'code128', {
+    barWidth: 1,
+    barHeight: 50,
+    moduleSize: 15,
+    showHRI: true,
+    fontSize: 14
+  });
+});

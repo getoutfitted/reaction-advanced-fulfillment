@@ -44,6 +44,17 @@ Template.orderDetails.helpers({
   }
 });
 
+Template.orderDetails.onRendered(function () {
+  let orderId = Router.current().params._id;
+  $('#barcode').barcode(orderId, 'code128', {
+    barWidth: 2,
+    barHeight: 150,
+    moduleSize: 15,
+    showHRI: true,
+    fontSize: 14
+  });
+});
+
 Template.orderDetails.events({
   'click .advanceOrder': function (event) {
     event.preventDefault();

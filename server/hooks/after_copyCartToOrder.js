@@ -1,5 +1,5 @@
 ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
-  let orderId = options.result;
+  let orderId = options.result || arguments[0];
   let itemList = ReactionCore.Collections.Orders.findOne(orderId).items;
   let items = _.map(itemList, function (item) {
     return {

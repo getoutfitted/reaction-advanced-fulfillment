@@ -1,3 +1,11 @@
+function verified(itemId, orderId) {
+  let input = Session.get(itemId);
+  if (input === itemId) {
+    return true;
+  }
+  return false;
+}
+
 Template.orderDetails.helpers({
   status: function () {
     return this.advancedFulfillment.workflow.status;
@@ -41,20 +49,7 @@ Template.orderDetails.helpers({
       break;
     }
     return result;
-  }
-});
-
-Template.orderDetails.events({
-  'click .advanceOrder': function (event) {
-    event.preventDefault();
-    let currentStatus = event.target.dataset.status;
-    let orderId = this._id;
-    let userId = Meteor.userId();
-    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
-  }
-});
-
-Template.itemDetails.helpers({
+  },
   shippingTo: function () {
     return this.shipping[0].address.fullName;
   },
@@ -75,67 +70,26 @@ Template.itemDetails.helpers({
   },
   zipcode: function () {
     return this.shipping[0].address.postal;
-  },
-  items: function () {
-    return this.advancedFulfillment.items;
-  },
-  orderId: function () {
-    return this._id;
-  },
-  itemUpdateable: function (item) {
-    let itemId = item._id;
-    let status = this.advancedFulfillment.workflow.status;
-    let items = this.advancedFulfillment.items;
-    let thisItem = _.findWhere(items, {_id: itemId});
-    let statusKey = {
-      orderCreated: 'In Stock',
-      orderPicking: 'picked',
-      orderPacking: 'packed',
-      orderCompleted: 'itemFulfilled'
-    };
-    if (thisItem.workflow.status === statusKey[status]) {
-      return false;
-    }
-    return true;
-  },
-  nextItemStatus: function (currentStatus) {
-    let status = {
-      'In Stock': 'Pick Item',
-      'picked': 'Pack Item',
-      'packed': 'Item Fulfilled',
-      'completed': 'Item Fulfilled'
-    };
-    return status[currentStatus];
-  },
-  allowedToUpdateItem: function () {
-    let status = this.advancedFulfillment.workflow.status;
-    let history = this.history;
-    let userId = Meteor.userId();
-    let statusKey = {
-      orderCompleted: 'In Stock',
-      orderPicking: 'picked',
-      orderPacking: 'packed'
-    };
-    let items = this.advancedFulfillment.items;
-    let allItemStatus = _.every(items, function (item) {
-      return item.workflow.status === statusKey[status];
-    });
-
-    let result = _.some(history, function (hist) {
-      return (hist.event === status) && (hist.userId === userId) && !allItemStatus;
-    });
-    return result;
   }
 });
 
-Template.itemDetails.events({
-  'click .item-picked': function (event) {
+Template.orderDetails.onRendered(function () {
+  let orderId = Router.current().params._id;
+  $('#barcode').barcode(orderId, 'code128', {
+    barWidth: 2,
+    barHeight: 150,
+    moduleSize: 15,
+    showHRI: true,
+    fontSize: 14
+  });
+});
+
+Template.orderDetails.events({
+  'click .advanceOrder': function (event) {
     event.preventDefault();
-
-    let itemId = event.target.dataset.itemId;
+    let currentStatus = event.target.dataset.status;
     let orderId = this._id;
-    let itemStatus = event.target.dataset.itemStatus;
-    Meteor.call('advancedFulfillment/updateItemWorkflow', orderId, itemId, itemStatus);
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   }
 });
-

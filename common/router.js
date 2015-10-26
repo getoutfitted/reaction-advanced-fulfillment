@@ -12,8 +12,10 @@ advancedFulfillmentController = ShopAdminController.extend({
 });
 
 Router.route('dashboard/advanced-fulfillment', {
+  name: 'dashboard/advanced-fulfillment',
   path: 'dashboard/advanced-fulfillment',
-  template: 'dashboardAdvancedFulfillmment'
+  template: 'dashboardAdvancedFulfillmment',
+  controller: 'ShopAdminController'
 });
 
 Router.route('dashboard/advanced-fulfillment/shipping', {
@@ -83,11 +85,49 @@ Router.route('dashboard/advanced-fulfillment/order-queue', {
   waitOn: function () {
     return this.subscribe('Orders');
   }
-  // data: function () {
-  //   let userId = Meteor.userId();
-  //   let orders = ReactionCore.Collections.Orders.find({'history.userId': userId});
-  //   debugger;
-  //   return orders;
-  // }
 });
 
+Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
+  controller: PrintController,
+  path: 'dashboard/advanced-fulfillment/order/pdf/:_id',
+  template: 'advancedFulfillmentPDF',
+  onBeforeAction() {
+    this.layout('print');
+    return this.next();
+  },
+  subscriptions: function () {
+    this.subscribe('Orders');
+  },
+  data: function () {
+    if (this.ready()) {
+      return ReactionCore.Collections.Orders.findOne({
+        _id: this.params._id
+      });
+    }
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
+  name: 'orderByStatus',
+  template: 'fulfillmentOrders',
+  controller: advancedFulfillmentController,
+  waitOn: function () {
+    return this.subscribe('Orders');
+  },
+  data: function () {
+    let status = this.params.status;
+    return {orders: ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.workflow.status': status
+    })};
+  },
+  onBeforeAction: function () {
+    let status = this.params.status;
+    let viableStatuses = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let validStatus = _.contains(viableStatuses, status);
+    if (validStatus) {
+      this.next();
+    }  else {
+      this.render('notFound');
+    }
+  }
+});

@@ -1,11 +1,3 @@
-function verified(itemId, orderId) {
-  let input = Session.get(itemId);
-  if (input === itemId) {
-    return true;
-  }
-  return false;
-}
-
 Template.orderDetails.helpers({
   status: function () {
     return this.advancedFulfillment.workflow.status;

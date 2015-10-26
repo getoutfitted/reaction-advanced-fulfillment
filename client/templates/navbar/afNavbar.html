@@ -1,0 +1,68 @@
+<template name='afNavbar'>
+  <nav class="navbar">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <i class="fa fa-bars"></i>
+        </button>
+        <a class="navbar-brand" href="{{pathFor 'afDashboard'}}">Advanced Fulfillment</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+        <ul class="nav navbar-nav navbar-right">
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" id='afSearchInput' placeholder="Search by Order Number">
+            </div>
+            <button type="submit" id='afSearchButton' class="btn btn-default">Submit</button>
+          </form>
+          <li><a href="{{pathFor 'afDashboard'}}">Dashboard</a></li>
+          <li><a href="{{pathFor 'orderQueue'}}">My Orders</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Shipping <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="{{pathFor 'allShipping'}}">All Shipping Orders</a></li>
+              <li><a href="{{pathFor 'dateShipping' date=yesterdaysDate}}">Shipping Yesterday</a></li>
+              <li><a href="{{pathFor 'dateShipping' date=todaysDate}}">Shipping Today</a></li>
+              <li><a href="{{pathFor 'dateShipping' date=tomorrowsDate}}">Shipping Tomorrow</a></li>
+              <li role="separator" class="divider"></li>
+              <li>
+                <form class="navbar-form" role="search">
+                  <div class="form-group">
+                    <label for='afShipInput'>Shipping Date</label>
+                    <input type="text" class="form-control" id='afShipInput' placeholder="9-20-2015">
+                  </div>
+                  <button type="submit" id='afShipButton' class="btn btn-default">Submit</button>
+                </form>
+              </li>
+
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Returns <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">All Returns Orders</a></li>
+              <li><a href="#">Returns Yesterday</a></li>
+              <li><a href="#">Returns Today</a></li>
+              <li><a href="#">Returns Tomorrow</a></li>
+              <li role="separator" class="divider"></li>
+              <li>
+                <form class="navbar-form" role="search">
+                  <div class="form-group">
+                    <label for='afShipInput'>Returns Date</label>
+                    <input type="text" class="form-control" id='afReturnInput' placeholder="9-20-2015">
+                  </div>
+                  <button type="submit" id='afReturnButton' class="btn btn-default">Submit</button>
+                </form>
+              </li>
+
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+</template>

@@ -18,8 +18,8 @@ Template.advancedFulfillmentPDF.helpers({
 Template.advancedFulfillmentPDF.onRendered(function () {
   let orderId = Router.current().params._id;
   $('#barcode').barcode(orderId, 'code128', {
-    barWidth: 1,
-    barHeight: 50,
+    barWidth: 2,
+    barHeight: 100,
     moduleSize: 15,
     showHRI: true,
     fontSize: 14

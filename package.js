@@ -44,7 +44,9 @@ Package.onUse(function (api) {
     'client/templates/orderQueue/orderQueue.html',
     'client/templates/orderQueue/orderQueue.js',
     'client/templates/pdf/advancedFulfillment.html',
-    'client/templates/pdf/advancedFulfillment.js'
+    'client/templates/pdf/advancedFulfillment.js',
+    'client/templates/navbar/afNavbar.html',
+    'client/templates/navbar/afNavbar.js'
   ], 'client');
 
   api.addFiles([

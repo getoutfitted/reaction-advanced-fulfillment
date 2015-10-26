@@ -88,6 +88,7 @@ Router.route('dashboard/advanced-fulfillment/order-queue', {
 });
 
 Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
+  name: 'advancedFulfillmentPDF',
   controller: PrintController,
   path: 'dashboard/advanced-fulfillment/order/pdf/:_id',
   template: 'advancedFulfillmentPDF',

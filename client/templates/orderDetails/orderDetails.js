@@ -62,6 +62,13 @@ Template.orderDetails.helpers({
   },
   zipcode: function () {
     return this.shipping[0].address.postal;
+  },
+  printLabel: function () {
+    let status = this.advancedFulfillment.workflow.status;
+    if (status === 'orderFulfilled') {
+      return true;
+    }
+    return false;
   }
 });
 

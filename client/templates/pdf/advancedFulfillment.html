@@ -92,12 +92,14 @@
   <table class='table table-bordered'>
     <tr>
       <th>Quantity</th>
+      <th>UID</th>
       <th>Title</th>
       <th>Price</th>
     </tr>
     {{#each advancedFulfillment.items}}
       <tr>
         <td>{{quantity}}</td>
+        <td>{{_id}}</td>
         <td>{{itemDescription}}</td>
         <td>{{price}}</td>
       </tr>

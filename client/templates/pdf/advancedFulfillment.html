@@ -95,11 +95,11 @@
       <th>Title</th>
       <th>Price</th>
     </tr>
-    {{#each items}}
+    {{#each advancedFulfillment.items}}
       <tr>
         <td>{{quantity}}</td>
-        <td>{{variants.title}}</td>
-        <td>{{variants.price}}</td>
+        <td>{{itemDescription}}</td>
+        <td>{{price}}</td>
       </tr>
     {{/each}}
   </table>

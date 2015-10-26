@@ -8,7 +8,8 @@ let newItemsList = _.times(num(), function () {
     shopId: Random.id(),
     variantId: Random.id(),
     quantity: _.random(1, 5),
-    itemDescription: 'this is the item description',
+    itemDescription: faker.commerce.productName(),
+    price: _.random(100, 1500) / 100,
     workflow: {
       status: 'In Stock',
       workflow: []
@@ -23,7 +24,8 @@ let pickedItemsList = _.times(num(), function () {
     shopId: Random.id(),
     variantId: Random.id(),
     quantity: _.random(1, 5),
-    itemDescription: 'this is the item description',
+    itemDescription: faker.commerce.productName(),
+    price: _.random(100, 1500) / 100,
     workflow: {
       status: 'picked',
       workflow: ['In Stock']
@@ -38,7 +40,8 @@ let packedItemsList = _.times(num(), function () {
     shopId: Random.id(),
     variantId: Random.id(),
     quantity: _.random(1, 5),
-    itemDescription: 'this is the item description',
+    itemDescription: faker.commerce.productName(),
+    price: _.random(100, 1500) / 100,
     workflow: {
       status: 'packed',
       workflow: ['In Stock', 'picked']
@@ -53,7 +56,8 @@ let completedItemsList = _.times(num(), function () {
     shopId: Random.id(),
     variantId: Random.id(),
     quantity: _.random(1, 5),
-    itemDescription: 'this is the item description',
+    itemDescription: faker.commerce.productName(),
+    price: _.random(100, 1500) / 100,
     workflow: {
       status: 'completed',
       workflow: ['In Stock', 'picked', 'packed']

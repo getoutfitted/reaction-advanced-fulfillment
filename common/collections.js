@@ -27,6 +27,12 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   workflow: {
     type: ReactionCore.Schemas.Workflow,
     optional: true
+  },
+  price: {
+    type: Number,
+    optional: true,
+    decimal: true,
+    min: 0
   }
 });
 

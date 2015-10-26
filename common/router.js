@@ -12,7 +12,7 @@ advancedFulfillmentController = ShopAdminController.extend({
 });
 
 Router.route('dashboard/advanced-fulfillment', {
-  name: 'afDashboard',
+  name: 'dashboard/advanced-fulfillment',
   path: 'dashboard/advanced-fulfillment',
   template: 'dashboardAdvancedFulfillmment',
   controller: 'ShopAdminController'
@@ -104,5 +104,14 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
         _id: this.params._id
       });
     }
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/order/status/:status', {
+  name: 'orderByStatus',
+  template: 'orderDetails',
+  controller: advancedFulfillmentController,
+  waitOn: function () {
+    return this.subscribe('Orders');
   }
 });

@@ -83,12 +83,6 @@ Router.route('dashboard/advanced-fulfillment/order-queue', {
   waitOn: function () {
     return this.subscribe('Orders');
   }
-  // data: function () {
-  //   let userId = Meteor.userId();
-  //   let orders = ReactionCore.Collections.Orders.find({'history.userId': userId});
-  //   debugger;
-  //   return orders;
-  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {

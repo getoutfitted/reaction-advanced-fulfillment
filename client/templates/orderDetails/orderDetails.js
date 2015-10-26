@@ -1,11 +1,3 @@
-function verified(itemId, orderId) {
-  let input = Session.get(itemId);
-  if (input === itemId) {
-    return true;
-  }
-  return false;
-}
-
 Template.orderDetails.helpers({
   status: function () {
     return this.advancedFulfillment.workflow.status;
@@ -70,6 +62,13 @@ Template.orderDetails.helpers({
   },
   zipcode: function () {
     return this.shipping[0].address.postal;
+  },
+  printLabel: function () {
+    let status = this.advancedFulfillment.workflow.status;
+    if (status === 'orderFulfilled') {
+      return true;
+    }
+    return false;
   }
 });
 

@@ -1,6 +1,9 @@
 <template name='orderDetails'>
   {{> afNavbar}}
   <div class='container-fluid'>
+    {{#if printLabel}}
+      <a class='btn btn-block btn-danger' href="{{pathFor 'advancedFulfillmentPDF' }}">Print Invoice</a>
+    {{/if}}
     <div>
     {{#if readyForAssignment}}
       <a class='btn btn-block btn-primary advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to move order to: {{nextStatus}}</a>

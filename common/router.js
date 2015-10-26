@@ -107,11 +107,27 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
   }
 });
 
-Router.route('dashboard/advanced-fulfillment/order/status/:status', {
+Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
   name: 'orderByStatus',
-  template: 'orderDetails',
+  template: 'fulfillmentOrders',
   controller: advancedFulfillmentController,
   waitOn: function () {
     return this.subscribe('Orders');
+  },
+  data: function () {
+    let status = this.params.status;
+    return {orders: ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.workflow.status': status
+    })};
+  },
+  onBeforeAction: function () {
+    let status = this.params.status;
+    let viableStatuses = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let validStatus = _.contains(viableStatuses, status);
+    if (validStatus) {
+      this.next();
+    }  else {
+      this.render('notFound');
+    }
   }
 });

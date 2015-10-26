@@ -12,8 +12,10 @@ advancedFulfillmentController = ShopAdminController.extend({
 });
 
 Router.route('dashboard/advanced-fulfillment', {
+  name: 'afDashboard',
   path: 'dashboard/advanced-fulfillment',
-  template: 'dashboardAdvancedFulfillmment'
+  template: 'dashboardAdvancedFulfillmment',
+  controller: 'ShopAdminController'
 });
 
 Router.route('dashboard/advanced-fulfillment/shipping', {

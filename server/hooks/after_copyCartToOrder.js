@@ -12,7 +12,8 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       workflow: {
         status: 'In Stock',
         workflow: []
-      }
+      },
+      price: item.variantes.price
     };
   });
   ReactionCore.Collections.Orders.update({_id: orderId}, {

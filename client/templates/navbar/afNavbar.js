@@ -23,10 +23,9 @@ Template.afNavbar.events({
   'click #afShipButton': function (event) {
     event.preventDefault();
     let unfilteredDate = $('#afShipInput').val();
-    let verifiedDate = moment(unfilteredDate).isValid();
+    let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
     if (verifiedDate) {
-      let date = moment(unfilteredDate).format('MM-DD-YYYY');
-      debugger;
+      let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
       Router.go('dateShipping', {date: date});
     }
   }

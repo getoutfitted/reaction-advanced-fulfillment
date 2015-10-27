@@ -1,69 +1,98 @@
 function num() {
   return _.random(1, 5);
 }
-let newItemsList = _.times(num(), function () {
-  return {
-    _id: Random.id(),
-    productId: Random.id(),
-    shopId: Random.id(),
-    variantId: Random.id(),
-    quantity: _.random(1, 5),
-    itemDescription: faker.commerce.productName(),
-    price: _.random(100, 1500) / 100,
-    workflow: {
-      status: 'In Stock',
-      workflow: []
-    }
-  };
-});
 
-let pickedItemsList = _.times(num(), function () {
-  return {
-    _id: Random.id(),
-    productId: Random.id(),
-    shopId: Random.id(),
-    variantId: Random.id(),
-    quantity: _.random(1, 5),
-    itemDescription: faker.commerce.productName(),
-    price: _.random(100, 1500) / 100,
-    workflow: {
-      status: 'picked',
-      workflow: ['In Stock']
-    }
-  };
-});
+function newItemsList(number) {
+  return  _.times(number, function () {
+    return {
+      _id: Random.id(),
+      productId: Random.id(),
+      shopId: Random.id(),
+      variantId: Random.id(),
+      quantity: _.random(1, 5),
+      itemDescription: faker.commerce.productName(),
+      price: _.random(100, 1500) / 100,
+      workflow: {
+        status: 'In Stock',
+        workflow: []
+      }
+    };
+  });
+}
 
-let packedItemsList = _.times(num(), function () {
-  return {
-    _id: Random.id(),
-    productId: Random.id(),
-    shopId: Random.id(),
-    variantId: Random.id(),
-    quantity: _.random(1, 5),
-    itemDescription: faker.commerce.productName(),
-    price: _.random(100, 1500) / 100,
-    workflow: {
-      status: 'packed',
-      workflow: ['In Stock', 'picked']
-    }
-  };
-});
+function newItemsSkuLocationList(number) {
+  return  _.times(number, function () {
+    return {
+      _id: Random.id(),
+      productId: Random.id(),
+      shopId: Random.id(),
+      variantId: Random.id(),
+      quantity: _.random(1, 5),
+      itemDescription: faker.commerce.productName(),
+      price: _.random(100, 1500) / 100,
+      workflow: {
+        status: 'In Stock',
+        workflow: []
+      },
+      sku: faker.name.firstName().substr(0, 2) + '-' + _.random(100, 1000),
+      location: faker.name.firstName().substr(0, 2) + '-L' + _.random(1, 9) + '-C' + _.random(1, 9)
+    };
+  });
+}
 
-let completedItemsList = _.times(num(), function () {
-  return {
-    _id: Random.id(),
-    productId: Random.id(),
-    shopId: Random.id(),
-    variantId: Random.id(),
-    quantity: _.random(1, 5),
-    itemDescription: faker.commerce.productName(),
-    price: _.random(100, 1500) / 100,
-    workflow: {
-      status: 'completed',
-      workflow: ['In Stock', 'picked', 'packed']
-    }
-  };
-});
+function pickedItemsList(number) {
+  return _.times(number, function () {
+    return {
+      _id: Random.id(),
+      productId: Random.id(),
+      shopId: Random.id(),
+      variantId: Random.id(),
+      quantity: _.random(1, 5),
+      itemDescription: faker.commerce.productName(),
+      price: _.random(100, 1500) / 100,
+      workflow: {
+        status: 'picked',
+        workflow: ['In Stock']
+      }
+    };
+  });
+}
+
+function packedItemsList(number) {
+  return _.times(number, function () {
+    return {
+      _id: Random.id(),
+      productId: Random.id(),
+      shopId: Random.id(),
+      variantId: Random.id(),
+      quantity: _.random(1, 5),
+      itemDescription: faker.commerce.productName(),
+      price: _.random(100, 1500) / 100,
+      workflow: {
+        status: 'packed',
+        workflow: ['In Stock', 'picked']
+      }
+    };
+  });
+}
+
+function completedItemsList(number) {
+  return _.times(number, function () {
+    return {
+      _id: Random.id(),
+      productId: Random.id(),
+      shopId: Random.id(),
+      variantId: Random.id(),
+      quantity: _.random(1, 5),
+      itemDescription: faker.commerce.productName(),
+      price: _.random(100, 1500) / 100,
+      workflow: {
+        status: 'completed',
+        workflow: ['In Stock', 'picked', 'packed']
+      }
+    };
+  });
+}
 
 function shipmentDate() {
   return moment().add(_.random(0, 3), 'days')._d;
@@ -81,7 +110,21 @@ Factory.define('newOrder', ReactionCore.Collections.Orders,
         status: 'orderCreated',
         workflow: []
       },
-      items: newItemsList
+      items: newItemsList(num())
+    }
+  })
+);
+
+Factory.define('orderSKU', ReactionCore.Collections.Orders,
+  Factory.extend('orderForAF', {
+    advancedFulfillment: {
+      shipmentDate: shipmentDate(),
+      returnDate: returnDate(),
+      workflow: {
+        status: 'orderCreated',
+        workflow: []
+      },
+      items: newItemsSkuLocationList(num())
     }
   })
 );
@@ -95,7 +138,7 @@ Factory.define('pickingOrder', ReactionCore.Collections.Orders,
         status: 'orderPicking',
         workflow: ['orderCreated']
       },
-      items: pickedItemsList
+      items: pickedItemsList(num())
     }
   })
 );
@@ -109,7 +152,7 @@ Factory.define('packingOrder', ReactionCore.Collections.Orders,
         status: 'orderPacking',
         workflow: ['orderCreated', 'orderPicking']
       },
-      items: packedItemsList
+      items: packedItemsList(num())
     }
   })
 );
@@ -124,7 +167,7 @@ Factory.define('fulfilledOrder', ReactionCore.Collections.Orders,
         status: 'orderFulfilled',
         workflow: ['orderCreated', 'orderPicking', 'orderPacking']
       },
-      items: completedItemsList
+      items: completedItemsList(num())
     }
   })
 );

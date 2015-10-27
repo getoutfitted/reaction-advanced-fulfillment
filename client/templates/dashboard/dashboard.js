@@ -1,6 +1,21 @@
 Template.dashboardAdvancedFulfillmment.helpers({
   dateToday: function () {
     return moment().format('MM-DD-YYYY');
+  },
+  todaysOrdersExist: function () {
+    let rawDate = new Date();
+    let dayStart = moment(rawDate).startOf('day')._d;
+    let dayEnd = moment(rawDate).endOf('day')._d;
+    let allOfTodaysOrders = ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.shipmentDate': {
+        $gte: new Date(dayStart),
+        $lte: new Date(dayEnd)
+      }
+    }).count();
+    if (allOfTodaysOrders > 0) {
+      return true;
+    }
+    return false;
   }
 });
 

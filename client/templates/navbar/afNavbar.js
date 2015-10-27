@@ -26,7 +26,6 @@ Template.afNavbar.events({
     let verifiedDate = moment(unfilteredDate).isValid();
     if (verifiedDate) {
       let date = moment(unfilteredDate).format('MM-DD-YYYY');
-      debugger;
       Router.go('dateShipping', {date: date});
     }
   }

@@ -15,7 +15,10 @@ Router.route('dashboard/advanced-fulfillment', {
   name: 'dashboard/advanced-fulfillment',
   path: 'dashboard/advanced-fulfillment',
   template: 'dashboardAdvancedFulfillmment',
-  controller: 'ShopAdminController'
+  controller: 'ShopAdminController',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  }
 });
 
 Router.route('dashboard/advanced-fulfillment/shipping', {

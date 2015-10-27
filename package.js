@@ -23,6 +23,7 @@ Package.onUse(function (api) {
   api.use('momentjs:twix@0.7.2');
   api.use('standard-minifiers');
   api.use('steeve:jquery-barcode');
+  api.use('d3js:d3');
 
 
   api.addFiles([

@@ -11,39 +11,28 @@ Template.dashboardAdvancedFulfillmment.onRendered(function () {
   let rawDate = new Date();
   let dayStart = moment(rawDate).startOf('day')._d;
   let dayEnd = moment(rawDate).endOf('day')._d;
-  let orderCreated = ReactionCore.Collections.Orders.find({
+  let allOfTodaysOrders = ReactionCore.Collections.Orders.find({
     'advancedFulfillment.shipmentDate': {
       $gte: new Date(dayStart),
       $lte: new Date(dayEnd)
-    },
-    'advancedFulfillment.workflow.status': 'orderCreated'
-  }).count();
-  let orderPicking = ReactionCore.Collections.Orders.find({
-    'advancedFulfillment.shipmentDate': {
-      $gte: new Date(dayStart),
-      $lte: new Date(dayEnd)
-    },
-    'advancedFulfillment.workflow.status': 'orderPicking'
-  }).count();
-  let orderPacking = ReactionCore.Collections.Orders.find({
-    'advancedFulfillment.shipmentDate': {
-      $gte: new Date(dayStart),
-      $lte: new Date(dayEnd)
-    },
-    'advancedFulfillment.workflow.status': 'orderPacking'
-  }).count();
-  let orderFulfilled = ReactionCore.Collections.Orders.find({
-    'advancedFulfillment.shipmentDate': {
-      $gte: new Date(dayStart),
-      $lte: new Date(dayEnd)
-    },
-    'advancedFulfillment.workflow.status': 'orderFulfilled'
-  }).count();
-  let data = [orderCreated, orderPicking, orderPacking, orderFulfilled];
+    }
+  }).fetch();
+
+  let orderByStatus = _.countBy(allOfTodaysOrders, function (order) {
+    return order.advancedFulfillment.workflow.status;
+  });
+
+  let data = [
+    orderByStatus.orderCreated || 0,
+    orderByStatus.orderPicking || 0,
+    orderByStatus.orderPacking || 0,
+    orderByStatus.orderFulfilled || 0
+  ];
 
 
-  let color = d3.scale.category10();
-
+  // let color = d3.scale.category10();
+  let color = d3.scale.ordinal()
+  .range(['#EE4043', '#FABA61', '#FDF6AF', '#429544']);
   let arc = d3.svg.arc()
       .outerRadius(radius);
 

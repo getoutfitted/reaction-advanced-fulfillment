@@ -1,7 +1,10 @@
-function verified(itemId) {
-  let input = Session.get(itemId);
-  delete Session.keys[itemId];
-  if (input === itemId) {
+function verified(item) {
+  let input = Session.get(item._id);
+  delete Session.keys[item._id];
+  if (!item.sku) {
+    item.sku = null;
+  }
+  if (input === item.variantId || input === item.sku) {
     return true;
   }
   return false;
@@ -30,7 +33,7 @@ Template.itemDetails.helpers({
       result = false;
     }
     if (thisItem.workflow.status === 'picked') {
-      result = verified(itemId);
+      result = verified(item);
     }
     return result;
     // return true;
@@ -79,10 +82,22 @@ Template.itemDetails.helpers({
     return false;
   },
   uidVerified: function (item) {
-    if (verified(item._id)) {
+    if (verified(item)) {
       return item.workflow.status;
     }
-    return 'Verify Item UID';
+    return 'Verify SKU or Variant';
+  },
+  SKU: function (item) {
+    if (item.sku) {
+      return item.sku;
+    }
+    return 'No SKU';
+  },
+  location: function (item) {
+    if (item.location) {
+      return item.location;
+    }
+    return 'No Location';
   }
 });
 

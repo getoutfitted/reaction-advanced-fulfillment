@@ -1,21 +1,19 @@
 <template name='itemDetails'>
-  <div class='itemDetails'>
-
-
+  <div class='itemDetails container-fluid'>
     <div class='row'>
       <h1>Items in this Order:</h1>
       <div class='row text-center'>
-        <div class='col-md-1 col-sm-1 col-md-offset-1'>
-          <h4><strong>Pick this item</strong></h4>
+        <div class='col-md-2 col-sm-2 col-md-offset-1'>
+          <h4><strong>Action</strong></h4>
         </div>
         <div class='col-md-1 col-sm-2'>
-          <h4><strong>SKU(ProductID)</strong></h4>
+          <h4><strong>SKU</strong></h4>
+        </div>
+        <div class='col-md-2 col-sm-2'>
+          <h4><strong>Variant ID</strong></h4>
         </div>
         <div class='col-md-1 col-sm-2'>
           <h4><strong>Status</strong></h4>
-        </div>
-        <div class='col-md-1 col-sm-2'>
-          <h4><strong>UID</strong></h4>
         </div>
         <div class='col-md-1 col-sm-2'>
           <h4><strong>Location</strong></h4>
@@ -23,31 +21,22 @@
         <div class='col-md-1 col-sm-2'>
           <h4><strong>Quantity</strong></h4>
         </div>
-
-        <div class='col-md-1 col-sm-2'>
-          <h4><strong>Variant ID</strong></h4>
-        </div>
         <div class='col-md-2 col-sm-2'>
           <h4><strong>Item Description</strong></h4>
         </div>
-
       </div>
       <hr>
       {{#each item in items}}
-
-
         <div class='row text-center'>
           <div class='col-md-1 col-sm-1'>
           {{#if uidVerificationEnabled item}}
-            <input type='text' class='verify' name='text' data-item-id='{{item._id}}' placeholder='Enter Item UID'>
+            <input type='text' class='verify' name='text' data-item-id='{{item._id}}' placeholder='SKU or Variant ID'>
           {{/if}}
-
           </div>
-
-          <div class='col-md-1 col-sm-1 '>
+          <div class='col-md-2 col-sm-2 '>
             {{#if allowedToUpdateItem item}}
               {{#if itemUpdateable item }}
-                <a class='btn btn-block btn-primary center-block item-picked'  data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
+                <a class='btn  btn-sm btn-success  item-picked'  data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
               {{else}}
                 <p>{{uidVerified item}}</p>
               {{/if}}
@@ -56,29 +45,26 @@
             {{/if}}
           </div>
           <div class='col-md-1 col-sm-2'>
-            {{item.productId}}
+            {{SKU item}}
+          </div>
+          <div class='col-md-2 col-sm-2'>
+            {{item.variantId}}
           </div>
           <div class='col-md-1 col-sm-2'>
             {{item.workflow.status}}
           </div>
           <div class='col-md-1 col-sm-2'>
-            {{item._id}}
-          </div>
-          <div class='col-md-1 col-sm-2'>
-            MT-L1-C10
+            {{location item}}
           </div>
           <div class='col-md-1 col-sm-2'>
             {{item.quantity}}
           </div>
-          <div class='col-md-1 col-sm-2'>
-            {{item.variantId}}
-          </div>
+
           <div class='col-md-2 col-sm-2'>
             {{item.itemDescription}}
           </div>
         </div>
         <hr>
-
       {{/each}}
     </div>
   </div>

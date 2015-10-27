@@ -7,5 +7,11 @@
     <div class='row'>
       <a class='btn btn-default' href="{{pathFor 'dateShipping' date=dateToday}}">All Orders that need to be shipped today</a>
     </div>
+    <div>
+      {{#if todaysOrdersExist}}
+        <h1>Today's Order Status</h1>
+        <div class='d3'></div>
+      {{/if}}
+    </div>
   </div>
 </template>

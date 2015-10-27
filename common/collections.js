@@ -33,6 +33,14 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
     optional: true,
     decimal: true,
     min: 0
+  },
+  sku: {
+    type: String,
+    optional: true
+  },
+  location: {
+    type: String,
+    optional: true
   }
 });
 

@@ -87,7 +87,6 @@ Template.orderDetails.events({
   'click .advanceOrder': function (event) {
     event.preventDefault();
     let currentStatus = this.advancedFulfillment.workflow.status;
-    // let currentStatus = event.target.dataset.status;
     let orderId = this._id;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);

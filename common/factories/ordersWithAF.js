@@ -124,7 +124,7 @@ Factory.define('orderSKU', ReactionCore.Collections.Orders,
         status: 'orderCreated',
         workflow: []
       },
-      items: newItemsSkuLocationList(num())
+      items: newItemsSkuLocationList(5)
     }
   })
 );

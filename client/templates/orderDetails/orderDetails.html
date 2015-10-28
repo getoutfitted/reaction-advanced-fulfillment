@@ -2,7 +2,7 @@
   {{> afNavbar}}
   <div class='container-fluid'>
     {{#if printLabel}}
-      <a class='btn btn-block btn-danger' href="{{pathFor 'advancedFulfillmentPDF' }}">Print Invoice</a>
+      <a class='btn btn-block btn-danger print-invoice' target='_blank' href="{{pathFor 'advancedFulfillmentPDF' }}">Print Invoice</a>
     {{/if}}
     <div>
     {{#if readyForAssignment}}

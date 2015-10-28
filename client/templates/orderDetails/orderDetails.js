@@ -86,9 +86,18 @@ Template.orderDetails.onRendered(function () {
 Template.orderDetails.events({
   'click .advanceOrder': function (event) {
     event.preventDefault();
-    let currentStatus = event.target.dataset.status;
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    // let currentStatus = event.target.dataset.status;
     let orderId = this._id;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+  },
+  'click .print-invoice': function (event) {
+    let orderId = this._id;
+    let order = this;
+    let userId = Meteor.userId();
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+    Meteor.call('advancedFulfillment/updateAllItemsToShipped', order);
   }
 });

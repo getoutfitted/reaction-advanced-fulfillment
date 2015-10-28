@@ -6,7 +6,8 @@ Meteor.methods({
     let workflow = {
       orderCreated: 'orderPicking',
       orderPicking: 'orderPacking',
-      orderPacking: 'orderFulfilled'
+      orderPacking: 'orderFulfilled',
+      orderFulfilled: 'orderShipping'
     };
     let date = new Date();
     let historyEvent = {
@@ -31,7 +32,7 @@ Meteor.methods({
     let workflow = {
       'In Stock': 'picked',
       picked: 'packed',
-      packed: 'completed'
+      packed: 'shipped'
     };
     ReactionCore.Collections.Orders.update({
       _id: orderId,
@@ -39,6 +40,19 @@ Meteor.methods({
     }, {
       $set: { 'advancedFulfillment.items.$.workflow.status': workflow[itemStatus] },
       $addToSet: {'advancedFulfillment.items.$.workflow.workflow': itemStatus }
+    });
+  },
+  'advancedFulfillment/updateAllItemsToShipped': function (order) {
+    check(order, Object);
+    let items = order.advancedFulfillment.items;
+    _.each(items, function (item) {
+      item.workflow.status = 'shipped';
+      item.workflow.workflow.push('packed');
+    });
+    ReactionCore.Collections.Orders.update({
+      _id: order._id
+    }, {
+      $set: { 'advancedFulfillment.items': items}
     });
   }
 });

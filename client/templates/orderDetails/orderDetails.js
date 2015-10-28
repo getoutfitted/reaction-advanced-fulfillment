@@ -97,7 +97,7 @@ Template.orderDetails.events({
     let order = this;
     let userId = Meteor.userId();
     let currentStatus = this.advancedFulfillment.workflow.status;
-    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
     Meteor.call('advancedFulfillment/updateAllItemsToShipped', order);
+    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   }
 });

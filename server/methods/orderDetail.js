@@ -44,7 +44,16 @@ Meteor.methods({
   },
   'advancedFulfillment/updateAllItemsToShipped': function (order) {
     check(order, Object);
+    if (order.advancedFulfillment.workflow.status !== 'orderFulfilled') {
+      throw new Meteor.Error('Invalid Order Status');
+    }
     let items = order.advancedFulfillment.items;
+    let allPacked = _.every(items, function (item) {
+      return item.workflow.status === 'packed';
+    });
+    if (!allPacked) {
+      throw new Meteor.Error('Invalid Item Status');
+    }
     _.each(items, function (item) {
       item.workflow.status = 'shipped';
       item.workflow.workflow.push('packed');

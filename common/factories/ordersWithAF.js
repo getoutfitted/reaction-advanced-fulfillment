@@ -167,7 +167,7 @@ Factory.define('fulfilledOrder', ReactionCore.Collections.Orders,
         status: 'orderFulfilled',
         workflow: ['orderCreated', 'orderPicking', 'orderPacking']
       },
-      items: completedItemsList(num())
+      items: packedItemsList(num())
     }
   })
 );

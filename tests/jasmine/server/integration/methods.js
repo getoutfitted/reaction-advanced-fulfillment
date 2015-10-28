@@ -130,4 +130,50 @@ describe('getoutfitted:reaction-advanced-fulfillment methods', function () {
       expect(thisItem2.workflow.status).toBe('picked');
     });
   });
+  describe('advancedFulfillment/updateAllItemsToShipped', function () {
+    beforeEach(function () {
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should update each of the items to shipped', function () {
+      let FulfilledOrder = Factory.create('fulfilledOrder');
+      let initialItems = FulfilledOrder.advancedFulfillment.items;
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      let allPacked = _.every(initialItems, function (item) {
+        return item.workflow.status === 'packed';
+      });
+      expect(allPacked).toBe(true);
+      Meteor.call('advancedFulfillment/updateAllItemsToShipped', FulfilledOrder);
+      let updatedItems = ReactionCore.Collections.Orders.findOne(FulfilledOrder._id).advancedFulfillment.items;
+      let allShipped = _.every(updatedItems, function (item) {
+        return item.workflow.status === 'shipped';
+      });
+      expect(allShipped).toBe(true);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+    });
+    it('should throw an error if order status is not orderfulfilled', function () {
+      let newOrder = Factory.create('orderSKU');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      let initialStatus = newOrder.advancedFulfillment.workflow.status;
+      expect(initialStatus).toBe('orderCreated');
+      expect(function () {
+        Meteor.call('advancedFulfillment/updateAllItemsToShipped', newOrder);
+      }).toThrow();
+      expect(ReactionCore.Collections.Orders.update).not.toHaveBeenCalled();
+    });
+    it('should throw an error if all items are not packed', function () {
+      let newOrder = Factory.create('orderSKU', {
+        'advancedFulfillment.workflow.status': 'orderFulfilled'
+      });
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      let initialItems = newOrder.advancedFulfillment.items;
+      let allNew = _.every(initialItems, function (item) {
+        return item.workflow.status === 'In Stock';
+      });
+      expect(allNew).toBe(true);
+      expect(function () {
+        Meteor.call('advancedFulfillment/updateAllItemsToShipped', newOrder);
+      }).toThrow();
+      expect(ReactionCore.Collections.Orders.update).not.toHaveBeenCalled();
+    });
+  });
 });

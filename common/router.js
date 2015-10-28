@@ -31,7 +31,7 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
       'advancedFulfillment.workflow.status': {
-        $not: 'orderFulfilled'
+        $not: 'orderShipping'
       }
     })};
   }
@@ -49,7 +49,7 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
     return {orders: ReactionCore.Collections.Orders.find({
       'advancedFulfillment.workflow.status': {
-        $not: 'orderFulfilled'
+        $not: 'orderShipping'
       },
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),

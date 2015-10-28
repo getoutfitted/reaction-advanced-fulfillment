@@ -26,7 +26,8 @@ Template.itemDetails.helpers({
       orderCreated: 'In Stock',
       orderPicking: 'picked',
       orderPacking: 'packed',
-      orderCompleted: 'itemFulfilled'
+      orderFulfilled: 'packed',
+      orderShipping: 'shipped'
     };
     let result = true;
     if (thisItem.workflow.status === statusKey[status]) {
@@ -84,8 +85,10 @@ Template.itemDetails.helpers({
   uidVerified: function (item) {
     if (verified(item)) {
       return item.workflow.status;
+    } else if (item.workflow.status === 'picked' && this.advancedFulfillment.workflow.status === 'orderPacking') {
+      return 'Verify SKU or Variant';
     }
-    return 'Verify SKU or Variant';
+    return item.workflow.status;
   },
   SKU: function (item) {
     if (item.sku) {

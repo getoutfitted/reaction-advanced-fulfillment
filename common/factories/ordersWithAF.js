@@ -124,7 +124,7 @@ Factory.define('orderSKU', ReactionCore.Collections.Orders,
         status: 'orderCreated',
         workflow: []
       },
-      items: newItemsSkuLocationList(num())
+      items: newItemsSkuLocationList(5)
     }
   })
 );
@@ -167,7 +167,7 @@ Factory.define('fulfilledOrder', ReactionCore.Collections.Orders,
         status: 'orderFulfilled',
         workflow: ['orderCreated', 'orderPicking', 'orderPacking']
       },
-      items: completedItemsList(num())
+      items: packedItemsList(num())
     }
   })
 );

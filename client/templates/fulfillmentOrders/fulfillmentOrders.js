@@ -1,8 +1,8 @@
 Template.fulfillmentOrders.helpers({
   routeStatus: function () {
     let fullRoute = Iron.Location.get().path;
-    let thisRoute = fullRoute.substr(32, 8);
-    if (thisRoute === 'shipping') {
+    let thisRoute = fullRoute.substr(32, 7);
+    if (thisRoute === 'shippin') {
       return 'Shipped';
     } else if (thisRoute === 'returns') {
       return 'Returned';

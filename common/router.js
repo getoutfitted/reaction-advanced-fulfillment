@@ -149,3 +149,33 @@ Router.route('dashboard/advanced-fulfillment/returns', {
     })};
   }
 });
+
+Router.route('dashboard/advanced-fulfillment/returns/:date', {
+  name: 'dateReturning',
+  controller: advancedFulfillmentController,
+  template: 'fulfillmentOrders',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  },
+  data: function () {
+    let rawDate = this.params.date;
+    let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
+    let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
+    return {orders: ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.workflow.status': 'orderShipping',
+      'advancedFulfillment.returnDate': {
+        $gte: new Date(dayStart),
+        $lte: new Date(dayEnd)
+      }
+    })};
+  },
+  onBeforeAction: function () {
+    let date = this.params.date;
+    let validDate = moment(date, 'MM-DD-YYYY').isValid();
+    if (validDate) {
+      this.next();
+    }  else {
+      this.render('notFound');
+    }
+  }
+});

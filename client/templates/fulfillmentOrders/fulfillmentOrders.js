@@ -1,7 +1,31 @@
+Template.fulfillmentOrders.helpers({
+  routeStatus: function () {
+    let fullRoute = Iron.Location.get().path;
+    let thisRoute = fullRoute.substr(32, 7);
+    if (thisRoute === 'shippin') {
+      return 'Shipped';
+    } else if (thisRoute === 'returns') {
+      return 'Returned';
+    }
+  }
+});
+
 Template.fulfillmentOrder.helpers({
   shippingDate: function () {
     let longDate = this.advancedFulfillment.shipmentDate;
     return moment(longDate).format('MMMM Do, YYYY');
+  },
+  returningDate: function () {
+    let longDate = this.advancedFulfillment.returnDate;
+    return moment(longDate).format('MMMM Do, YYYY');
+  },
+  toBeShipped: function () {
+    let fullRoute = Iron.Location.get().path;
+    let thisRoute = fullRoute.substr(32, 8);
+    if (thisRoute === 'shipping') {
+      return true;
+    }
+    return false;
   },
   status: function () {
     return this.advancedFulfillment.workflow.status;
@@ -30,6 +54,10 @@ Template.fulfillmentOrder.helpers({
     let itemsPacked = _.every(itemsArray, function (item) {
       return item.workflow.status === 'packed';
     });
+    let itemsShipped = _.every(itemsArray, function (item) {
+      return item.workflow.status === 'shipped';
+    });
+
     let result = false;
     switch (status) {
     case 'orderCreated':
@@ -41,12 +69,20 @@ Template.fulfillmentOrder.helpers({
     case 'orderPacking':
       result = itemsPacked;
       break;
+    case 'orderShipping':
+      result = itemsShipped;
     }
     return result;
   },
   nextStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
-    let options = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let options = [
+      'orderCreated',
+      'orderPicking',
+      'orderPacking',
+      'orderFulfilled',
+      'orderShipping',
+      'orderReturning'];
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
   }

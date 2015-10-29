@@ -1,7 +1,7 @@
 <template name="fulfillmentOrders">
 {{> afNavbar}}
   <div class='container'>
-    <h1>Orders Waiting to Be Shipped</h1>
+    <h1>Orders Waiting to Be {{routeStatus}}</h1>
   </div>
   <div class='container'>
       {{#each orders}}
@@ -18,7 +18,11 @@
           <h3>Order: {{_id}} </h3>
         </div>
         <div class='col-sm-6'>
-          <h3>Date Shipping: <strong>{{shippingDate}} </strong></h3>
+          {{#if toBeShipped}}
+            <h3>Date Shipping: <strong>{{shippingDate}} </strong></h3>
+          {{else}}
+            <h3>Date Returning: <strong>{{returningDate}} </strong></h3>
+          {{/if}}
         </div>
       </div>
       <div class="row">

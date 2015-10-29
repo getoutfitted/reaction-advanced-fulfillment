@@ -44,7 +44,7 @@ Template.itemDetails.helpers({
       'In Stock': 'Pick Item',
       'picked': 'Pack Item',
       'packed': 'Item Fulfilled',
-      'completed': 'Item Fulfilled'
+      'shipped': 'Item Returned'
     };
     return status[currentStatus];
   },
@@ -55,7 +55,8 @@ Template.itemDetails.helpers({
     let statusKey = {
       orderCompleted: 'In Stock',
       orderPicking: 'picked',
-      orderPacking: 'packed'
+      orderPacking: 'packed',
+      orderReturning: 'checkedIn'
     };
     let items = this.advancedFulfillment.items;
     let allItemStatus = _.every(items, function (item) {
@@ -89,6 +90,17 @@ Template.itemDetails.helpers({
       return 'Verify SKU or Variant';
     }
     return item.workflow.status;
+  },
+  returningItems: function (item) {
+    let returning = this.advancedFulfillment.workflow.status === 'orderReturning';
+    let status = item.workflow.status === 'shipped';
+    let history = this.history;
+    let thisHistory = _.findWhere(history, {event: 'orderReturning'});
+    let validUser = Meteor.userId() === thisHistory.userId;
+    if (returning && status && validUser) {
+      return true;
+    }
+    return false;
   },
   SKU: function (item) {
     if (item.sku) {

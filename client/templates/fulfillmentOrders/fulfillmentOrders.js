@@ -33,6 +33,9 @@ Template.fulfillmentOrder.helpers({
   contactInfo: function () {
     return this.email || 'Checked Out As Guest';
   },
+  phoneNumber: function () {
+    return this.shipping[0].address.phone || '';
+  },
   uniqueItemsCount: function () {
     return this.items.length;
   },

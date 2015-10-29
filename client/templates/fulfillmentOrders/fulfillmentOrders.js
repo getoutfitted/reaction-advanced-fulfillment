@@ -54,6 +54,10 @@ Template.fulfillmentOrder.helpers({
     let itemsPacked = _.every(itemsArray, function (item) {
       return item.workflow.status === 'packed';
     });
+    let itemsShipped = _.every(itemsArray, function (item) {
+      return item.workflow.status === 'shipped';
+    });
+
     let result = false;
     switch (status) {
     case 'orderCreated':
@@ -65,12 +69,20 @@ Template.fulfillmentOrder.helpers({
     case 'orderPacking':
       result = itemsPacked;
       break;
+    case 'orderShipping':
+      result = itemsShipped;
     }
     return result;
   },
   nextStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
-    let options = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let options = [
+      'orderCreated',
+      'orderPicking',
+      'orderPacking',
+      'orderFulfilled',
+      'orderShipping',
+      'orderReturning'];
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
   }

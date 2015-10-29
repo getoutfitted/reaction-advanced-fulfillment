@@ -30,9 +30,18 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': {
-        $not: 'orderShipping'
-      }
+      $or: [{
+        'advancedFulfillment.workflow.status': 'orderCreated'
+      },
+      {
+        'advancedFulfillment.workflow.status': 'orderPicking'
+      },
+      {
+        'advancedFulfillment.workflow.status': 'orderPacking'
+      },
+      {
+        'advancedFulfillment.workflow.status': 'orderFulfilled'
+      }]
     })};
   }
 });
@@ -48,9 +57,18 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
     return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': {
-        $not: 'orderShipping'
+      $or: [{
+        'advancedFulfillment.workflow.status': 'orderCreated'
       },
+      {
+        'advancedFulfillment.workflow.status': 'orderPicking'
+      },
+      {
+        'advancedFulfillment.workflow.status': 'orderPacking'
+      },
+      {
+        'advancedFulfillment.workflow.status': 'orderFulfilled'
+      }],
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)
@@ -145,7 +163,13 @@ Router.route('dashboard/advanced-fulfillment/returns', {
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': 'orderShipping'
+      // 'advancedFulfillment.workflow.status': 'orderShipping'
+      $or: [{
+        'advancedFulfillment.workflow.status': 'orderShipping'
+      },
+      {
+        'advancedFulfillment.workflow.status': 'orderReturning'
+      }]
     })};
   }
 });
@@ -162,7 +186,12 @@ Router.route('dashboard/advanced-fulfillment/returns/:date', {
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
     return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': 'orderShipping',
+      $or: [{
+        'advancedFulfillment.workflow.status': 'orderShipping'
+      },
+      {
+        'advancedFulfillment.workflow.status': 'orderReturning'
+      }],
       'advancedFulfillment.returnDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)

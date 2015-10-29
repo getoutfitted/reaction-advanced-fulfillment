@@ -7,7 +7,9 @@ Meteor.methods({
       orderCreated: 'orderPicking',
       orderPicking: 'orderPacking',
       orderPacking: 'orderFulfilled',
-      orderFulfilled: 'orderShipping'
+      orderFulfilled: 'orderShipping',
+      orderShipping: 'orderReturning',
+      orderReturning: 'orderInspecting'
     };
     let date = new Date();
     let historyEvent = {
@@ -32,7 +34,8 @@ Meteor.methods({
     let workflow = {
       'In Stock': 'picked',
       picked: 'packed',
-      packed: 'shipped'
+      packed: 'shipped',
+      shipped: 'returned'
     };
     ReactionCore.Collections.Orders.update({
       _id: orderId,

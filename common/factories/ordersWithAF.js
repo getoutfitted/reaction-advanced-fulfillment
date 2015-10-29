@@ -76,7 +76,7 @@ function packedItemsList(number) {
   });
 }
 
-function completedItemsList(number) {
+function shippedItemsList(number) {
   return _.times(number, function () {
     return {
       _id: Random.id(),
@@ -87,9 +87,11 @@ function completedItemsList(number) {
       itemDescription: faker.commerce.productName(),
       price: _.random(100, 1500) / 100,
       workflow: {
-        status: 'completed',
+        status: 'shipped',
         workflow: ['In Stock', 'picked', 'packed']
-      }
+      },
+      sku: faker.name.firstName().substr(0, 2) + '-' + _.random(100, 1000),
+      location: faker.name.firstName().substr(0, 2) + '-L' + _.random(1, 9) + '-C' + _.random(1, 9)
     };
   });
 }
@@ -153,6 +155,20 @@ Factory.define('packingOrder', ReactionCore.Collections.Orders,
         workflow: ['orderCreated', 'orderPicking']
       },
       items: packedItemsList(num())
+    }
+  })
+);
+
+Factory.define('todaysReturns', ReactionCore.Collections.Orders,
+  Factory.extend('orderForAF', {
+    advancedFulfillment: {
+      shipmentDate: new Date(2015, 9, 28),
+      returnDate: new Date(),
+      workflow: {
+        status: 'orderShipping',
+        workflow: ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled']
+      },
+      items: shippedItemsList(num())
     }
   })
 );

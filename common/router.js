@@ -135,3 +135,17 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
     }
   }
 });
+
+Router.route('dashboard/advanced-fulfillment/returns', {
+  name: 'returns',
+  template: 'fulfillmentOrders',
+  controller: advancedFulfillmentController,
+  waitOn: function () {
+    return this.subscribe('Orders');
+  },
+  data: function () {
+    return {orders: ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.workflow.status': 'orderShipping'
+    })};
+  }
+});

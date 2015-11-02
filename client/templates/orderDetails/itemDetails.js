@@ -96,7 +96,10 @@ Template.itemDetails.helpers({
     let status = item.workflow.status === 'shipped';
     let history = this.history;
     let thisHistory = _.findWhere(history, {event: 'orderReturning'});
-    let validUser = Meteor.userId() === thisHistory.userId;
+    let validUser = false;
+    if  (thisHistory) {
+      validUser = Meteor.userId() === thisHistory.userId;
+    }
     if (returning && status && validUser) {
       return true;
     }

@@ -1,0 +1,66 @@
+<template name='missing'>
+  {{> afNavbar}}
+  <div class='container'>
+    <h1>Missing Items</h1>
+    <div class='row'>
+      <div class='col-sm-5'>
+        <div class='row'>
+          <div class='col-sm-5'>
+            <h3>Missing Item</h3>
+          </div>
+          <div class='col-sm-4'>
+            <h3>Variant Id</h3>
+          </div>
+          <div class='col-sm-1'>
+            <h3>Value</h3>
+          </div>
+        </div>
+      </div>
+      <div class='col-sm-4'>
+        <h3>Order Info</h3>
+      </div>
+      <div class='col-sm-3'>
+        <h3>Contact Info</h3>
+      </div>
+    </div>
+    <hr>
+    {{#each orders}}
+      {{> missingOrder}}
+    {{/each}}
+  </div>
+</template>
+
+<template name='missingOrder'>
+
+  <div class='row'>
+    <div class='col-sm-5'>
+      {{#each missingItems}}
+        {{> missingItem}}
+      {{/each}}
+    </div>
+    <div class='col-sm-4'>
+      <p>Order Id: <a href="{{pathFor 'orderDetails'}}">{{_id}}</a></p>
+      <p>OverDue: {{daysOverDue}} </p>
+    </div>
+    <div class='col-sm-3'>
+      <p>Billing Name: <strong>{{userName}}</strong></p>
+      <p>Email: {{email}}</p>
+      <p>Phone: {{userPhone}}</p>
+    </div>
+  </div>
+  <hr>
+</template>
+
+<template name='missingItem'>
+  <div class='row'>
+    <div class='col-sm-5'>
+      {{itemDescription}}
+    </div>
+    <div class='col-sm-4'>
+      <small>{{variantId}}</small>
+    </div>
+    <div class='col-sm-1 '>
+      ${{value productId variantId}}
+    </div>
+  </div>
+</template>

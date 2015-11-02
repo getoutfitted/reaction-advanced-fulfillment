@@ -208,3 +208,16 @@ Router.route('dashboard/advanced-fulfillment/returns/:date', {
     }
   }
 });
+
+Router.route('dashboard/advanced-fulfillment/missing', {
+  name: 'missing',
+  controller: advancedFulfillmentController,
+  template: 'missing',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  },
+  data: function () {
+    return {orders: ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.items.workflow.status': 'missing'})
+  };}
+});

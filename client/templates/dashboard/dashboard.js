@@ -7,6 +7,17 @@ Template.dashboardAdvancedFulfillmment.helpers({
     let dayStart = moment(rawDate).startOf('day')._d;
     let dayEnd = moment(rawDate).endOf('day')._d;
     let allOfTodaysOrders = ReactionCore.Collections.Orders.find({
+      $or: [{
+        'advancedFulfillment.workflow.status': 'orderCreated'
+      }, {
+        'advancedFulfillment.workflow.status': 'orderPicking'
+      }, {
+        'advancedFulfillment.workflow.status': 'orderPacking'
+      }, {
+        'advancedFulfillment.workflow.status': 'orderFulfilled'
+      }, {
+        'advancedFulfillment.workflow.status': 'orderShipping'
+      }],
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)
@@ -27,6 +38,17 @@ Template.dashboardAdvancedFulfillmment.onRendered(function () {
   let dayStart = moment(rawDate).startOf('day')._d;
   let dayEnd = moment(rawDate).endOf('day')._d;
   let allOfTodaysOrders = ReactionCore.Collections.Orders.find({
+    $or: [{
+      'advancedFulfillment.workflow.status': 'orderCreated'
+    }, {
+      'advancedFulfillment.workflow.status': 'orderPicking'
+    }, {
+      'advancedFulfillment.workflow.status': 'orderPacking'
+    }, {
+      'advancedFulfillment.workflow.status': 'orderFulfilled'
+    }, {
+      'advancedFulfillment.workflow.status': 'orderShipping'
+    }],
     'advancedFulfillment.shipmentDate': {
       $gte: new Date(dayStart),
       $lte: new Date(dayEnd)
@@ -41,13 +63,14 @@ Template.dashboardAdvancedFulfillmment.onRendered(function () {
     orderByStatus.orderCreated || 0,
     orderByStatus.orderPicking || 0,
     orderByStatus.orderPacking || 0,
-    orderByStatus.orderFulfilled || 0
+    orderByStatus.orderFulfilled || 0,
+    orderByStatus.orderShipping || 0
   ];
 
 
   // let color = d3.scale.category10();
   let color = d3.scale.ordinal()
-  .range(['#EE4043', '#FABA61', '#FDF6AF', '#429544']);
+  .range(['#000000', '#EE4043', '#FABA61', '#FDF6AF', '#429544']);
   let arc = d3.svg.arc()
       .outerRadius(radius);
 

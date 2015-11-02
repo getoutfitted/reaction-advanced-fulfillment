@@ -69,6 +69,12 @@ Template.orderDetails.helpers({
   zipcode: function () {
     return this.shipping[0].address.postal;
   },
+  contactInfo: function () {
+    return this.email || 'Checked Out As Guest';
+  },
+  phoneNumber: function () {
+    return this.shipping[0].address.phone || '';
+  },
   printLabel: function () {
     let status = this.advancedFulfillment.workflow.status;
     if (status === 'orderFulfilled') {

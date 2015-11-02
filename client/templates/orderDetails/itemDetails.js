@@ -133,5 +133,15 @@ Template.itemDetails.events({
     let itemId = event.target.dataset.itemId;
     let text = event.target.value;
     Session.set(itemId, text);
+  },
+  'click .missing-button': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let itemDescription = event.target.dataset.itemDescription;
+    let orderId = this._id;
+    let confirmed = confirm('Please confirm ' + itemDescription + ' is missing from Order # ' + orderId);
+    if (confirmed) {
+      Meteor.call('advancedFulfillment/itemMissing', orderId, itemId);
+    }
   }
 });

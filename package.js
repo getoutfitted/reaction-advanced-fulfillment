@@ -30,7 +30,8 @@ Package.onUse(function (api) {
   api.addFiles([
     'server/registry.js',
     'server/hooks/after_copyCartToOrder.js',
-    'server/methods/orderDetail.js'
+    'server/methods/orderDetail.js',
+    'server/methods/itemDetails.js'
   ], 'server');
 
   api.addFiles([

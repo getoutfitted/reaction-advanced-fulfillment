@@ -49,7 +49,9 @@ Package.onUse(function (api) {
     'client/templates/pdf/advancedFulfillment.html',
     'client/templates/pdf/advancedFulfillment.js',
     'client/templates/navbar/afNavbar.html',
-    'client/templates/navbar/afNavbar.js'
+    'client/templates/navbar/afNavbar.js',
+    'client/templates/missing/missing.html',
+    'client/templates/missing/missing.js'
   ], 'client');
 
   api.addFiles([

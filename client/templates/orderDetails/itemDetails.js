@@ -107,6 +107,20 @@ Template.itemDetails.helpers({
     }
     return false;
   },
+  inspectingItems: function (item) {
+    let returning = this.advancedFulfillment.workflow.status === 'orderInspecting';
+    let status = item.workflow.status === 'returned';
+    let history = this.history;
+    let thisHistory = _.findWhere(history, {event: 'orderInspecting'});
+    let validUser = false;
+    if  (thisHistory) {
+      validUser = Meteor.userId() === thisHistory.userId;
+    }
+    if (returning && status && validUser) {
+      return true;
+    }
+    return false;
+  },
   SKU: function (item) {
     if (item.sku) {
       return item.sku;
@@ -144,6 +158,16 @@ Template.itemDetails.events({
     let confirmed = confirm('Please confirm ' + itemDescription + ' is missing from Order # ' + orderId);
     if (confirmed) {
       Meteor.call('advancedFulfillment/itemMissing', orderId, itemId);
+    }
+  },
+  'click .damaged-button': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let itemDescription = event.target.dataset.itemDescription;
+    let orderId = this._id;
+    let confirmed = confirm('Please confirm ' + itemDescription + ' is damaged in Order # ' + orderId);
+    if (confirmed) {
+      Meteor.call('advancedFulfillment/itemDamaged', orderId, itemId);
     }
   }
 });

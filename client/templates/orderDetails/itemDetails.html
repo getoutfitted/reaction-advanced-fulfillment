@@ -35,6 +35,9 @@
           {{#if returningItems item}}
             <a class='btn btn-danger btn-sm missing-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Missing</a>
           {{/if}}
+          {{#if inspectingItems item}}
+            <a class='btn btn-danger btn-sm damaged-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Damaged</a>
+          {{/if}}
           </div>
           <div class='col-md-2 col-sm-2 '>
             {{#if allowedToUpdateItem item}}

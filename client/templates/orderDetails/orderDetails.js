@@ -95,6 +95,18 @@ Template.orderDetails.helpers({
       return true;
     }
     return false;
+  },
+  currentlyAssignedUser: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let history = _.findWhere(this.history, {event: currentStatus});
+    let assignedUser = history.userId;
+    return Meteor.users.findOne(assignedUser).username;
+  },
+  currentlyAssignedTime: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let history = _.findWhere(this.history, {event: currentStatus});
+    let assignedTime = history.updatedAt;
+    return assignedTime;
   }
 });
 

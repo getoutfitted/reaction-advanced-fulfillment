@@ -62,7 +62,7 @@ Template.fulfillmentOrder.helpers({
     });
 
     let itemsReturned = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'returned' || item.workflow.status === 'missing'
+      return item.workflow.status === 'returned' || item.workflow.status === 'missing';
     });
 
     let result = false;
@@ -99,6 +99,18 @@ Template.fulfillmentOrder.helpers({
       'orderInspecting'];
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
+  },
+  currentlyAssignedUser: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let history = _.findWhere(this.history, {event: currentStatus});
+    let assignedUser = history.userId;
+    return Meteor.users.findOne(assignedUser).username;
+  },
+  currentlyAssignedTime: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let history = _.findWhere(this.history, {event: currentStatus});
+    let assignedTime = history.updatedAt;
+    return assignedTime;
   }
 });
 

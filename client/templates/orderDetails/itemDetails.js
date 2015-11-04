@@ -27,7 +27,8 @@ Template.itemDetails.helpers({
       orderPicking: 'picked',
       orderPacking: 'packed',
       orderFulfilled: 'packed',
-      orderShipping: 'shipped'
+      orderShipping: 'shipped',
+      orderReturning: 'returned'
     };
     let result = true;
     if (thisItem.workflow.status === statusKey[status]) {

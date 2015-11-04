@@ -1,6 +1,23 @@
-Template.missingOrder.helpers({
-  missingItems: function () {
+Template.missingDamaged.helpers({
+  typeOf: function () {
+    let thisRoute = Router.current().route.getName();
+    if (thisRoute === 'damaged') {
+      return 'Damaged';
+    } else if (thisRoute === 'missing') {
+      return 'Missing';
+    }
+  }
+});
+
+Template.missingDamagedOrder.helpers({
+  missingDamagedItems: function () {
     let items = this.advancedFulfillment.items;
+    let thisRoute = Router.current().route.getName();
+    if (thisRoute === 'damaged') {
+      return  _.filter(items, function (item) {
+        return item.workflow.status === 'damaged';
+      });
+    }
     return  _.filter(items, function (item) {
       return item.workflow.status === 'missing';
     });
@@ -17,7 +34,7 @@ Template.missingOrder.helpers({
   }
 });
 
-Template.missingItem.helpers({
+Template.missingDamagedItem.helpers({
   value: function (productId, variantId) {
     return 12.99;
   //   let variants = Products.findOne(productId).variants;

@@ -7,7 +7,8 @@ Meteor.methods({
       'In Stock': 'picked',
       picked: 'packed',
       packed: 'shipped',
-      shipped: 'returned'
+      shipped: 'returned',
+      returned: 'inspected'
     };
     ReactionCore.Collections.Orders.update({
       _id: orderId,

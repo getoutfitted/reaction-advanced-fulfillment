@@ -63,7 +63,13 @@
       ${{value productId variantId}}
     </div>
   </div>
-  <div class='row'>
-  <a class='btn btn-info btn-sm returned-button' data-order-id='{{../_id}}' data-item-status='{{workflow.status}}' data-item-description='{{itemDescription}}' href="#">Item Returned</a>
-  </div>
+  {{#if missing}}
+    <div class='row'>
+      <a class='btn btn-info btn-xs returned-button' data-order-id='{{../_id}}' data-item-status='{{workflow.status}}' data-item-description='{{itemDescription}}' href="#">Item Returned</a>
+    </div>
+  {{else}}
+    <div class='row'>
+      <a class='btn btn-success btn-xs repaired-button' data-order-id='{{../_id}}' data-item-status='{{workflow.status}}' data-item-description='{{itemDescription}}' href="#">Item Repaired</a>
+    </div>
+  {{/if}}
 </template>

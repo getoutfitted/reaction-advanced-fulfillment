@@ -28,10 +28,14 @@ Template.itemDetails.helpers({
       orderPacking: 'packed',
       orderFulfilled: 'packed',
       orderShipping: 'shipped',
-      orderReturning: 'returned'
+      orderReturning: 'returned',
+      orderInspecting: 'inspected'
     };
     let result = true;
-    if (thisItem.workflow.status === statusKey[status] || thisItem.workflow.status === 'missing') {
+    if (
+      thisItem.workflow.status === statusKey[status] ||
+      thisItem.workflow.status === 'missing' ||
+      thisItem.workflow.status === 'damaged') {
       result = false;
     }
     if (thisItem.workflow.status === 'picked') {
@@ -138,6 +142,12 @@ Template.itemDetails.helpers({
       return true;
     }
     return false;
+  },
+  damaged: function (item) {
+    if (item.workflow.status === 'damaged') {
+      return true;
+    }
+    return false;
   }
 });
 
@@ -184,6 +194,16 @@ Template.itemDetails.events({
     let confirmed = confirm(itemDescription + ' was returned for order # ' + orderId + '?');
     if (confirmed) {
       Meteor.call('advancedFulfillment/itemReturned', orderId, itemId);
+    }
+  },
+  'click .repaired-button': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let itemDescription = event.target.dataset.itemDescription;
+    let orderId = this._id;
+    let confirmed = confirm(itemDescription + ' was repaired for order # ' + orderId + '?');
+    if (confirmed) {
+      Meteor.call('advancedFulfillment/itemRepaired', orderId, itemId);
     }
   }
 });

@@ -1,12 +1,12 @@
-<template name='missing'>
+<template name='missingDamaged'>
   {{> afNavbar}}
   <div class='container'>
-    <h1>Missing Items</h1>
+    <h1>{{typeOf}} Items</h1>
     <div class='row'>
       <div class='col-sm-5'>
         <div class='row'>
           <div class='col-sm-5'>
-            <h3>Missing Item</h3>
+            <h3>{{typeOf}} Item</h3>
           </div>
           <div class='col-sm-4'>
             <h3>Variant Id</h3>
@@ -25,17 +25,17 @@
     </div>
     <hr>
     {{#each orders}}
-      {{> missingOrder}}
+      {{> missingDamagedOrder}}
     {{/each}}
   </div>
 </template>
 
-<template name='missingOrder'>
+<template name='missingDamagedOrder'>
 
   <div class='row'>
     <div class='col-sm-5'>
-      {{#each missingItems}}
-        {{> missingItem}}
+      {{#each missingDamagedItems}}
+        {{>  missingDamagedItem}}
       {{/each}}
     </div>
     <div class='col-sm-4'>
@@ -51,7 +51,7 @@
   <hr>
 </template>
 
-<template name='missingItem'>
+<template name='missingDamagedItem'>
   <div class='row'>
     <div class='col-sm-5'>
       {{itemDescription}}
@@ -63,4 +63,13 @@
       ${{value productId variantId}}
     </div>
   </div>
+  {{#if missing}}
+    <div class='row'>
+      <a class='btn btn-info btn-xs returned-button' data-order-id='{{../_id}}' data-item-status='{{workflow.status}}' data-item-description='{{itemDescription}}' href="#">Item Returned</a>
+    </div>
+  {{else}}
+    <div class='row'>
+      <a class='btn btn-success btn-xs repaired-button' data-order-id='{{../_id}}' data-item-status='{{workflow.status}}' data-item-description='{{itemDescription}}' href="#">Item Repaired</a>
+    </div>
+  {{/if}}
 </template>

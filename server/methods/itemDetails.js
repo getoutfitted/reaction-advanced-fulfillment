@@ -7,7 +7,8 @@ Meteor.methods({
       'In Stock': 'picked',
       picked: 'packed',
       packed: 'shipped',
-      shipped: 'returned'
+      shipped: 'returned',
+      returned: 'inspected'
     };
     ReactionCore.Collections.Orders.update({
       _id: orderId,
@@ -47,6 +48,36 @@ Meteor.methods({
       'advancedFulfillment.items._id': itemId
     }, {
       $set: {'advancedFulfillment.items.$.workflow.status': 'missing'}
+    });
+  },
+  'advancedFulfillment/itemDamaged': function (orderId, itemId) {
+    check(orderId, String);
+    check(itemId, String);
+    ReactionCore.Collections.Orders.update({
+      _id: orderId,
+      'advancedFulfillment.items._id': itemId
+    }, {
+      $set: {'advancedFulfillment.items.$.workflow.status': 'damaged'}
+    });
+  },
+  'advancedFulfillment/itemReturned': function (orderId, itemId) {
+    check(orderId, String);
+    check(itemId, String);
+    ReactionCore.Collections.Orders.update({
+      _id: orderId,
+      'advancedFulfillment.items._id': itemId
+    }, {
+      $set: {'advancedFulfillment.items.$.workflow.status': 'returned'}
+    });
+  },
+  'advancedFulfillment/itemRepaired': function (orderId, itemId) {
+    check(orderId, String);
+    check(itemId, String);
+    ReactionCore.Collections.Orders.update({
+      _id: orderId,
+      'advancedFulfillment.items._id': itemId
+    }, {
+      $set: {'advancedFulfillment.items.$.workflow.status': 'inspected'}
     });
   }
 });

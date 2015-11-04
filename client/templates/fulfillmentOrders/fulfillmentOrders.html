@@ -42,11 +42,15 @@
         </div>
       </div>
       {{#if readyForAssignment}}
-      <div class="row">
-        <div class='col-sm-12'>
-          <a class='btn btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to advance order to: {{nextStatus}}</a>
+        <div class="row">
+          <div class='col-sm-12'>
+            <a class='btn btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to advance order to: {{nextStatus}}</a>
+          </div>
         </div>
-      </div>
+      {{else}}
+        <div class='row text-center'>
+          <p class='bg-success'> {{status}} assigned to: <strong>{{currentlyAssignedUser}}</strong> at {{currentlyAssignedTime}}</p>
+        </div>
       {{/if}}
       <hr>
     </div>

@@ -27,10 +27,15 @@ Template.itemDetails.helpers({
       orderPicking: 'picked',
       orderPacking: 'packed',
       orderFulfilled: 'packed',
-      orderShipping: 'shipped'
+      orderShipping: 'shipped',
+      orderReturning: 'returned',
+      orderInspecting: 'inspected'
     };
     let result = true;
-    if (thisItem.workflow.status === statusKey[status]) {
+    if (
+      thisItem.workflow.status === statusKey[status] ||
+      thisItem.workflow.status === 'missing' ||
+      thisItem.workflow.status === 'damaged') {
       result = false;
     }
     if (thisItem.workflow.status === 'picked') {
@@ -44,7 +49,8 @@ Template.itemDetails.helpers({
       'In Stock': 'Pick Item',
       'picked': 'Pack Item',
       'packed': 'Item Fulfilled',
-      'shipped': 'Item Returned'
+      'shipped': 'Item Returned',
+      'returned': 'Item Inspected'
     };
     return status[currentStatus];
   },
@@ -105,6 +111,20 @@ Template.itemDetails.helpers({
     }
     return false;
   },
+  inspectingItems: function (item) {
+    let returning = this.advancedFulfillment.workflow.status === 'orderInspecting';
+    let status = item.workflow.status === 'returned';
+    let history = this.history;
+    let thisHistory = _.findWhere(history, {event: 'orderInspecting'});
+    let validUser = false;
+    if  (thisHistory) {
+      validUser = Meteor.userId() === thisHistory.userId;
+    }
+    if (returning && status && validUser) {
+      return true;
+    }
+    return false;
+  },
   SKU: function (item) {
     if (item.sku) {
       return item.sku;
@@ -116,6 +136,18 @@ Template.itemDetails.helpers({
       return item.location;
     }
     return 'No Location';
+  },
+  missing: function (item) {
+    if (item.workflow.status === 'missing') {
+      return true;
+    }
+    return false;
+  },
+  damaged: function (item) {
+    if (item.workflow.status === 'damaged') {
+      return true;
+    }
+    return false;
   }
 });
 
@@ -142,6 +174,36 @@ Template.itemDetails.events({
     let confirmed = confirm('Please confirm ' + itemDescription + ' is missing from Order # ' + orderId);
     if (confirmed) {
       Meteor.call('advancedFulfillment/itemMissing', orderId, itemId);
+    }
+  },
+  'click .damaged-button': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let itemDescription = event.target.dataset.itemDescription;
+    let orderId = this._id;
+    let confirmed = confirm('Please confirm ' + itemDescription + ' is damaged in Order # ' + orderId);
+    if (confirmed) {
+      Meteor.call('advancedFulfillment/itemDamaged', orderId, itemId);
+    }
+  },
+  'click .returned-button': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let itemDescription = event.target.dataset.itemDescription;
+    let orderId = this._id;
+    let confirmed = confirm(itemDescription + ' was returned for order # ' + orderId + '?');
+    if (confirmed) {
+      Meteor.call('advancedFulfillment/itemReturned', orderId, itemId);
+    }
+  },
+  'click .repaired-button': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let itemDescription = event.target.dataset.itemDescription;
+    let orderId = this._id;
+    let confirmed = confirm(itemDescription + ' was repaired for order # ' + orderId + '?');
+    if (confirmed) {
+      Meteor.call('advancedFulfillment/itemRepaired', orderId, itemId);
     }
   }
 });

@@ -61,6 +61,10 @@ Template.fulfillmentOrder.helpers({
       return item.workflow.status === 'shipped';
     });
 
+    let itemsReturned = _.every(itemsArray, function (item) {
+      return item.workflow.status === 'returned' || item.workflow.status === 'missing'
+    });
+
     let result = false;
     switch (status) {
     case 'orderCreated':
@@ -74,6 +78,12 @@ Template.fulfillmentOrder.helpers({
       break;
     case 'orderShipping':
       result = itemsShipped;
+      break;
+    case 'orderReturning':
+      result = itemsReturned;
+      break;
+    default:
+      result = false;
     }
     return result;
   },
@@ -85,7 +95,8 @@ Template.fulfillmentOrder.helpers({
       'orderPacking',
       'orderFulfilled',
       'orderShipping',
-      'orderReturning'];
+      'orderReturning',
+      'orderInspecting'];
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
   }

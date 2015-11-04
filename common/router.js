@@ -166,9 +166,10 @@ Router.route('dashboard/advanced-fulfillment/returns', {
       // 'advancedFulfillment.workflow.status': 'orderShipping'
       $or: [{
         'advancedFulfillment.workflow.status': 'orderShipping'
-      },
-      {
+      }, {
         'advancedFulfillment.workflow.status': 'orderReturning'
+      }, {
+        'advancedFulfillment.workflow.status': 'orderInspecting'
       }]
     })};
   }
@@ -188,9 +189,10 @@ Router.route('dashboard/advanced-fulfillment/returns/:date', {
     return {orders: ReactionCore.Collections.Orders.find({
       $or: [{
         'advancedFulfillment.workflow.status': 'orderShipping'
-      },
-      {
+      }, {
         'advancedFulfillment.workflow.status': 'orderReturning'
+      }, {
+        'advancedFulfillment.workflow.status': 'orderInspecting'
       }],
       'advancedFulfillment.returnDate': {
         $gte: new Date(dayStart),

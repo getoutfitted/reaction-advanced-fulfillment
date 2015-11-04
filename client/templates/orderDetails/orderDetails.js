@@ -12,7 +12,15 @@ Template.orderDetails.helpers({
   },
   nextStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
-    let options = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled', 'orderShipping', 'orderReturning'];
+    let options = [
+      'orderCreated',
+      'orderPicking',
+      'orderPacking',
+      'orderFulfilled',
+      'orderShipping',
+      'orderReturning',
+      'orderInspecting'
+    ];
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
   },
@@ -28,6 +36,9 @@ Template.orderDetails.helpers({
     let itemsShipped = _.every(itemsArray, function (item) {
       return item.workflow.status === 'shipped';
     });
+    let itemsReturned = _.every(itemsArray, function (item) {
+      return item.workflow.status === 'returned' || item.workflow.status === 'missing'
+    });
     let result = false;
     switch (status) {
     case 'orderCreated':
@@ -41,6 +52,9 @@ Template.orderDetails.helpers({
       break;
     case 'orderShipping':
       result = itemsShipped;
+      break;
+    case 'orderReturning':
+      result = itemsReturned;
       break;
     default:
       result = false;

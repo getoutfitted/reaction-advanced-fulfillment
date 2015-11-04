@@ -44,7 +44,9 @@ Template.itemDetails.helpers({
       'In Stock': 'Pick Item',
       'picked': 'Pack Item',
       'packed': 'Item Fulfilled',
-      'shipped': 'Item Returned'
+      'shipped': 'Item Returned',
+      'returned': 'Item Inspected',
+      'missing': 'Item Returned'
     };
     return status[currentStatus];
   },

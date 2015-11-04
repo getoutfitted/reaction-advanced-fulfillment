@@ -31,6 +31,10 @@ Template.missingDamagedOrder.helpers({
   },
   userPhone: function () {
     return this.billing[0].address.phone;
+  },
+  blah: function () {
+    let orderId = this._id;
+    return 'hi';
   }
 });
 
@@ -41,5 +45,18 @@ Template.missingDamagedItem.helpers({
   //   let thisVariant = _.findWhere(variants, {_id: variantId});
   //   let parent = thisVariant.parentId;
   //   let msrp = _.findWhere(variants, {_id: parent});
+  }
+});
+
+Template.missingDamagedItem.events({
+  'click .returned-button': function (event) {
+    event.preventDefault();
+    let orderId = event.target.dataset.orderId;
+    let itemDescription = event.target.dataset.itemDescription;
+    let itemId = this._id;
+    let confirmed = confirm(itemDescription + ' was returned for order # ' + orderId + '?');
+    if (confirmed) {
+      Meteor.call('advancedFulfillment/itemReturned', orderId, itemId);
+    }
   }
 })

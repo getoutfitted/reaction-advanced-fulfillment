@@ -59,5 +59,15 @@ Meteor.methods({
     }, {
       $set: {'advancedFulfillment.items.$.workflow.status': 'damaged'}
     });
+  },
+  'advancedFulfillment/itemReturned': function (orderId, itemId) {
+    check(orderId, String);
+    check(itemId, String);
+    ReactionCore.Collections.Orders.update({
+      _id: orderId,
+      'advancedFulfillment.items._id': itemId
+    }, {
+      $set: {'advancedFulfillment.items.$.workflow.status': 'returned'}
+    });
   }
 });

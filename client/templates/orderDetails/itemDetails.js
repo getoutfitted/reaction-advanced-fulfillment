@@ -31,7 +31,7 @@ Template.itemDetails.helpers({
       orderReturning: 'returned'
     };
     let result = true;
-    if (thisItem.workflow.status === statusKey[status]) {
+    if (thisItem.workflow.status === statusKey[status] || thisItem.workflow.status === 'missing') {
       result = false;
     }
     if (thisItem.workflow.status === 'picked') {
@@ -46,8 +46,7 @@ Template.itemDetails.helpers({
       'picked': 'Pack Item',
       'packed': 'Item Fulfilled',
       'shipped': 'Item Returned',
-      'returned': 'Item Inspected',
-      'missing': 'Item Returned'
+      'returned': 'Item Inspected'
     };
     return status[currentStatus];
   },
@@ -133,6 +132,12 @@ Template.itemDetails.helpers({
       return item.location;
     }
     return 'No Location';
+  },
+  missing: function (item) {
+    if (item.workflow.status === 'missing') {
+      return true;
+    }
+    return false;
   }
 });
 
@@ -169,6 +174,16 @@ Template.itemDetails.events({
     let confirmed = confirm('Please confirm ' + itemDescription + ' is damaged in Order # ' + orderId);
     if (confirmed) {
       Meteor.call('advancedFulfillment/itemDamaged', orderId, itemId);
+    }
+  },
+  'click .returned-button': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let itemDescription = event.target.dataset.itemDescription;
+    let orderId = this._id;
+    let confirmed = confirm(itemDescription + ' was returned for order # ' + orderId + '?');
+    if (confirmed) {
+      Meteor.call('advancedFulfillment/itemReturned', orderId, itemId);
     }
   }
 });

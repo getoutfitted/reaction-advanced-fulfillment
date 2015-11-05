@@ -118,7 +118,8 @@ Template.orderDetails.helpers({
       return item.workflow.status === 'inspected' || item.workflow.status === 'completed';
     });
     let allItemsFinalStatus = _.every(items, function (item) {
-      return item.workflow.status === 'inspected' || item.workflow.status === 'missing' || item.workflow.status === 'damaged'
+      let itemStatus = item.workflow.status
+      return itemStatus === 'inspected' || itemStatus === 'missing' || itemStatus === 'damaged' || itemStatus === 'completed';
     });
     if (validStatus && allItemsInspected) {
       Meteor.call('advancedFulfillment/finalOrderStatus', 'orderCompleted', orderId, userId);

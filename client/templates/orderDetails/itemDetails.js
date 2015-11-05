@@ -15,7 +15,18 @@ function allItemsInspected(orderItems, itemId) {
     if (itemId === item._id) {
       return true;
     }
-    return item.workflow.status === 'inspected';
+    return item.workflow.status === 'completed';
+  });
+  return result;
+}
+
+function allItems(orderItems, itemId) {
+  let validStatus = ['missing', 'completed', 'damaged'];
+  let result = _.every(orderItems, function (item) {
+    if (itemId === item._id) {
+      return true;
+    }
+    return _.contains(validStatus, item.workflow.status);
   });
   return result;
 }
@@ -39,8 +50,9 @@ Template.itemDetails.helpers({
       orderFulfilled: 'packed',
       orderShipping: 'shipped',
       orderReturning: 'returned',
-      orderInspecting: 'inspected',
-      orderCompleted: 'completed'
+      orderInspecting: 'completed',
+      orderCompleted: 'completed',
+      orderIncomplete: 'completed'
     };
     let result = true;
     if (
@@ -189,9 +201,10 @@ Template.itemDetails.events({
     let itemId = event.target.dataset.itemId;
     let itemDescription = event.target.dataset.itemDescription;
     let orderId = this._id;
+    let userId = Meteor.userId()
     let confirmed = confirm('Please confirm ' + itemDescription + ' is missing from Order # ' + orderId);
     if (confirmed) {
-      Meteor.call('advancedFulfillment/itemMissing', orderId, itemId);
+      Meteor.call('advancedFulfillment/itemMissing', orderId, itemId, userId);
     }
   },
   'click .damaged-button': function (event) {
@@ -199,9 +212,10 @@ Template.itemDetails.events({
     let itemId = event.target.dataset.itemId;
     let itemDescription = event.target.dataset.itemDescription;
     let orderId = this._id;
+    let userId = Meteor.userId();
     let confirmed = confirm('Please confirm ' + itemDescription + ' is damaged in Order # ' + orderId);
     if (confirmed) {
-      Meteor.call('advancedFulfillment/itemDamaged', orderId, itemId);
+      Meteor.call('advancedFulfillment/itemDamaged', orderId, itemId, userId);
     }
   },
   'click .returned-button': function (event) {
@@ -232,6 +246,8 @@ Template.itemDetails.events({
     let userId = Meteor.userId();
     if (allInspected) {
       Meteor.call('advancedFulfillment/orderCompleted', this, userId);
+    } else if (allItems(orderItems, itemId)) {
+      Meteor.call('advancedFulfillment/orderIncomplete', this, userId);
     }
   }
 });

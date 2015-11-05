@@ -29,15 +29,19 @@ Template.itemDetails.helpers({
       orderFulfilled: 'packed',
       orderShipping: 'shipped',
       orderReturning: 'returned',
-      orderInspecting: 'inspected'
+      orderInspecting: 'inspected',
+      orderCompleted: 'inspected',
+      orderIncomplete: 'inspected'
     };
     let result = true;
     if (
       thisItem.workflow.status === statusKey[status] ||
+      thisItem.workflow.status === 'completed' ||
       thisItem.workflow.status === 'missing' ||
       thisItem.workflow.status === 'damaged') {
       result = false;
     }
+
     if (thisItem.workflow.status === 'picked') {
       result = verified(item);
     }
@@ -154,7 +158,6 @@ Template.itemDetails.helpers({
 Template.itemDetails.events({
   'click .item-picked': function (event) {
     event.preventDefault();
-
     let itemId = event.target.dataset.itemId;
     let orderId = this._id;
     let itemStatus = event.target.dataset.itemStatus;

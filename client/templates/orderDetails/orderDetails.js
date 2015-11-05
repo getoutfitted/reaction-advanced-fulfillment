@@ -107,6 +107,24 @@ Template.orderDetails.helpers({
     let history = _.findWhere(this.history, {event: currentStatus});
     let assignedTime = history.updatedAt;
     return assignedTime;
+  },
+  finalStatus: function () {
+    let status = this.advancedFulfillment.workflow.status;
+    let orderId = this._id;
+    let validStatus = status === 'orderInspecting' || status === 'orderIncomplete';
+    let userId = Meteor.userId();
+    let items = this.advancedFulfillment.items;
+    let allItemsInspected = _.every(items, function (item) {
+      return item.workflow.status === 'inspected' || item.workflow.status === 'completed';
+    });
+    let allItemsFinalStatus = _.every(items, function (item) {
+      return item.workflow.status === 'inspected' || item.workflow.status === 'missing' || item.workflow.status === 'damaged'
+    });
+    if (validStatus && allItemsInspected) {
+      Meteor.call('advancedFulfillment/finalOrderStatus', 'orderCompleted', orderId, userId);
+    } else if (validStatus && allItemsFinalStatus) {
+      Meteor.call('advancedFulfillment/finalOrderStatus', 'orderIncomplete', orderId, userId);
+    }
   }
 });
 

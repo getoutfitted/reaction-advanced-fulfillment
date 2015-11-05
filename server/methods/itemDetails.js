@@ -8,7 +8,8 @@ Meteor.methods({
       picked: 'packed',
       packed: 'shipped',
       shipped: 'returned',
-      returned: 'inspected'
+      returned: 'inspected',
+      inspected: 'completed'
     };
     ReactionCore.Collections.Orders.update({
       _id: orderId,
@@ -79,5 +80,36 @@ Meteor.methods({
     }, {
       $set: {'advancedFulfillment.items.$.workflow.status': 'inspected'}
     });
+  },
+  'advancedFulfillment/itemsAllCompleted': function (orderId) {
+    check(orderId, String);
+    let order = ReactionCore.Collections.Orders.findOne(orderId);
+    let items = order.advancedFulfillment.items;
+    _.each(items, function (item) {
+      item.workflow.status = 'completed';
+      item.workflow.workflow.push('inspected');
+    });
+    ReactionCore.Collections.Orders.update({
+      _id: order._id
+    }, {
+      $set: { 'advancedFulfillment.items': items}
+    });
+  },
+  'advancedFulfillment/itemsInspectedCompleted': function (orderId) {
+    check(orderId, String);
+    let order = ReactionCore.Collections.Orders.findOne(orderId);
+    let items = order.advancedFulfillment.items;
+    _.each(items, function (item) {
+      if (item.workflow.status === 'inspected') {
+        item.workflow.status = 'completed';
+        item.workflow.workflow.push('inspected');
+      }
+    });
+    ReactionCore.Collections.Orders.update({
+      _id: order._id
+    }, {
+      $set: { 'advancedFulfillment.items': items}
+    });
+
   }
 });

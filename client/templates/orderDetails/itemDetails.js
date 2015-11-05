@@ -116,7 +116,7 @@ Template.itemDetails.helpers({
     return false;
   },
   inspectingItems: function (item) {
-    let returning = this.advancedFulfillment.workflow.status === 'orderInspecting';
+    let returning = this.advancedFulfillment.workflow.status === 'orderInspecting' || this.advancedFulfillment.workflow.status === 'orderIncomplete';
     let status = item.workflow.status === 'returned';
     let history = this.history;
     let thisHistory = _.findWhere(history, {event: 'orderInspecting'});

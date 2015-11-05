@@ -10,6 +10,16 @@ function verified(item) {
   return false;
 }
 
+function allItemsInspected(orderItems, itemId) {
+  let result = _.every(orderItems, function (item) {
+    if (itemId === item._id) {
+      return true;
+    }
+    return item.workflow.status === 'inspected';
+  });
+  return result;
+}
+
 Template.itemDetails.helpers({
   items: function () {
     return this.advancedFulfillment.items;
@@ -29,7 +39,8 @@ Template.itemDetails.helpers({
       orderFulfilled: 'packed',
       orderShipping: 'shipped',
       orderReturning: 'returned',
-      orderInspecting: 'inspected'
+      orderInspecting: 'inspected',
+      orderCompleted: 'completed'
     };
     let result = true;
     if (
@@ -148,6 +159,13 @@ Template.itemDetails.helpers({
       return true;
     }
     return false;
+  },
+  finalClass: function (status) {
+    let itemStatus = status === 'returned';
+    let orderStatus = this.advancedFulfillment.workflow.status === 'orderInspecting';
+    if (itemStatus && orderStatus) {
+      return 'validateItems';
+    }
   }
 });
 
@@ -204,6 +222,16 @@ Template.itemDetails.events({
     let confirmed = confirm(itemDescription + ' was repaired for order # ' + orderId + '?');
     if (confirmed) {
       Meteor.call('advancedFulfillment/itemRepaired', orderId, itemId);
+    }
+  },
+  'click .validateItems': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let orderItems = this.advancedFulfillment.items;
+    let allInspected = allItemsInspected(orderItems, itemId);
+    let userId = Meteor.userId();
+    if (allInspected) {
+      Meteor.call('advancedFulfillment/orderCompleted', this, userId);
     }
   }
 });

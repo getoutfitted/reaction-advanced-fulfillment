@@ -10,6 +10,27 @@ function verified(item) {
   return false;
 }
 
+function allItemsInspected(orderItems, itemId) {
+  let result = _.every(orderItems, function (item) {
+    if (itemId === item._id) {
+      return true;
+    }
+    return item.workflow.status === 'completed';
+  });
+  return result;
+}
+
+function allItems(orderItems, itemId) {
+  let validStatus = ['missing', 'completed', 'damaged'];
+  let result = _.every(orderItems, function (item) {
+    if (itemId === item._id) {
+      return true;
+    }
+    return _.contains(validStatus, item.workflow.status);
+  });
+  return result;
+}
+
 Template.itemDetails.helpers({
   items: function () {
     return this.advancedFulfillment.items;
@@ -29,7 +50,9 @@ Template.itemDetails.helpers({
       orderFulfilled: 'packed',
       orderShipping: 'shipped',
       orderReturning: 'returned',
-      orderInspecting: 'inspected'
+      orderInspecting: 'completed',
+      orderCompleted: 'completed',
+      orderIncomplete: 'completed'
     };
     let result = true;
     if (
@@ -148,6 +171,20 @@ Template.itemDetails.helpers({
       return true;
     }
     return false;
+  },
+  finalClass: function (status) {
+    let itemStatus = status === 'returned';
+    let orderStatus = this.advancedFulfillment.workflow.status === 'orderInspecting';
+    if (itemStatus && orderStatus) {
+      return 'validateItems';
+    }
+  },
+  incompleteValidate: function (status) {
+    let itemStatus  = status === 'returned';
+    let orderStatus = this.advancedFulfillment.workflow.status === 'orderIncomplete';
+    if (itemStatus && orderStatus) {
+      return 'itemStatusCheck';
+    }
   }
 });
 
@@ -171,9 +208,10 @@ Template.itemDetails.events({
     let itemId = event.target.dataset.itemId;
     let itemDescription = event.target.dataset.itemDescription;
     let orderId = this._id;
+    let userId = Meteor.userId()
     let confirmed = confirm('Please confirm ' + itemDescription + ' is missing from Order # ' + orderId);
     if (confirmed) {
-      Meteor.call('advancedFulfillment/itemMissing', orderId, itemId);
+      Meteor.call('advancedFulfillment/itemMissing', orderId, itemId, userId);
     }
   },
   'click .damaged-button': function (event) {
@@ -181,9 +219,10 @@ Template.itemDetails.events({
     let itemId = event.target.dataset.itemId;
     let itemDescription = event.target.dataset.itemDescription;
     let orderId = this._id;
+    let userId = Meteor.userId();
     let confirmed = confirm('Please confirm ' + itemDescription + ' is damaged in Order # ' + orderId);
     if (confirmed) {
-      Meteor.call('advancedFulfillment/itemDamaged', orderId, itemId);
+      Meteor.call('advancedFulfillment/itemDamaged', orderId, itemId, userId);
     }
   },
   'click .returned-button': function (event) {
@@ -204,6 +243,27 @@ Template.itemDetails.events({
     let confirmed = confirm(itemDescription + ' was repaired for order # ' + orderId + '?');
     if (confirmed) {
       Meteor.call('advancedFulfillment/itemRepaired', orderId, itemId);
+    }
+  },
+  'click .validateItems': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.itemId;
+    let orderItems = this.advancedFulfillment.items;
+    let allInspected = allItemsInspected(orderItems, itemId);
+    let userId = Meteor.userId();
+    if (allInspected) {
+      Meteor.call('advancedFulfillment/orderCompleted', this, userId);
+    } else if (allItems(orderItems, itemId)) {
+      Meteor.call('advancedFulfillment/orderIncomplete', this, userId);
+    }
+  },
+  'click .itemStatusCheck': function (event) {
+    let itemId = event.target.dataset.itemId;
+    let orderItems = this.advancedFulfillment.items;
+    let allInspected = allItemsInspected(orderItems, itemId);
+    let userId = Meteor.userId();
+    if (allInspected) {
+      Meteor.call('advancedFulfillment/orderCompleted', this, userId);
     }
   }
 });

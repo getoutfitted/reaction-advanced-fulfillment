@@ -37,7 +37,7 @@ Template.orderDetails.helpers({
       return item.workflow.status === 'shipped';
     });
     let itemsReturned = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'returned' || item.workflow.status === 'missing'
+      return item.workflow.status === 'returned' || item.workflow.status === 'missing';
     });
     let result = false;
     switch (status) {

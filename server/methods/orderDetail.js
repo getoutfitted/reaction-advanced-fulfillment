@@ -26,5 +26,43 @@ Meteor.methods({
         'advancedFulfillment.workflow.status': workflow[status]
       }
     });
+  },
+  'advancedFulfillment/orderCompleted': function (order, userId) {
+    check(order, Object);
+    check(userId, String);
+    let date = new Date();
+    let historyEvent = {
+      event: 'orderCompleted',
+      userId: userId,
+      updatedAt: date
+    };
+    ReactionCore.Collections.Orders.update({_id: order._id}, {
+      $addToSet: {
+        'history': historyEvent,
+        'advancedFulfillment.workflow.workflow': 'orderInspected'
+      },
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderCompleted'
+      }
+    });
+  },
+  'advancedFulfillment/orderIncomplete': function (order, userId) {
+    check(order, Object);
+    check(userId, String);
+    let date = new Date();
+    let historyEvent = {
+      event: 'orderIncomplete',
+      userId: userId,
+      updatedAt: date
+    };
+    ReactionCore.Collections.Orders.update({_id: order._id}, {
+      $addToSet: {
+        'history': historyEvent,
+        'advancedFulfillment.workflow.workflow': 'orderInspected'
+      },
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderIncomplete'
+      }
+    });
   }
 });

@@ -42,13 +42,13 @@
             <a class='btn btn-info btn-sm returned-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Item Returned</a>
           {{/if}}
           {{#if damaged item}}
-            <a class='btn btn-success btn-sm repaired-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Item Repaired</a>
+            <a class='btn btn-success btn-sm repaired-button itemStatusCheck' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Item Repaired</a>
           {{/if}}
           </div>
           <div class='col-md-2 col-sm-2 '>
             {{#if allowedToUpdateItem item}}
               {{#if itemUpdateable item }}
-                <a class='btn  btn-sm btn-success  item-picked {{finalClass item.workflow.status}}'  data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
+                <a class='btn  btn-sm btn-success  item-picked {{incompleteValidate item.workflow.status}} {{finalClass item.workflow.status}}'  data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
               {{else}}
                 <p>{{uidVerified item}}</p>
               {{/if}}

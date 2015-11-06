@@ -178,6 +178,13 @@ Template.itemDetails.helpers({
     if (itemStatus && orderStatus) {
       return 'validateItems';
     }
+  },
+  incompleteValidate: function (status) {
+    let itemStatus  = status === 'returned';
+    let orderStatus = this.advancedFulfillment.workflow.status === 'orderIncomplete';
+    if (itemStatus && orderStatus) {
+      return 'itemStatusCheck';
+    }
   }
 });
 
@@ -248,6 +255,15 @@ Template.itemDetails.events({
       Meteor.call('advancedFulfillment/orderCompleted', this, userId);
     } else if (allItems(orderItems, itemId)) {
       Meteor.call('advancedFulfillment/orderIncomplete', this, userId);
+    }
+  },
+  'click .itemStatusCheck': function (event) {
+    let itemId = event.target.dataset.itemId;
+    let orderItems = this.advancedFulfillment.items;
+    let allInspected = allItemsInspected(orderItems, itemId);
+    let userId = Meteor.userId();
+    if (allInspected) {
+      Meteor.call('advancedFulfillment/orderCompleted', this, userId);
     }
   }
 });

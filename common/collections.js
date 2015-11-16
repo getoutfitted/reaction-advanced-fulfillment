@@ -1,3 +1,21 @@
+
+ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
+  ReactionCore.Schemas.PackageConfig, {
+    'settings.buffer.shipping': {
+      type: Number,
+      defaultValue: 3,
+      label: 'Number of days to customer receiving date that orders need to fulfilled.',
+      optional: true
+    },
+    'settings.buffer.returning': {
+      type: Number,
+      defaultValue: 4,
+      label: 'Number of days past the customer use date, until orders should be returned.',
+      optional: true
+    }
+  }
+]);
+
 ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   _id: {
     type: String,

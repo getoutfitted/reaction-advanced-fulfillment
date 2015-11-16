@@ -55,8 +55,6 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
         $each: items
       }
     }
-
-    // }
   });
   return orderId;
 });

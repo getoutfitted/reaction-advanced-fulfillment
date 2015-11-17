@@ -26,6 +26,7 @@ Package.onUse(function (api) {
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
   api.use('reactioncommerce:reaction-factories');
+  api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
 
   api.addFiles([
     'server/registry.js',

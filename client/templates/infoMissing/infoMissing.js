@@ -26,4 +26,19 @@ Template.infoMissing.helpers({
   shippingPhone: function (order) {
     return order.shipping[0].address.phone;
   },
+  shippingAddress: function (order) {
+    let address = order.shipping[0].address;
+    return '<p>' + address.fullName + '</p><p>' + address.address1 + ' ' + address.address2 + '</p><p>' + address.city + ', ' + address.region + ', ' + address.postal + '</p>';
+  }
+});
+
+Template.infoMissing.onRendered(function () {
+  $('#picker .input-daterange').datepicker({
+    startDate: 'today',
+    todayBtn: 'linked',
+    clearBtn: true,
+    calendarWeeks: true,
+    autoclose: true,
+    todayHighlight: true
+  });
 });

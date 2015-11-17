@@ -27,6 +27,23 @@
           <p>{{shippingPhone order}}</p>
           <p>{{email order}}</p>
         </div>
+        <div class='col-sm-2'>
+          <strong>Shipping Location</strong>
+          {{{shippingAddress order}}}
+        </div>
+        <div class='col-sm-3'>
+        <div class='text-center'>
+          <strong>Select Trips Start Date and End Date</strong>
+          <br>
+        </div>
+          <div id='picker'>
+            <div class='input-daterange input-group' id='datepicker'>
+              <input type='text' class='input-sm form-control' name='start' />
+              <span class='input-group-addon'>to</span>
+              <input type='text' class='input-sm form-control' name='end' />
+            </div>
+          </div>
+        </div>
       </div>
       <hr>
     {{/each}}

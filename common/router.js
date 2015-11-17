@@ -175,7 +175,7 @@ Router.route('dashboard/advanced-fulfillment/returns', {
       }, {
         'advancedFulfillment.workflow.status': 'orderInspecting'
       }]}, {
-        sort: {'advancedFulfillment.shipmentDate': 1}
+        sort: {'advancedFulfillment.returnDate': 1}
       }
     )};
   }

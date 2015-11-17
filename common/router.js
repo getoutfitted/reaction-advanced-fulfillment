@@ -42,7 +42,11 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
       {
         'advancedFulfillment.workflow.status': 'orderFulfilled'
       }]
-    })};
+    }, {
+      sort: {'advancedFulfillment.shipmentDate': 1}
+    }
+
+    )};
   }
 });
 Router.route('dashboard/advanced-fulfillment/shipping/:date', {
@@ -170,8 +174,10 @@ Router.route('dashboard/advanced-fulfillment/returns', {
         'advancedFulfillment.workflow.status': 'orderReturning'
       }, {
         'advancedFulfillment.workflow.status': 'orderInspecting'
-      }]
-    })};
+      }]}, {
+        sort: {'advancedFulfillment.shipmentDate': 1}
+      }
+    )};
   }
 });
 

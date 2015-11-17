@@ -52,7 +52,9 @@ Package.onUse(function (api) {
     'client/templates/navbar/afNavbar.html',
     'client/templates/navbar/afNavbar.js',
     'client/templates/missingDamaged/missingDamaged.html',
-    'client/templates/missingDamaged/missingDamaged.js'
+    'client/templates/missingDamaged/missingDamaged.js',
+    'client/templates/infoMissing/infoMissing.html',
+    'client/templates/infoMissing/infoMissing.js'
   ], 'client');
 
   api.addFiles([

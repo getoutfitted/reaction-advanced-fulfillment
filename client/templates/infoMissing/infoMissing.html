@@ -1,0 +1,41 @@
+<template name='infoMissing'>
+  {{> afNavbar}}
+  <div class='container-fluid'>
+    <div class='row text-center'>
+      <h2>Orders with Missing Information that require Customer Contact</h2>
+    </div>
+    <div class='row text-center'>
+      <h3>Orders with Missing Rental Dates</h3>
+    </div>
+    {{#each order in missingRentalDates}}
+      <div class='row'>
+        <div class='col-sm-2 col-sm-offset-1'>
+        <strong>Order Info</strong>
+        <p>Reaction Order: {{order._id}}</p>
+        <p>Shopify Order: {{order.shopifyOrderNumber}}</p>
+        <p>{{order.createdAt}}</p>
+        </div>
+        <div class='col-sm-2'>
+          <strong>Billing Contact Info</strong>
+          <p>{{billingName order}}</p>
+          <p>{{billingPhone order}}</p>
+          <p>{{email order}}</p>
+        </div>
+        <div class='col-sm-2'>
+          <strong>Shipping Contact Info</strong>
+          <p>{{shippingName order}}</p>
+          <p>{{shippingPhone order}}</p>
+          <p>{{email order}}</p>
+        </div>
+      </div>
+      <hr>
+    {{/each}}
+
+  </div>
+
+      {{#each order in orders}}
+    <div>
+      {{order._id}}
+    </div>
+    {{/each}}
+</template>

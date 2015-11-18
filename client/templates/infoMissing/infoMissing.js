@@ -38,7 +38,7 @@ Template.infoMissing.events({
     let orderId = this._id;
     let startDate = new Date($('#' + orderId + ' [name="start"]').val());
     let endDate = new Date($('#' + orderId + ' [name="end"]').val());
-    debugger;
+    Meteor.call('advancedFulfillment/updateRentalDates', orderId, startDate, endDate);
   }
 });
 

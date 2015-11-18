@@ -26,6 +26,7 @@ Package.onUse(function (api) {
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
   api.use('reactioncommerce:reaction-factories');
+  api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
 
   api.addFiles([
     'server/registry.js',
@@ -52,7 +53,9 @@ Package.onUse(function (api) {
     'client/templates/navbar/afNavbar.html',
     'client/templates/navbar/afNavbar.js',
     'client/templates/missingDamaged/missingDamaged.html',
-    'client/templates/missingDamaged/missingDamaged.js'
+    'client/templates/missingDamaged/missingDamaged.js',
+    'client/templates/infoMissing/infoMissing.html',
+    'client/templates/infoMissing/infoMissing.js'
   ], 'client');
 
   api.addFiles([

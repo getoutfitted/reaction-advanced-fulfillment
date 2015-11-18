@@ -1,0 +1,59 @@
+<template name='infoMissing'>
+  {{> afNavbar}}
+  <div class='container-fluid'>
+    <div class='row text-center'>
+      <h2>Orders with Missing Information that require Customer Contact</h2>
+    </div>
+    <div class='row text-center'>
+      <h3>Orders with Missing Rental Dates</h3>
+    </div>
+    {{#each missingRentalDates}}
+      <div class='row'>
+        <div class='col-sm-2 col-sm-offset-1'>
+        <strong>Order Info</strong>
+        <p>Reaction Order: {{_id}}</p>
+        <p>Shopify Order: {{shopifyOrderNumber}}</p>
+        <p>{{createdAt}}</p>
+        </div>
+        <div class='col-sm-2'>
+          <strong>Billing Contact Info</strong>
+          <p>{{billingName this}}</p>
+          <p>{{billingPhone this}}</p>
+          <p>{{email this}}</p>
+        </div>
+        <div class='col-sm-2'>
+          <strong>Shipping Contact Info</strong>
+          <p>{{shippingName this}}</p>
+          <p>{{shippingPhone this}}</p>
+          <p>{{email this}}</p>
+        </div>
+        <div class='col-sm-2'>
+          <strong>Shipping Location</strong>
+          {{{shippingAddress this}}}
+        </div>
+        <div class='col-sm-2'>
+        <div class='text-center'>
+          <strong>Select Trips Start Date and End Date</strong>
+          <br>
+        </div>
+          <div class='picker' id='{{_id}}'>
+            <div class='input-daterange input-group' id='datepicker'>
+              <input type='text' class='input-sm form-control' name='start' />
+              <span class='input-group-addon'>to</span>
+              <input type='text' class='input-sm form-control' name='end' />
+            </div>
+            <button class='btn btn-block btn-primary update-rental-dates'>Save Dates</button>
+          </div>
+        </div>
+      </div>
+      <hr>
+    {{/each}}
+
+  </div>
+
+      {{#each order in orders}}
+    <div>
+      {{_id}}
+    </div>
+    {{/each}}
+</template>

@@ -1,3 +1,27 @@
+function shipmentChecker(date) {
+  if (moment(date).isoWeekday() === 7) {
+    return moment(date).subtract(2, 'days')._d;
+  } else if (moment(date).isoWeekday() === 6) {
+    return moment(date).subtract(1, 'days')._d;
+  }
+  return date;
+}
+
+function returnChecker(date) {
+  if (moment(date).isoWeekday() === 7) {
+    return moment(date).add(1, 'days')._d;
+  }
+  return date;
+}
+
+function buffer() {
+  let settings = ReactionCore.Collections.Packages.findOne({name: 'reaction-advanced-fulfillment'}).settings;
+  if (settings.buffer) {
+    return settings.buffer;
+  }
+  return {shipping: 0, returing: 0};
+}
+
 Meteor.methods({
   'advancedFulfillment/updateOrderWorkflow': function (orderId, userId, status) {
     check(orderId, String);
@@ -62,6 +86,29 @@ Meteor.methods({
       },
       $set: {
         'advancedFulfillment.workflow.status': 'orderIncomplete'
+      }
+    });
+  },
+  'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate) {
+    check(orderId, String);
+    check(startDate, Date);
+    check(endDate, Date);
+    let rentalLength = moment(endDate).diff(moment(startDate), 'days');
+    let bufferObject = buffer();
+    let shippingBuffer = bufferObject.shipping;
+    let returnBuffer = bufferObject.returning;
+    let shipmentDate = moment(startDate).subtract(shippingBuffer, 'days')._d;
+    let returnDate = moment(endDate).add(returnBuffer, 'days')._d;
+    let orderCreated = {status: 'orderCreated'};
+    ReactionCore.Collections.Orders.update({_id: orderId}, {
+      $set: {
+        startTime: startDate,
+        endTime: endDate,
+        rentalDays: rentalLength,
+        infoMissing: false,
+        'advancedFulfillment.shipmentDate': shipmentChecker(shipmentDate),
+        'advancedFulfillment.returnDate': returnChecker(returnDate),
+        'advancedFulfillment.workflow': orderCreated
       }
     });
   }

@@ -243,3 +243,17 @@ Router.route('dashboard/advanced-fulfillment/damaged', {
   };}
 });
 
+Router.route('dashboard/advanced-fulfillment/information-missing', {
+  name: 'infoMissing',
+  controller: advancedFulfillmentController,
+  template: 'infoMissing',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  },
+  data: function () {
+    return {orders: ReactionCore.Collections.Orders.find({
+      infoMissing: true})
+    };
+  }
+});
+

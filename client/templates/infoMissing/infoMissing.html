@@ -7,41 +7,42 @@
     <div class='row text-center'>
       <h3>Orders with Missing Rental Dates</h3>
     </div>
-    {{#each order in missingRentalDates}}
+    {{#each missingRentalDates}}
       <div class='row'>
         <div class='col-sm-2 col-sm-offset-1'>
         <strong>Order Info</strong>
-        <p>Reaction Order: {{order._id}}</p>
-        <p>Shopify Order: {{order.shopifyOrderNumber}}</p>
-        <p>{{order.createdAt}}</p>
+        <p>Reaction Order: {{_id}}</p>
+        <p>Shopify Order: {{shopifyOrderNumber}}</p>
+        <p>{{createdAt}}</p>
         </div>
         <div class='col-sm-2'>
           <strong>Billing Contact Info</strong>
-          <p>{{billingName order}}</p>
-          <p>{{billingPhone order}}</p>
-          <p>{{email order}}</p>
+          <p>{{billingName this}}</p>
+          <p>{{billingPhone this}}</p>
+          <p>{{email this}}</p>
         </div>
         <div class='col-sm-2'>
           <strong>Shipping Contact Info</strong>
-          <p>{{shippingName order}}</p>
-          <p>{{shippingPhone order}}</p>
-          <p>{{email order}}</p>
+          <p>{{shippingName this}}</p>
+          <p>{{shippingPhone this}}</p>
+          <p>{{email this}}</p>
         </div>
         <div class='col-sm-2'>
           <strong>Shipping Location</strong>
-          {{{shippingAddress order}}}
+          {{{shippingAddress this}}}
         </div>
-        <div class='col-sm-3'>
+        <div class='col-sm-2'>
         <div class='text-center'>
           <strong>Select Trips Start Date and End Date</strong>
           <br>
         </div>
-          <div id='picker'>
+          <div class='picker' id='{{_id}}'>
             <div class='input-daterange input-group' id='datepicker'>
               <input type='text' class='input-sm form-control' name='start' />
               <span class='input-group-addon'>to</span>
               <input type='text' class='input-sm form-control' name='end' />
             </div>
+            <button class='btn btn-block btn-primary update-rental-dates'>Save Dates</button>
           </div>
         </div>
       </div>
@@ -52,7 +53,7 @@
 
       {{#each order in orders}}
     <div>
-      {{order._id}}
+      {{_id}}
     </div>
     {{/each}}
 </template>

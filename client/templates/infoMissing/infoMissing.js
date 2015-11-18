@@ -32,8 +32,18 @@ Template.infoMissing.helpers({
   }
 });
 
+Template.infoMissing.events({
+  'click .update-rental-dates': function (event) {
+    event.preventDefault();
+    let orderId = this._id;
+    let startDate = new Date($('#' + orderId + ' [name="start"]').val());
+    let endDate = new Date($('#' + orderId + ' [name="end"]').val());
+    debugger;
+  }
+});
+
 Template.infoMissing.onRendered(function () {
-  $('#picker .input-daterange').datepicker({
+  $('.picker .input-daterange').datepicker({
     startDate: 'today',
     todayBtn: 'linked',
     clearBtn: true,

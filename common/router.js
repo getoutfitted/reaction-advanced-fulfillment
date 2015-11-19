@@ -30,6 +30,7 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
+      items: {$ne: []},
       $or: [{
         'advancedFulfillment.workflow.status': 'orderCreated'
       },

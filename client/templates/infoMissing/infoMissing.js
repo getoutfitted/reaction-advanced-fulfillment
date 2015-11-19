@@ -11,6 +11,11 @@ Template.infoMissing.helpers({
       }]
     }, {$sort: {createdAt: 1}});
   },
+  missingItemsFromOrder: function () {
+    return ReactionCore.Collections.Orders.find({
+      itemMissingDetails: true
+    });
+  },
   billingName: function (order) {
     return order.billing[0].address.fullName;
   },

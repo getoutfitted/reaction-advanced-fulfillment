@@ -249,11 +249,6 @@ Router.route('dashboard/advanced-fulfillment/information-missing', {
   template: 'infoMissing',
   waitOn: function () {
     return this.subscribe('Orders');
-  },
-  data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      infoMissing: true})
-    };
   }
 });
 

@@ -5,7 +5,7 @@
       <h2>Orders with Missing Information that require Customer Contact</h2>
     </div>
     <div class='row text-center'>
-      <h3>Orders with Missing Rental Dates</h3>
+      <h3><strong>Orders with Missing Rental Dates</strong></h3>
     </div>
     {{#each missingRentalDates}}
       <div class='row'>
@@ -48,12 +48,34 @@
       </div>
       <hr>
     {{/each}}
-
-  </div>
-
-      {{#each order in orders}}
-    <div>
-      {{_id}}
+    <div class='row text-center'>
+      <h3><strong>Orders with Missing Item Details</strong></h3>
     </div>
+    {{#each missingItemsFromOrder}}
+      <div class='row'>
+        <div class='col-sm-2 col-sm-offset-1'>
+        <strong>Order Info</strong>
+        <p>Reaction Order: {{_id}}</p>
+        <p>Shopify Order: {{shopifyOrderNumber}}</p>
+        <p>{{createdAt}}</p>
+        </div>
+        <div class='col-sm-2'>
+          <strong>Billing Contact Info</strong>
+          <p>{{billingName this}}</p>
+          <p>{{billingPhone this}}</p>
+          <p>{{email this}}</p>
+        </div>
+        <div class='col-sm-2'>
+          <strong>Shipping Contact Info</strong>
+          <p>{{shippingName this}}</p>
+          <p>{{shippingPhone this}}</p>
+          <p>{{email this}}</p>
+        </div>
+        <div class='col-sm-2'>
+          <strong>Shipping Location</strong>
+          {{{shippingAddress this}}}
+        </div>
+      </div>
     {{/each}}
+  </div>
 </template>

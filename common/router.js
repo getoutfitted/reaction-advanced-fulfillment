@@ -30,6 +30,7 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
+      items: {$ne: []},
       $or: [{
         'advancedFulfillment.workflow.status': 'orderCreated'
       },
@@ -249,11 +250,6 @@ Router.route('dashboard/advanced-fulfillment/information-missing', {
   template: 'infoMissing',
   waitOn: function () {
     return this.subscribe('Orders');
-  },
-  data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      infoMissing: true})
-    };
   }
 });
 

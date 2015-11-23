@@ -62,6 +62,12 @@ Template.orderDetails.helpers({
     }
     return result;
   },
+  shopifyOrder: function () {
+    if (this.shopifyOrderNumber) {
+      return true;
+    }
+    return false;
+  },
   shippingTo: function () {
     return this.shipping[0].address.fullName;
   },

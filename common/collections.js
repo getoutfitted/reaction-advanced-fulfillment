@@ -23,7 +23,9 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   },
   productId: {
     type: String,
-    index: 1
+    index: 1,
+    label: 'THE PRODUCT IN AF',
+    optional: true
   },
   shopId: {
     type: String,
@@ -32,7 +34,8 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   },
   quantity: {
     type: Number,
-    min: 0
+    min: 0,
+    optional: true
   },
   variantId: {
     type: String,

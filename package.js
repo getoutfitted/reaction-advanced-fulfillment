@@ -1,12 +1,12 @@
 Package.describe({
   summary: 'Advanced fulfillment tracking for orders through inbound, picking, packing, returns and inventory',
   name: 'getoutfitted:reaction-advanced-fulfillment',
-  version: '0.1.0',
+  version: '0.2.0',
   git: 'https://github.com/getoutfitted/reaction-advanced-fulfillment'
 });
 
 Npm.depends({
-  'faker': '3.0.1'
+  faker: '3.0.1'
 });
 
 
@@ -25,7 +25,8 @@ Package.onUse(function (api) {
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  api.use('reactioncommerce:reaction-factories');
+  api.use('getoutfitted:reaction-rental-products@0.1.2');
+  // api.use('reactioncommerce:reaction-factories');
   api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
 
   api.addFiles([

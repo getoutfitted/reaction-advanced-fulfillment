@@ -61,9 +61,7 @@ Package.onUse(function (api) {
 
   api.addFiles([
     'common/router.js',
-    'common/collections.js',
-    'common/factories/orders.js',
-    'common/factories/ordersWithAF.js'
+    'common/collections.js'
   ], ['client', 'server']);
 });
 
@@ -81,6 +79,10 @@ Package.onTest(function (api) {
   api.use('reactioncommerce:bootstrap-theme');
   api.use('getoutfitted:reaction-advanced-fulfillment');
 
+  api.addFiles([
+    'common/factories/orders.js',
+    'common/factories/ordersWithAF.js'
+  ], 'server');
   api.addFiles('tests/jasmine/server/integration/methods.js', 'server');
   api.addFiles('tests/jasmine/server/integration/hooks.js', 'server');
 });

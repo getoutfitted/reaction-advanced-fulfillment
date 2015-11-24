@@ -111,5 +111,12 @@ Meteor.methods({
         'advancedFulfillment.workflow': orderCreated
       }
     });
+  },
+  'advancedFulfillment/updateOrderNotes': function (orderId, orderNotes) {
+    check(orderId, String);
+    check(orderNotes, String);
+    ReactionCore.Collections.Orders.update({_id: orderId}, {
+      $set: {orderNotes: orderNotes}
+    });
   }
 });

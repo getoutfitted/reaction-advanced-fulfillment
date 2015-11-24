@@ -1,15 +1,15 @@
 function shipmentChecker(date) {
   if (moment(date).isoWeekday() === 7) {
-    return moment(date).subtract(2, 'days')._d;
+    return moment(date).subtract(2, 'days').toDate();
   } else if (moment(date).isoWeekday() === 6) {
-    return moment(date).subtract(1, 'days')._d;
+    return moment(date).subtract(1, 'days').toDate();
   }
   return date;
 }
 
 function returnChecker(date) {
   if (moment(date).isoWeekday() === 7) {
-    return moment(date).add(1, 'days')._d;
+    return moment(date).add(1, 'days').toDate();
   }
   return date;
 }
@@ -97,8 +97,8 @@ Meteor.methods({
     let bufferObject = buffer();
     let shippingBuffer = bufferObject.shipping;
     let returnBuffer = bufferObject.returning;
-    let shipmentDate = moment(startDate).subtract(shippingBuffer, 'days')._d;
-    let returnDate = moment(endDate).add(returnBuffer, 'days')._d;
+    let shipmentDate = moment(startDate).subtract(shippingBuffer, 'days').toDate();
+    let returnDate = moment(endDate).add(returnBuffer, 'days').toDate();
     let orderCreated = {status: 'orderCreated'};
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {

@@ -11,6 +11,12 @@ Template.fulfillmentOrders.helpers({
 });
 
 Template.fulfillmentOrder.helpers({
+  orderNumber: function  () {
+    if (this.shopifyOrderNumber) {
+      return '#' + this.shopifyOrderNumber + ' ';
+    }
+    return '';
+  },
   shippingDate: function () {
     let longDate = this.advancedFulfillment.shipmentDate;
     return moment(longDate).format('MMMM Do, YYYY');
@@ -103,14 +109,22 @@ Template.fulfillmentOrder.helpers({
   currentlyAssignedUser: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
     let history = _.findWhere(this.history, {event: currentStatus});
-    let assignedUser = history.userId;
-    return Meteor.users.findOne(assignedUser).username;
+    if (history) {
+      let assignedUser = history.userId;
+      return Meteor.users.findOne(assignedUser).username;
+    }
+    return '';
   },
   currentlyAssignedTime: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
     let history = _.findWhere(this.history, {event: currentStatus});
     let assignedTime = history.updatedAt;
     return assignedTime;
+  },
+  isMyOrder: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let history = _.findWhere(this.history, {event: currentStatus});
+    return history.userId === Meteor.userId();
   }
 });
 
@@ -121,7 +135,13 @@ Template.fulfillmentOrder.events({
     let orderId = this._id;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+    Router.go('orderDetails', {_id: orderId});
+  },
+  'click .selfAssignOrder': function (event) {
+    event.preventDefault();
+    let currentStatus = event.target.dataset.status;
+    let orderId = this._id;
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   }
 });
-
-

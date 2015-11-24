@@ -62,6 +62,7 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
     return {orders: ReactionCore.Collections.Orders.find({
+      // Use $in to shrink these down.
       $or: [{
         'advancedFulfillment.workflow.status': 'orderCreated'
       },
@@ -252,4 +253,3 @@ Router.route('dashboard/advanced-fulfillment/information-missing', {
     return this.subscribe('Orders');
   }
 });
-

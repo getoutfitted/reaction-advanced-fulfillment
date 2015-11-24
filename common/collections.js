@@ -88,6 +88,10 @@ ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schema
   advancedFulfillment: {
     type: ReactionCore.Schemas.AdvancedFulfillmentObject,
     optional: true
+  },
+  orderNotes: {
+    type: String,
+    optional: true
   }
 }]);
 

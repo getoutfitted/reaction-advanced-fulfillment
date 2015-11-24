@@ -194,13 +194,17 @@ Template.itemDetails.helpers({
     let itemId = item._id;
     let order = this;
     let orderItem = findOrderItem(order, itemId);
-    return orderItem.variants.color;
+    if (orderItem) {
+      return orderItem.variants.color;
+    }
   },
   size: function (item) {
     let itemId = item._id;
     let order = this;
     let orderItem = findOrderItem(order, itemId);
-    return orderItem.variants.size;
+    if (orderItem) {
+      return orderItem.variants.size;
+    }
   }
 });
 

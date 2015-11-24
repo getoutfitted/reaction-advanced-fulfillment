@@ -10,6 +10,10 @@ function verified(item) {
   return false;
 }
 
+function findOrderItem(order, itemId) {
+  return _.findWhere(order.items, {_id: itemId});
+}
+
 function allItemsInspected(orderItems, itemId) {
   let result = _.every(orderItems, function (item) {
     if (itemId === item._id) {
@@ -185,6 +189,18 @@ Template.itemDetails.helpers({
     if (itemStatus && orderStatus) {
       return 'itemStatusCheck';
     }
+  },
+  color: function (item) {
+    let itemId = item._id;
+    let order = this;
+    let orderItem = findOrderItem(order, itemId);
+    return orderItem.variants.color;
+  },
+  size: function (item) {
+    let itemId = item._id;
+    let order = this;
+    let orderItem = findOrderItem(order, itemId);
+    return orderItem.variants.size;
   }
 });
 

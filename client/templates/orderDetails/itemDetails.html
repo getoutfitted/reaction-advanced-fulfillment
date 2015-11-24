@@ -2,82 +2,66 @@
   <div class='itemDetails container-fluid'>
     <div class='row'>
       <h1>Items in this Order:</h1>
-      <div class='row text-center'>
-        <div class='col-md-2 col-sm-2 col-md-offset-1'>
-          <h4><strong>Action</strong></h4>
-        </div>
-        <div class='col-md-1 col-sm-2'>
-          <h4><strong>SKU</strong></h4>
-        </div>
-        <div class='col-md-2 col-sm-2'>
-          <h4><strong>Variant ID</strong></h4>
-        </div>
-        <div class='col-md-1 col-sm-2'>
-          <h4><strong>Status</strong></h4>
-        </div>
-        <div class='col-md-1 col-sm-2'>
-          <h4><strong>Location</strong></h4>
-        </div>
-        <div class='col-md-1 col-sm-2'>
-          <h4><strong>Quantity</strong></h4>
-        </div>
-        <div class='col-md-2 col-sm-2'>
-          <h4><strong>Item Description</strong></h4>
-        </div>
-      </div>
-      <hr>
-      {{#each item in items}}
-        <div class='row text-center'>
-          <div class='col-md-1 col-sm-1'>
-          {{#if uidVerificationEnabled item}}
-            <input type='text' class='verify' name='text' data-item-id='{{item._id}}' placeholder='SKU or Variant ID'>
-          {{/if}}
-          {{#if returningItems item}}
-            <a class='btn btn-danger btn-sm missing-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Missing</a>
-          {{/if}}
-          {{#if inspectingItems item}}
-            <a class='btn btn-danger btn-sm damaged-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Damaged</a>
-          {{/if}}
-          {{#if missing item}}
-            <a class='btn btn-info btn-sm returned-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Item Returned</a>
-          {{/if}}
-          {{#if damaged item}}
-            <a class='btn btn-success btn-sm repaired-button itemStatusCheck' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Item Repaired</a>
-          {{/if}}
-          </div>
-          <div class='col-md-2 col-sm-2 '>
-            {{#if allowedToUpdateItem item}}
-              {{#if itemUpdateable item }}
-                <a class='btn  btn-sm btn-success  item-picked {{incompleteValidate item.workflow.status}} {{finalClass item.workflow.status}}'  data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
-              {{else}}
-                <p>{{uidVerified item}}</p>
-              {{/if}}
-            {{else}}
-              <p>{{item.workflow.status}}</p>
-            {{/if}}
-          </div>
-          <div class='col-md-1 col-sm-2'>
-            {{SKU item}}
-          </div>
-          <div class='col-md-2 col-sm-2'>
-            {{item.variantId}}
-          </div>
-          <div class='col-md-1 col-sm-2'>
-            {{item.workflow.status}}
-          </div>
-          <div class='col-md-1 col-sm-2'>
-            {{location item}}
-          </div>
-          <div class='col-md-1 col-sm-2'>
-            {{item.quantity}}
-          </div>
+      <div class='table-responsive'>
+        <table class='table'>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Action</th>
+              <th>Location</th>
+              <th>Description</th>
+              <th>Color</th>
+              <th>Size</th>
+              <th>Status</th>
+              <th>SKU</th>
+              <th>QTY</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each item in items}}
+              <tr>
+                <td>
+                  {{#if uidVerificationEnabled item}}
+                    <input type='text' class='verify' name='text' data-item-id='{{item._id}}' placeholder='SKU or Variant ID'>
+                  {{/if}}
+                  {{#if returningItems item}}
+                    <a class='btn btn-danger btn-sm missing-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Missing</a>
+                  {{/if}}
+                  {{#if inspectingItems item}}
+                    <a class='btn btn-danger btn-sm damaged-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Damaged</a>
+                  {{/if}}
+                  {{#if missing item}}
+                    <a class='btn btn-info btn-sm returned-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Item Returned</a>
+                  {{/if}}
+                  {{#if damaged item}}
+                    <a class='btn btn-success btn-sm repaired-button itemStatusCheck' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Item Repaired</a>
+                  {{/if}}
+                </td>
+                <td>
+                  {{#if allowedToUpdateItem item}}
+                    {{#if itemUpdateable item }}
+                      <a class='btn  btn-sm btn-success  item-picked {{incompleteValidate item.workflow.status}} {{finalClass item.workflow.status}}'  data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
+                    {{else}}
+                      <p>{{uidVerified item}}</p>
+                    {{/if}}
+                  {{else}}
+                    <p>{{item.workflow.status}}</p>
+                  {{/if}}
+                </td>
+                <td>{{location item}}</td>
+                <td>{{item.itemDescription}}</td>
+                <td>{{color item}}</td>
+                <td>{{size item}}</td>
+                <td>{{item.workflow.status}}</td>
+                <td>{{SKU item}}</td>
+                <td>{{item.quantity}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
 
-          <div class='col-md-2 col-sm-2'>
-            {{item.itemDescription}}
-          </div>
-        </div>
-        <hr>
-      {{/each}}
+
+        </table>
+      </div>
     </div>
   </div>
 </template>

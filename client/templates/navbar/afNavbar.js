@@ -17,8 +17,17 @@ Template.afNavbar.helpers({
 Template.afNavbar.events({
   'click #afSearchButton': function (event) {
     event.preventDefault();
-    let orderId = $('#afSearchInput').val();
-    Router.go('orderDetails', {_id: orderId});
+    let searchValue = $('#afSearchInput').val();
+    let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue)}]});
+    if (order) {
+      let orderId = order._id;
+      Router.go('orderDetails', {_id: orderId});
+    } else {
+      Alerts.removeSeen();
+      Alerts.add( searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
+      autoHide: true
+    });
+    }
   },
   'click #afShipButton': function (event) {
     event.preventDefault();

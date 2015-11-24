@@ -142,5 +142,11 @@ Template.orderDetails.events({
     let currentStatus = this.advancedFulfillment.workflow.status;
     Meteor.call('advancedFulfillment/updateAllItemsToShipped', order);
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+  },
+  'blur .notes': function (event) {
+    event.preventDefault();
+    let notes = event.target.value;
+    let orderId = this._id;
+    Meteor.call('advancedFulfillment/updateOrderNotes', orderId, notes)
   }
 });

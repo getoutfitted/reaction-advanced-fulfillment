@@ -1,3 +1,11 @@
+function getIndexBy(array, name, value) {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i][name] === value) {
+      return i;
+    }
+  }
+}
+
 Template.orderDetails.helpers({
   status: function () {
     return this.advancedFulfillment.workflow.status;
@@ -113,6 +121,26 @@ Template.orderDetails.helpers({
     let history = _.findWhere(this.history, {event: currentStatus});
     let assignedTime = history.updatedAt;
     return assignedTime;
+  },
+  myOrdersInCurrentStep: function () {
+
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    // TODO: Maybe change to cursor?
+    let orders = Orders.find({
+      'history.userId': Meteor.userId(),
+      'history.event': currentStatus,
+      'advancedFulfillment.workflow.status': currentStatus
+    }).fetch();
+    let myOrders = {};
+    let currentOrder = getIndexBy(orders, '_id', this._id);
+    let nextOrder = orders[currentOrder - 1];
+    let prevOrder = orders[currentOrder + 1];
+    myOrders.nextOrderId = nextOrder ? nextOrder._id : undefined;
+    myOrders.hasNextOrder = nextOrder ? true : false;
+    myOrders.hasPrevOrder = prevOrder ? true : false;
+    myOrders.prevOrderId = prevOrder ? prevOrder._id : undefined;
+    myOrders.count = orders.length;
+    return myOrders;
   }
 });
 

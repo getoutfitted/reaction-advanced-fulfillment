@@ -61,6 +61,17 @@
     </div>
     <hr>
     {{> itemDetails}}
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 text-center">
+        {{#if myOrdersInCurrentStep.hasPrevOrder}}
+          <a href="{{pathFor 'orderDetails' _id=myOrdersInCurrentStep.prevOrderId}}" class="prevOrder btn btn-large btn-default">Prev Order</a>
+        {{/if}}
+      </div>
+      <div class="col-xs-12 col-sm-6 text-center">
+        {{#if myOrdersInCurrentStep.hasNextOrder}}
+          <a href="{{pathFor 'orderDetails' _id=myOrdersInCurrentStep.nextOrderId}}" class="nextOrder btn btn-large btn-default">Next Order</a>
+        {{/if}}
+      </div>
+    </div>
   </div>
 </template>
-

@@ -43,7 +43,7 @@ Template.fulfillmentOrder.helpers({
     return this.shipping[0].address.phone || '';
   },
   uniqueItemsCount: function () {
-    return this.items.length;
+    return this.advancedFulfillment.items.length;
   },
   totalItemsCount: function () {
     let total = _.reduce(this.items, function (sum, item) {

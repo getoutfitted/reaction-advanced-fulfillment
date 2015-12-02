@@ -74,6 +74,22 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
     type: Date,
     optional: true
   },
+  outboundTrackingNumbers: {
+    type: [String],
+    optional: true
+  },
+  outboundTrackingUrls: {
+    type: [String],
+    optional: true
+  },
+  inboundTrackingNumbers: {
+    type: [String],
+    optional: true
+  },
+  inboundTrackingUrls: {
+    type: [String],
+    optional: true
+  },
   workflow: {
     type: ReactionCore.Schemas.Workflow,
     optional: true

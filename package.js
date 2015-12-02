@@ -6,7 +6,8 @@ Package.describe({
 });
 
 Npm.depends({
-  faker: '3.0.1'
+  'faker': '3.0.1',
+  'shipping-fedex': '0.1.4'
 });
 
 
@@ -28,6 +29,8 @@ Package.onUse(function (api) {
   api.use('getoutfitted:reaction-rental-products@0.1.2');
   // api.use('reactioncommerce:reaction-factories');
   api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
+
+  api.addFiles('lib/fedex.js', ['client', 'server']);
 
   api.addFiles([
     'server/registry.js',

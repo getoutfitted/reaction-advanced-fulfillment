@@ -78,7 +78,7 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
     type: [String],
     optional: true
   },
-  outboundTrackingLinks: {
+  outboundTrackingUrls: {
     type: [String],
     optional: true
   },
@@ -86,7 +86,7 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
     type: [String],
     optional: true
   },
-  inboundTrackingLinks: {
+  inboundTrackingUrls: {
     type: [String],
     optional: true
   },

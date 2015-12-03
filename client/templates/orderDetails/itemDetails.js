@@ -81,6 +81,23 @@ Template.itemDetails.helpers({
     };
     return status[currentStatus];
   },
+  userName: function () {
+    return Meteor.user().username;
+  },
+  allPacked: function () {
+    let status = this.advancedFulfillment.workflow.status === 'orderPacking';
+    let items = this.advancedFulfillment.items;
+    let allItemsPicked = _.every(items, function (item) {
+      return item.workflow.status === 'picked';
+    });
+    if (status && allItemsPicked) {
+      return true;
+    }
+    return false;
+  },
+  showConfirmationPacked: function (id) {
+    return !!Session.get('showConfirmationPacked' + id);
+  },
   allowedToUpdateItem: function () {
     let status = this.advancedFulfillment.workflow.status;
     let history = this.history;
@@ -116,7 +133,15 @@ Template.itemDetails.helpers({
     }
     return false;
   },
-  uidVerified: function (item) {
+  actionNeeded: function () {
+    let status = this.advancedFulfillment.workflow.status;
+
+    if (status === 'orderPacking' || status === 'orderFulfilled') {
+      return false;
+    }
+    return true;
+  },
+  uidVerified: function (item) { // not being used currently as now all items are auto updated to packed.
     if (verified(item)) {
       return item.workflow.status;
     } else if (item.workflow.status === 'picked' && this.advancedFulfillment.workflow.status === 'orderPacking') {
@@ -285,5 +310,14 @@ Template.itemDetails.events({
     if (allInspected) {
       Meteor.call('advancedFulfillment/orderCompleted', this, userId);
     }
+  },
+  'click #showConfirmationPacked': function (event) {
+    event.preventDefault();
+    Session.set('showConfirmationPacked' + this._id, true);
+  },
+  'click #packed-items-verified': function (event) {
+    event.preventDefault();
+    const order = this;
+    Meteor.call('advancedFulfillment/allItemsToPacked', order);
   }
 });

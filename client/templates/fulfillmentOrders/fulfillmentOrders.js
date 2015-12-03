@@ -124,7 +124,10 @@ Template.fulfillmentOrder.helpers({
   isMyOrder: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
     let history = _.findWhere(this.history, {event: currentStatus});
-    return history.userId === Meteor.userId();
+    if (history) {
+      return history.userId === Meteor.userId();
+    }
+    return false;
   }
 });
 

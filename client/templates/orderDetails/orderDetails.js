@@ -125,6 +125,9 @@ Template.orderDetails.helpers({
   myOrdersInCurrentStep: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
     let history = _.findWhere(this.history, {event: currentStatus});
+    if (!history) {
+      return false;
+    }
     // TODO: Maybe change to cursor?
     let orders = Orders.find({
       'history.userId': Meteor.userId(),

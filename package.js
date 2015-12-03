@@ -30,7 +30,7 @@ Package.onUse(function (api) {
   // api.use('reactioncommerce:reaction-factories');
   api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
 
-  api.addFiles('lib/fedex.js', ['client', 'server']);
+  api.addFiles('lib/fedex.js',  'server');
 
   api.addFiles([
     'server/registry.js',

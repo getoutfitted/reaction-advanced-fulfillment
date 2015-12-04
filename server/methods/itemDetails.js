@@ -18,7 +18,7 @@ Meteor.methods({
       $addToSet: {'advancedFulfillment.items.$.workflow.workflow': itemStatus }
     });
   },
-  'advancedFulfillment/updateAllItemsToShipped': function (order) {
+  'advancedFulfillment/updateAllItemsToShipped': function (order) { // TODO: Combine these update this method and all Packed
     check(order, Object);
     if (order.advancedFulfillment.workflow.status !== 'orderFulfilled') {
       throw new Meteor.Error('Invalid Order Status');
@@ -33,6 +33,28 @@ Meteor.methods({
     _.each(items, function (item) {
       item.workflow.status = 'shipped';
       item.workflow.workflow.push('packed');
+    });
+    ReactionCore.Collections.Orders.update({
+      _id: order._id
+    }, {
+      $set: { 'advancedFulfillment.items': items}
+    });
+  },
+  'advancedFulfillment/allItemsToPacked': function (order) {
+    check(order, Object);
+    if (order.advancedFulfillment.workflow.status !== 'orderPacking') {
+      throw new Meteor.Error('Invalid Order Status');
+    }
+    let items = order.advancedFulfillment.items;
+    let allPicked = _.every(items, function (item) {
+      return item.workflow.status === 'picked';
+    });
+    if (!allPicked) {
+      throw new Meteor.Error('Invalid Item Status');
+    }
+    _.each(items, function (item) {
+      item.workflow.status = 'packed';
+      item.workflow.workflow.push('picked');
     });
     ReactionCore.Collections.Orders.update({
       _id: order._id

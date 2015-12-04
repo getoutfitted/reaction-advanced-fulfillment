@@ -1,13 +1,34 @@
 <template name='itemDetails'>
   <div class='itemDetails container-fluid'>
     <div class='row'>
+      <div class='row' id='confirm-packed'>
+        {{#if allPacked}}
+          <a class='btn btn-danger btn-lg btn-block' id="showConfirmationPacked">All of the items listed belowe are present</a>
+          {{#if showConfirmationPacked this._id}}
+            <div id="confirmPacked">
+              <div class="well">
+                <div class='text-center'>
+                  <h4><strong>I, ({{userName}}) take responsibility that this order #{{this.shopifyOrderNumber}} is accurately picked with correct items, sizes and colors.</strong></h4>
+                </div>
+                <div>
+                  <a class='btn btn-success btn-block' id='packed-items-verified' href="#">CONFIRM</a>
+                </div>
+              </div>
+            </div>
+          {{/if}}
+        {{/if}}
+      </div>
       <h1>Items in this Order:</h1>
       <div class='table-responsive'>
         <table class='table table-hover'>
           <thead>
             <tr>
               <th></th>
-              <th>Action</th>
+              <th>
+                {{#if actionNeeded}}
+                  Action
+                {{/if}}
+              </th>
               <th>Location</th>
               <th>Description</th>
               <th>Color</th>
@@ -21,9 +42,9 @@
             {{#each item in items}}
               <tr>
                 <td>
-                  {{#if uidVerificationEnabled item}}
+<!--                   {{#if uidVerificationEnabled item}}
                     <input type='text' class='verify' name='text' data-item-id='{{item._id}}' placeholder='SKU or Variant ID'>
-                  {{/if}}
+                  {{/if}} -->
                   {{#if returningItems item}}
                     <a class='btn btn-danger btn-sm missing-button' data-item-id='{{item._id}}' data-item-status='{{item.workflow.status}}' data-item-description='{{item.itemDescription}}' href="#">Missing</a>
                   {{/if}}
@@ -41,8 +62,8 @@
                   {{#if allowedToUpdateItem item}}
                     {{#if itemUpdateable item }}
                       <a class='btn  btn-sm btn-success  item-picked {{incompleteValidate item.workflow.status}} {{finalClass item.workflow.status}}'  data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
-                    {{else}}
-                      <p>{{uidVerified item}}</p>
+<!--                     {{else}}
+                      <p>{{uidVerified item}}</p> -->
                     {{/if}}
                   {{else}}
                     <p>{{item.workflow.status}}</p>

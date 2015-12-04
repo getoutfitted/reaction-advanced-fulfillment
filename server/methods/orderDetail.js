@@ -92,9 +92,9 @@ function getFedexTransitTime(address) {
             address.address2
           ],
           City: address.city,
-          StateOrProvinceCode: address.province_code,
-          PostalCode: address.zip,
-          CountryCode: address.country_code,
+          StateOrProvinceCode: address.region,
+          PostalCode: address.postal,
+          CountryCode: address.country,
           Residential: false // Or true
         }
       },
@@ -131,7 +131,6 @@ function getFedexTransitTime(address) {
     return false;
   }
   let groundRate = rates.RateReplyDetails[0];
-  console.log(fedexTimeTable[groundRate.TransitTime]);
   return fedexTimeTable[groundRate.TransitTime];
 }
 
@@ -214,10 +213,13 @@ Meteor.methods({
     check(orderId, String);
     check(startDate, Date);
     check(endDate, Date);
-    let rentalLength = moment(endDate).diff(moment(startDate), 'days');
+    let order = ReactionCore.Collections.Orders.findOne(orderId);
+    let fedexTransitTime = getFedexTransitTime(order.shipping[0]);
     let bufferObject = buffer();
     let shippingBuffer = bufferObject.shipping;
-    let returnBuffer = bufferObject.returning;
+    let returnBuffer = fedexTransitTime ? fedexTimeTable[fedexTransitTime] : bufferObject.returning;
+
+    let rentalLength = moment(endDate).diff(moment(startDate), 'days');
     let shipmentDate = moment(startDate).subtract(shippingBuffer, 'days').toDate();
     let returnDate = moment(endDate).add(returnBuffer, 'days').toDate();
     let orderCreated = {status: 'orderCreated'};

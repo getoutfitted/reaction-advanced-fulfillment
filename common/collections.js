@@ -62,6 +62,14 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   location: {
     type: String,
     optional: true
+  },
+  bundleName: {
+    type: String,
+    optional: true
+  },
+  customerName: {
+    type: String,
+    optional: true
   }
 });
 

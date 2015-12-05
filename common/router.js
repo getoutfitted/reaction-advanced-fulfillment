@@ -253,3 +253,45 @@ Router.route('dashboard/advanced-fulfillment/information-missing', {
     return this.subscribe('Orders');
   }
 });
+
+Router.route('dashboard/advanced-fulfillment/search', {
+  name: 'searchOrders',
+  controller: advancedFulfillmentController,
+  template: 'searchOrders',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber', {
+  name: 'updateOrder',
+  controller: advancedFulfillmentController,
+  template: 'updateOrder',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  },
+  data: function () {
+    let orderNumber = this.params.orderNumber;
+    let order = ReactionCore.Collections.Orders.findOne({
+      $or: [
+        {_id: orderNumber},
+        {shopifyOrderNumber: parseInt(orderNumber)}
+      ]
+    });
+    return order;
+  },
+  onBeforeAction: function () {
+    let orderNumber = this.params.orderNumber;
+    let validOrder = ReactionCore.Collections.Orders.findOne({
+      $or: [
+        {_id: orderNumber},
+        {shopifyOrderNumber: parseInt(orderNumber)}
+      ]
+    });
+    if (validOrder) {
+      this.next();
+    }  else {
+      this.render('notFound');
+    }
+  }
+});

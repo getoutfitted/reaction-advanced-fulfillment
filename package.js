@@ -60,7 +60,11 @@ Package.onUse(function (api) {
     'client/templates/missingDamaged/missingDamaged.html',
     'client/templates/missingDamaged/missingDamaged.js',
     'client/templates/infoMissing/infoMissing.html',
-    'client/templates/infoMissing/infoMissing.js'
+    'client/templates/infoMissing/infoMissing.js',
+    'client/templates/orderUpdate/orderUpdate.html',
+    'client/templates/orderUpdate/orderUpdate.js',
+    'client/templates/search/searchOrders.js',
+    'client/templates/search/searchOrders.html'
   ], 'client');
 
   api.addFiles([

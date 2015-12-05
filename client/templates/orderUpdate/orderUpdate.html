@@ -1,0 +1,9 @@
+<template name='updateOrder'>
+  {{> afNavbar}}
+  <div class='container'>
+    <h1>Order Number {{_id}} | Shopify Order {{shopifyOrderNumber}}</h1>
+    {{#each item in advancedFulfillment.items}}
+      <p>{{item._id}}</p>
+    {{/each}}
+  </div>
+</template>

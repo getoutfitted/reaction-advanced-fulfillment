@@ -1,9 +1,51 @@
 <template name='updateOrder'>
   {{> afNavbar}}
-  <div class='container'>
-    <h1>Order Number {{_id}} | Shopify Order {{shopifyOrderNumber}}</h1>
-    {{#each item in advancedFulfillment.items}}
-      <p>{{item._id}}</p>
-    {{/each}}
+  <div class='container-fluid'>
+    <div class='row text-center'>
+      <h1>Order Number {{_id}} | Shopify Order {{shopifyOrderNumber}}</h1>
+      <h3>Order Details:</h3>
+      <div class='row'>
+        <div class='col-xs-6'>
+          <p>Shipping Date: {{advancedFulfillment.shipmentDate}}</p>
+        </div>
+        <div class='col-xs-6'>
+          <p>Return Date: {{advancedFulfillment.returnDate}}</p>
+        </div>
+      </div>
+    </div>
+    <div class='row'>
+      <h3>Items in this Order:</h3>
+      <div class='table-responsive'>
+        <table class='table table-hover'>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Description</th>
+              <th>Color</th>
+              <th>Size</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each item in advancedFulfillment.items}}
+              {{#if colorAndSize item}}
+                <tr>
+                  <td><a class='btn btn-sm btn-warning' href='#'>Update This item</a></td>
+                  <td>{{item.itemDescription}}</td>
+                  <td>{{color item}}</td>
+                  <td>{{size item}}</td>
+                </tr>
+              {{else}}
+                <tr class='danger'>
+                  <td><a class='btn btn-sm btn-danger' href='#'>Update This item</a></td>
+                  <td>{{item.itemDescription}}</td>
+                  <td>{{color item}}</td>
+                  <td>{{size item}}</td>
+                </tr>
+              {{/if}}
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>

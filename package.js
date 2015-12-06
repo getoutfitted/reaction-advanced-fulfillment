@@ -65,7 +65,9 @@ Package.onUse(function (api) {
     'client/templates/orderUpdate/orderUpdate.js',
     'client/templates/search/searchOrders.js',
     'client/templates/search/searchOrders.html',
-    'client/templates/orderUpdate/orderUpdate.css'
+    'client/templates/orderUpdate/orderUpdate.css',
+    'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.html',
+    'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.js'
   ], 'client');
 
   api.addFiles([

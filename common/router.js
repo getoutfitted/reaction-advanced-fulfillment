@@ -268,6 +268,41 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber', {
   controller: advancedFulfillmentController,
   template: 'updateOrder',
   waitOn: function () {
+    this.subscribe('afProducts');
+    return this.subscribe('Orders');
+  },
+  data: function () {
+    let orderNumber = this.params.orderNumber;
+    let order = ReactionCore.Collections.Orders.findOne({
+      $or: [
+        {_id: orderNumber},
+        {shopifyOrderNumber: parseInt(orderNumber)}
+      ]
+    });
+    return order;
+  },
+  onBeforeAction: function () {
+    let orderNumber = this.params.orderNumber;
+    let validOrder = ReactionCore.Collections.Orders.findOne({
+      $or: [
+        {_id: orderNumber},
+        {shopifyOrderNumber: parseInt(orderNumber)}
+      ]
+    });
+    if (validOrder) {
+      this.next();
+    }  else {
+      this.render('notFound');
+    }
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber/:itemId', {
+  name: 'updateOrderItem',
+  controller: advancedFulfillmentController,
+  template: 'updateOrderItem',
+  waitOn: function () {
+    this.subscribe('Products');
     return this.subscribe('Orders');
   },
   data: function () {

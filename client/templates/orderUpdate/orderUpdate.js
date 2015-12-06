@@ -2,10 +2,34 @@ function findOrderItem(order, itemId) {
   return _.findWhere(order.items, {_id: itemId});
 }
 
+Template.updateOrder.onCreated(function () {
+  this.subscribe('afProducts');
+});
+
 
 Template.updateOrder.helpers({
   afItems: function () {
     return this.advancedFulfillment.items;
+  },
+  colorOptions: function (item) {
+    let productId = item.productId;
+    let product = ReactionCore.Collections.Products.findOne(productId);
+    return product.colors;
+  },
+  sizeOptions: function (item) {
+    let productId = item.productId;
+    let product = ReactionCore.Collections.Products.findOne(productId);
+    let selectedColor = Session.get('colorSelectorFor-' + item._id);
+    let variantsWithSelectedColor = _.where(product.variants, {color: selectedColor})
+    return _.map(variantsWithSelectedColor, function (variant) {
+      return {
+        size: variant.size,
+        _id: variant._id
+      };
+    });
+  },
+  test: function (item) {
+    debugger
   },
   color: function (item) {
     let itemId = item._id;
@@ -35,4 +59,22 @@ Template.updateOrder.helpers({
     }
     return false;
   },
+  readyToSelectSize: function (item) {
+    let itemId = item._id;
+    let session = Session.get('colorSelectorFor-' + itemId);
+    if (session) {
+      return true;
+    }
+    return false;
+  }
+});
+
+
+Template.updateOrder.events({
+  'change .color-selector': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.id;
+    let selectedColor = event.target.value;
+    Session.set('colorSelectorFor-' + itemId, selectedColor);
+  }
 });

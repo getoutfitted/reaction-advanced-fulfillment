@@ -20,3 +20,7 @@ Meteor.publish('afOrders', function () {
   }
   return {}
 ;});
+
+Meteor.publish('afProducts', function () {
+  return ReactionCore.Collections.Products.find({});
+});

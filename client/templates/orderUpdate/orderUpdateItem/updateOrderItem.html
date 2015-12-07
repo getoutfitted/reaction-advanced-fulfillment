@@ -5,7 +5,22 @@
       <div class='text-center'>
         <h1>Order Numer: {{_id}} | Shopify Order Number {{shopifyOrderNumber}}</h1>
       </div>
-      {{item}}
+      <div class='container-fluid'>
+        <div class='row'>
+          Item info:
+        </div>
+        <div class='row'>
+          <div class='col-xs-2'>
+            {{item.afItem.itemDescription}}
+          </div>
+          <div class='col-xs-2'>
+            {{item.regItem.variants.color}}
+          </div>
+          <div class='col-xs-2'>
+            {{item.regItem.variants.size}}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

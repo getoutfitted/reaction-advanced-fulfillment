@@ -132,6 +132,7 @@ Meteor.methods({
     let variant = _.findWhere(variants, {_id: variantId});
     let orderItems = order.items;
     let orderNotes = order.orderNotes;
+
     orderNotes = orderNotes + ' \n Item #' + itemId + ' with SKU#' + variant.sku +
      ' was updated with to have: color:' + variant.color + ' and size: ' + variant.size;
     _.each(orderItems, function (item) {
@@ -147,11 +148,17 @@ Meteor.methods({
         item.sku = variant.sku;
       }
     });
+
+    let allItemsUpdated = _.every(afItems, function (item) {
+      return item.variantId;
+    });
+
     ReactionCore.Collections.Orders.update({_id: order._id}, {
       $set: {
         items: orderItems,
         'advancedFulfillment.items': afItems,
-        orderNotes: orderNotes
+        orderNotes: orderNotes,
+        itemMissingDetails: allItemsUpdated
       }
     });
   }

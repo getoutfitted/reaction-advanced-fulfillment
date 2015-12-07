@@ -76,6 +76,39 @@
           {{{shippingAddress this}}}
         </div>
       </div>
+      <hr>
     {{/each}}
+    <hr>
+      <div class='row text-center'>
+        <h3><strong>Orders containing Bundles with Missing Colors</strong></h3>
+        <p class='text-danger'>These Orders came in with a color, so it was automaticlly assigned, please contact customer and confirm</p>
+      </div>
+      {{#each missingBundleInfo}}
+        <div class='row'>
+          <div class='col-sm-2 col-sm-offset-1'>
+          <strong>Order Info</strong>
+          <p>Reaction Order: {{_id}}</p>
+          <p>Shopify Order: {{shopifyOrderNumber}}</p>
+          <p>{{createdAt}}</p>
+          </div>
+          <div class='col-sm-2'>
+            <strong>Billing Contact Info</strong>
+            <p>{{billingName this}}</p>
+            <p>{{billingPhone this}}</p>
+            <p>{{email this}}</p>
+          </div>
+          <div class='col-sm-2'>
+            <strong>Shipping Contact Info</strong>
+            <p>{{shippingName this}}</p>
+            <p>{{shippingPhone this}}</p>
+            <p>{{email this}}</p>
+          </div>
+          <div class='col-sm-2'>
+            <strong>Shipping Location</strong>
+            {{{shippingAddress this}}}
+          </div>
+        </div>
+        <hr>
+      {{/each}}
   </div>
 </template>

@@ -5,13 +5,13 @@ Meteor.methods({
     check(itemStatus, String);
     let workflow = {
       'In Stock': 'picked',
-      picked: 'packed',
-      packed: 'shipped',
-      shipped: 'returned',
-      returned: 'completed'
+      'picked': 'packed',
+      'packed': 'shipped',
+      'shipped': 'returned',
+      'returned': 'completed'
     };
     ReactionCore.Collections.Orders.update({
-      _id: orderId,
+      '_id': orderId,
       'advancedFulfillment.items._id': itemId
     }, {
       $set: { 'advancedFulfillment.items.$.workflow.status': workflow[itemStatus] },
@@ -72,12 +72,12 @@ Meteor.methods({
       updatedAt: new Date()
     };
     ReactionCore.Collections.Orders.update({
-      _id: orderId,
+      '_id': orderId,
       'advancedFulfillment.items._id': itemId
     }, {
       $set: {'advancedFulfillment.items.$.workflow.status': 'missing'},
       $addToSet: {
-        history: historyEvent,
+        'history': historyEvent,
         'advancedFulfillment.items.$.workflow.workflow': 'missing'
       }
     });
@@ -85,19 +85,19 @@ Meteor.methods({
   'advancedFulfillment/itemDamaged': function (orderId, itemId, userId) {
     check(orderId, String);
     check(itemId, String);
-    check(userId, String)
+    check(userId, String);
     let historyEvent = {
       event: 'damagedItem',
       userId: userId,
       updatedAt: new Date()
     };
     ReactionCore.Collections.Orders.update({
-      _id: orderId,
+      '_id': orderId,
       'advancedFulfillment.items._id': itemId
     }, {
       $set: {'advancedFulfillment.items.$.workflow.status': 'damaged'},
       $addToSet: {
-        history: historyEvent,
+        'history': historyEvent,
         'advancedFulfillment.items.$.workflow.workflow': 'damaged'
       }
     });
@@ -106,7 +106,7 @@ Meteor.methods({
     check(orderId, String);
     check(itemId, String);
     ReactionCore.Collections.Orders.update({
-      _id: orderId,
+      '_id': orderId,
       'advancedFulfillment.items._id': itemId
     }, {
       $set: {'advancedFulfillment.items.$.workflow.status': 'returned'}
@@ -116,7 +116,7 @@ Meteor.methods({
     check(orderId, String);
     check(itemId, String);
     ReactionCore.Collections.Orders.update({
-      _id: orderId,
+      '_id': orderId,
       'advancedFulfillment.items._id': itemId
     }, {
       $set: {'advancedFulfillment.items.$.workflow.status': 'completed'}
@@ -155,7 +155,7 @@ Meteor.methods({
 
     ReactionCore.Collections.Orders.update({_id: order._id}, {
       $set: {
-        items: orderItems,
+        'items': orderItems,
         'advancedFulfillment.items': afItems,
         orderNotes: orderNotes,
         itemMissingDetails: allItemsUpdated

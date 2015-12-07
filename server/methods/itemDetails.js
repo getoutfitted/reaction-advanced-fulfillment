@@ -152,13 +152,12 @@ Meteor.methods({
     let allItemsUpdated = _.every(afItems, function (item) {
       return item.variantId;
     });
-
     ReactionCore.Collections.Orders.update({_id: order._id}, {
       $set: {
         'items': orderItems,
         'advancedFulfillment.items': afItems,
-        orderNotes: orderNotes,
-        itemMissingDetails: allItemsUpdated
+        'orderNotes': orderNotes,
+        'itemMissingDetails': !allItemsUpdated
       }
     });
   }

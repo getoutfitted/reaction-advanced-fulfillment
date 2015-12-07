@@ -18,8 +18,7 @@ Meteor.publish('afOrders', function () {
 
     });
   }
-  return {}
-;});
+  return this.ready();
 
 Meteor.publish('afProducts', function () {
   return ReactionCore.Collections.Products.find({});

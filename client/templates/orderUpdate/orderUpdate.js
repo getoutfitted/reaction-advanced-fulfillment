@@ -96,5 +96,6 @@ Template.updateOrder.events({
     let productId = event.target.dataset.productId;
     let newVariantId = Session.get('sizeSelectorFor-' + itemId);
     let order = this;
+    Meteor.call('advancedFulfillment/updateItemsColorAndSize', order, itemId, productId, newVariantId);
   }
 });

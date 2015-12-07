@@ -89,5 +89,12 @@ Template.updateOrder.events({
     let itemId = event.target.dataset.id;
     let selectedSize = event.target.value;
     Session.set('sizeSelectorFor-' + itemId, selectedSize);
+  },
+  'click .save-item': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.id;
+    let productId = event.target.dataset.productId;
+    let newVariantId = Session.get('sizeSelectorFor-' + itemId);
+    let order = this;
   }
 });

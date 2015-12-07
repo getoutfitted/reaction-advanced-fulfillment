@@ -45,6 +45,14 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
     type: String,
     optional: true
   },
+  color: {
+    type: String,
+    optional: true
+  },
+  size: {
+    type: String,
+    optional: true
+  },
   workflow: {
     type: ReactionCore.Schemas.Workflow,
     optional: true

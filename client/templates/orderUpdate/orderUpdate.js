@@ -28,8 +28,14 @@ Template.updateOrder.helpers({
       };
     });
   },
-  test: function (item) {
-    debugger
+  sizeAndColorSelected: function (item) {
+    let itemId = item._id;
+    let color = Session.get('colorSelectorFor-' + itemId);
+    let size = Session.get('sizeSelectorFor-' + itemId);
+    if (color && size) {
+      return true;
+    }
+    return false;
   },
   color: function (item) {
     let itemId = item._id;
@@ -75,6 +81,13 @@ Template.updateOrder.events({
     event.preventDefault();
     let itemId = event.target.dataset.id;
     let selectedColor = event.target.value;
+    Session.set('sizeSelectorFor-' + itemId, undefined);
     Session.set('colorSelectorFor-' + itemId, selectedColor);
+  },
+  'change .size-selector': function (event) {
+    event.preventDefault();
+    let itemId = event.target.dataset.id;
+    let selectedSize = event.target.value;
+    Session.set('sizeSelectorFor-' + itemId, selectedSize);
   }
 });

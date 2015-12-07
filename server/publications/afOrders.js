@@ -10,7 +10,7 @@ Meteor.publish('afOrders', function () {
         'advancedFulfillment.shipmentDate': 1,
         'advancedFulfillment.workflow.status': 1,
         'advancedFulfillment.items._id': 1,
-        email: 1,
+        'email': 1,
         shopifyOrderNumber: 1,
         'shipping.address.phone': 1,
         history: 1
@@ -18,8 +18,8 @@ Meteor.publish('afOrders', function () {
 
     });
   }
-  return {}
-;});
+  return this.ready();
+});
 
 Meteor.publish('afProducts', function () {
   return ReactionCore.Collections.Products.find({});

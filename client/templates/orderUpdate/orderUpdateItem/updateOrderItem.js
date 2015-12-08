@@ -167,5 +167,6 @@ Template.updateOrderItem.events({
     Session.set('productGender-' + this._id, undefined);
     Session.set('productTitle-' + this._id, undefined);
     Session.set('productVariant-' + this._id, undefined);
+    Router.go('updateOrder', {orderNumber: order._id});
   }
 });

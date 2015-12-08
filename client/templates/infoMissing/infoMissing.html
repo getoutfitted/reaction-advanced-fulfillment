@@ -9,29 +9,29 @@
     </div>
     {{#each missingRentalDates}}
       <div class='row'>
-        <div class='col-sm-2 col-sm-offset-1'>
+        <div class='col-xs-2 col-xs-offset-1'>
         <strong>Order Info</strong>
         <p>Reaction Order: {{_id}}</p>
         <p>Shopify Order: {{shopifyOrderNumber}}</p>
         <p>{{createdAt}}</p>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-xs-2'>
           <strong>Billing Contact Info</strong>
           <p>{{billingName this}}</p>
           <p>{{billingPhone this}}</p>
           <p>{{email this}}</p>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-xs-2'>
           <strong>Shipping Contact Info</strong>
           <p>{{shippingName this}}</p>
           <p>{{shippingPhone this}}</p>
           <p>{{email this}}</p>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-xs-2'>
           <strong>Shipping Location</strong>
           {{{shippingAddress this}}}
         </div>
-        <div class='col-sm-2'>
+        <div class='col-xs-2'>
         <div class='text-center'>
           <strong>Select Trips Start Date and End Date</strong>
           <br>
@@ -53,29 +53,65 @@
     </div>
     {{#each missingItemsFromOrder}}
       <div class='row'>
-        <div class='col-sm-2 col-sm-offset-1'>
+        <div class='col-xs-2 col-xs-offset-1'>
         <strong>Order Info</strong>
         <p>Reaction Order: {{_id}}</p>
         <p>Shopify Order: {{shopifyOrderNumber}}</p>
         <p>{{createdAt}}</p>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-xs-2'>
           <strong>Billing Contact Info</strong>
           <p>{{billingName this}}</p>
           <p>{{billingPhone this}}</p>
           <p>{{email this}}</p>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-xs-2'>
           <strong>Shipping Contact Info</strong>
           <p>{{shippingName this}}</p>
           <p>{{shippingPhone this}}</p>
           <p>{{email this}}</p>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-xs-2'>
           <strong>Shipping Location</strong>
           {{{shippingAddress this}}}
         </div>
+        <div class='col-xs-2'>
+          <a class='btn btn-lg btn-info' href="{{pathFor 'updateOrder' orderNumber=this._id}}">Go to Order Update</a>
+        </div>
       </div>
+      <hr>
     {{/each}}
+    <hr>
+      <div class='row text-center'>
+        <h3><strong>Orders containing Bundles with Missing Colors</strong></h3>
+        <p class='text-danger'>These Orders came in with a color, so it was automaticlly assigned, please contact customer and confirm</p>
+      </div>
+      {{#each missingBundleInfo}}
+        <div class='row'>
+          <div class='col-xs-2 col-xs-offset-1'>
+          <strong>Order Info</strong>
+          <p>Reaction Order: {{_id}}</p>
+          <p>Shopify Order: {{shopifyOrderNumber}}</p>
+          <p>{{createdAt}}</p>
+          </div>
+          <div class='col-xs-2'>
+            <strong>Billing Contact Info</strong>
+            <p>{{billingName this}}</p>
+            <p>{{billingPhone this}}</p>
+            <p>{{email this}}</p>
+          </div>
+          <div class='col-xs-2'>
+            <strong>Shipping Contact Info</strong>
+            <p>{{shippingName this}}</p>
+            <p>{{shippingPhone this}}</p>
+            <p>{{email this}}</p>
+          </div>
+          <div class='col-xs-2'>
+            <strong>Shipping Location</strong>
+            {{{shippingAddress this}}}
+          </div>
+        </div>
+        <hr>
+      {{/each}}
   </div>
 </template>

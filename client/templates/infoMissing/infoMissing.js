@@ -16,6 +16,11 @@ Template.infoMissing.helpers({
       itemMissingDetails: true
     });
   },
+  missingBundleInfo: function () {
+    return ReactionCore.Collections.Orders.find({
+      bundleMissingColor: true
+    });
+  },
   billingName: function (order) {
     return order.billing[0].address.fullName;
   },

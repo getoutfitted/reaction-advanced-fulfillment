@@ -10,10 +10,11 @@ Meteor.publish('afOrders', function () {
         'advancedFulfillment.shipmentDate': 1,
         'advancedFulfillment.workflow.status': 1,
         'advancedFulfillment.items._id': 1,
+        'advancedFulfillment.items.workflow': 1,
         'email': 1,
-        shopifyOrderNumber: 1,
+        'shopifyOrderNumber': 1,
         'shipping.address.phone': 1,
-        history: 1
+        'history': 1
       }
 
     });

@@ -9,6 +9,7 @@
 </template>
 
 <template name='fulfillmentOrder'>
+  <br /><br />
   <a href="{{pathFor 'orderDetails' _id=this._id}}">
     <div>
       <div class="row orderBox">
@@ -17,9 +18,9 @@
         </div>
         <div class='col-sm-6'>
           {{#if toBeShipped}}
-            <h3>Date Shipping: <strong>{{shippingDate}} </strong></h3>
+            <h4>Date Shipping: <strong>{{shippingDate}} </strong></h4>
           {{else}}
-            <h3>Date Returning: <strong>{{returningDate}} </strong></h3>
+            <h4>Date Returning: <strong>{{returningDate}} </strong></h4>
           {{/if}}
         </div>
       </div>
@@ -33,14 +34,14 @@
           Contact Info: {{contactInfo}} | {{phoneNumber}}
         </div>
       </div>
-      <div class='row'>
+      <!-- <div class='row'>
         <div class='col-sm-6'>
           Number of  Different Items in Order {{uniqueItemsCount}}
         </div>
         <div class='col-sm-6'>
-          Number of Indvidual Items in Order {{totalItemsCount}}
+          Number of a-la-carte Items in Order {{totalItemsCount}}
         </div>
-      </div>
+      </div> -->
       {{#if readyForAssignment}}
         <div class="row">
           <div class='col-xs-12 col-sm-6'>

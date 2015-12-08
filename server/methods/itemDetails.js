@@ -160,5 +160,34 @@ Meteor.methods({
         'itemMissingDetails': !allItemsUpdated
       }
     });
+  },
+  'advancedFulfillment/itemExchange': function (order, oldItemId, type, gender, title, color, variantId) {
+    check(order, Object);
+    check(oldItemId, String);
+    check(type, String);
+    check(gender, String);
+    check(title, String);
+    check(color, String);
+    check(variantId, String);
+    let product = Products.findOne({
+      productType: type,
+      gender: gender,
+      title: title
+    });
+    let variant = _.findWhere(product.variants, {_id: variantId});
+    console.log('productID', product._id);
+    console.log('variant', variant);
+    let id = Random.id();
+    let shopId = ReactionCore.getShopId();
+    let newItem = {
+      _id: id,
+      shopId: shopId,
+      productId: product._id,
+      quantity: 1,
+      variants: variant
+    };
+    let afItem = {
+
+    };
   }
 });

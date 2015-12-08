@@ -302,7 +302,7 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber/:itemId',
   controller: advancedFulfillmentController,
   template: 'updateOrderItem',
   waitOn: function () {
-    this.subscribe('Products');
+    this.subscribe('afProducts');
     return this.subscribe('Orders');
   },
   data: function () {

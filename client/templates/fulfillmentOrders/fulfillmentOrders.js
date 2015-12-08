@@ -57,6 +57,10 @@ Template.fulfillmentOrder.helpers({
   readyForAssignment: function () {
     let status = this.advancedFulfillment.workflow.status;
     let itemsArray = this.advancedFulfillment.items;
+    if (itemsArray.length === 0) {
+      return false;
+      // TODO: flag summer orders.
+    }
     let itemsPicked = _.every(itemsArray, function (item) {
       return item.workflow.status === 'picked';
     });

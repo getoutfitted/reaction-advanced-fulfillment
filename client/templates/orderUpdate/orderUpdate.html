@@ -71,7 +71,12 @@
       </div>
     </div>
     <div class='container'>
-      <a class='btn btn-lg btn-success btn-block' href='#'>Add an item to this order</a>
+      <a class='btn btn-lg btn-success btn-block add-new-item' href='#'>Add an item to this order</a>
+    </div>
+    <div class='row item-selector'>
+    {{#if addingItems}}
+      {{> productSelector}}
+    {{/if}}
     </div>
   </div>
 </template>

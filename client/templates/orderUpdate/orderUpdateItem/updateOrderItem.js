@@ -12,6 +12,26 @@ Template.updateOrderItem.helpers({
       regItem: regItem,
       afItem: afItem
     };
+  }
+});
+
+Template.productSelector.onRendered(function () {
+  let orderId = this.data._id;
+  Session.set('productType-' + orderId, undefined);
+  Session.set('productColor-' + orderId, undefined);
+  Session.set('productGender-' + orderId, undefined);
+  Session.set('productTitle-' + orderId, undefined);
+  Session.set('productVariant-' + orderId, undefined);
+});
+
+Template.productSelector.helpers({
+  addItem: function () {
+    let orderId = Router.current().params.orderNumber;
+    let itemId = Router.current().params.itemId;
+    if (orderId && itemId) {
+      return false;
+    }
+    return true;
   },
   productTypes: function () {
     let allProducts = Products.find({}, {field: {productType: 1}}).fetch();
@@ -112,7 +132,7 @@ Template.updateOrderItem.helpers({
   }
 });
 
-Template.updateOrderItem.events({
+Template.productSelector.events({
   'change .productType-selector': function (event) {
     event.preventDefault();
     let orderId = this._id;
@@ -156,17 +176,35 @@ Template.updateOrderItem.events({
   'click .replace-item': function (event) {
     event.preventDefault();
     let order = this;
-    let oldItemId = event.target.dataset.itemId;
+    let oldItemId = Router.current().params.itemId;
     let type = Session.get('productType-' + this._id);
     let gender = Session.get('productGender-' + this._id);
     let title = Session.get('productTitle-' + this._id);
     let color = Session.get('productColor-' + this._id);
     let variantId = Session.get('productVariant-' + this._id);
+
     Meteor.call('advancedFulfillment/itemExchange', order, oldItemId, type, gender, title, color, variantId);
     Session.set('productColor-' + this._id, undefined);
     Session.set('productGender-' + this._id, undefined);
     Session.set('productTitle-' + this._id, undefined);
     Session.set('productVariant-' + this._id, undefined);
+    Session.set('productType-' + this._id, undefined);
     Router.go('updateOrder', {orderNumber: order._id});
+  },
+  'click .add-item': function (event) {
+    event.preventDefault();
+    let order = this;
+    let type = Session.get('productType-' + this._id);
+    let gender = Session.get('productGender-' + this._id);
+    let title = Session.get('productTitle-' + this._id);
+    let color = Session.get('productColor-' + this._id);
+    let variantId = Session.get('productVariant-' + this._id);
+    Meteor.call('advancedFulfillment/addItem', order, type, gender, title, color, variantId);
+    Session.set('productColor-' + this._id, undefined);
+    Session.set('productGender-' + this._id, undefined);
+    Session.set('productTitle-' + this._id, undefined);
+    Session.set('productVariant-' + this._id, undefined);
+    Session.set('productType-' + this._id, undefined);
+    Session.set('addItems', undefined);
   }
 });

@@ -72,6 +72,10 @@ Template.updateOrder.helpers({
       return true;
     }
     return false;
+  },
+  addingItems: function () {
+    let addingItems = Session.get('addItems');
+    return addingItems || false;
   }
 });
 
@@ -97,5 +101,10 @@ Template.updateOrder.events({
     let newVariantId = Session.get('sizeSelectorFor-' + itemId);
     let order = this;
     Meteor.call('advancedFulfillment/updateItemsColorAndSize', order, itemId, productId, newVariantId);
+  },
+  'click .add-new-item': function (event) {
+    event.preventDefault();
+    let addingItems = !Session.get('addItems') || false;
+    Session.set('addItems', addingItems);
   }
 });

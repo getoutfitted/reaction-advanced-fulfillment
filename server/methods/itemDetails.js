@@ -160,5 +160,69 @@ Meteor.methods({
         'itemMissingDetails': !allItemsUpdated
       }
     });
+  },
+  'advancedFulfillment/itemExchange': function (order, oldItemId, type, gender, title, color, variantId) {
+    check(order, Object);
+    check(oldItemId, String);
+    check(type, String);
+    check(gender, String);
+    check(title, String);
+    check(color, String);
+    check(variantId, String);
+    let product = Products.findOne({
+      productType: type,
+      gender: gender,
+      title: title
+    });
+    let variant = _.findWhere(product.variants, {_id: variantId});
+    let orderItems = order.items;
+    let oldItem = _.findWhere(orderItems, {_id: oldItemId});
+    let orderAfItems = order.advancedFulfillment.items
+    let oldAfItem = _.findWhere(orderAfItems, {_id: oldItemId});
+    let id = Random.id();
+    let shopId = ReactionCore.getShopId();
+    let newItem = {
+      _id: id,
+      shopId: shopId,
+      productId: product._id,
+      quantity: 1,
+      variants: variant,
+      workflow: oldItem.workflow
+    };
+    let newAfItem = {
+      _id: id,
+      productId: product._id,
+      shopId: shopId,
+      quantity: 1,
+      variantId: variant._id,
+      price: variant.price,
+      sku: variant.sku,
+      location: variant.location,
+      itemDescription: product.gender + ' - ' + product.vendor + ' - ' + product.title,
+      workflow: oldAfItem.workflow
+    };
+    let updatedItems = _.map(orderItems, function (item) {
+      if (item._id === oldItemId) {
+        return newItem;
+      }
+      return item;
+    });
+    let updatedAfItems = _.map(orderAfItems, function (item) {
+      if (item._id === oldItemId) {
+        return newAfItem;
+      }
+      return item;
+    });
+    let orderNotes = order.notes + '\nItem # ' + oldAfItem._id + ' - ' + oldAfItem.itemDescription + ' - ' + oldItem.variants.size + ' - ' + oldItem.variants.color + ' was replaced with: \n' + newAfItem.itemDescription + ' - ' + newItem.variants.size + ' - ' + newItem.variants.color;
+    console.log(orderNotes);
+    ReactionCore.Collections.Orders.update({
+      _id: order._id
+    }, {
+      $set: {
+        'items': updatedItems,
+        'advancedFulfillment.items': updatedAfItems,
+        'orderNotes': orderNotes
+      }
+    });
   }
 });

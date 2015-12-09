@@ -240,5 +240,29 @@ Meteor.methods({
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {orderNotes: orderNotes}
     });
+  },
+  'advancedFulfillment/printInvoices': function (startDate, endDate, userId) {
+    check(startDate, Date);
+    check(endDate, Date);
+    check(userId, String);
+    ReactionCore.Collections.Orders.update({
+      'advancedFulfillment.shipmentDate': {
+        $gte: startDate,
+        $lte: endDate
+      }
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderPrinted'
+      },
+      $addToSet: {
+        history: {
+          event: 'orderPrinted',
+          userId: userId,
+          updatedAt: new Date()
+        }
+      }
+    }, {
+      multi: true
+    });
   }
 });

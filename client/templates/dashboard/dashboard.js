@@ -1,6 +1,19 @@
+function getDate() {
+  return $('#print-date').val();
+}
+function getUser() {
+  return Meteor.userId();
+}
+Template.dashboardAdvancedFulfillmment.onRendered(function () {
+  $('#print-date').datepicker();
+});
+
 Template.dashboardAdvancedFulfillmment.helpers({
   dateToday: function () {
     return moment().format('MM-DD-YYYY');
+  },
+  selectedDate: function () {
+
   },
   todaysOrdersExist: function () {
     let rawDate = new Date();
@@ -27,6 +40,33 @@ Template.dashboardAdvancedFulfillmment.helpers({
       return true;
     }
     return false;
+  }
+});
+
+Template.dashboardAdvancedFulfillmment.events({
+  'click .print-all-todays': function (event) {
+    event.preventDefault();
+    let date = event.target.dataset.todaysDate;
+    let startDate = new Date(date);
+    let userId = getUser();
+    let endDate = moment(startDate).endOf('day').toDate();
+    Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, userId);
+  },
+  'click .print-specific-date': function (event) {
+    event.preventDefault();
+    let date = getDate();
+    let userId = getUser();
+    let startDate = new Date(date);
+    let validDate = moment(startDate).isValid();
+    if (validDate) {
+      let endDate = moment(startDate).endOf('day').toDate();
+      Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, userId);
+    } else {
+      Alerts.removeSeen();
+      Alerts.add('please select a valid date', 'danger', {
+        autoHide: true
+      });
+    }
   }
 });
 

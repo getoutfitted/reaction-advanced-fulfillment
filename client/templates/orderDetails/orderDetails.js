@@ -7,6 +7,19 @@ function getIndexBy(array, name, value) {
 }
 
 Template.orderDetails.helpers({
+  currentStatus: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let generalTemplates = [
+      'orderCreated',
+      'orderPrinted',
+      'orderPicked'
+    ];
+    let valid = _.contains(generalTemplates, currentStatus);
+    if (valid) {
+      return 'defaultStatus';
+    };
+    return currentStatus;
+  },
   status: function () {
     return this.advancedFulfillment.workflow.status;
   },

@@ -62,9 +62,9 @@
                   {{#if allowedToUpdateItem item}}
                     {{#if itemUpdateable item }}
                       <a class='btn  btn-sm btn-success  item-picked {{incompleteValidate item.workflow.status}} {{finalClass item.workflow.status}}'  data-item-status='{{item.workflow.status}}'  data-item-id='{{item._id}}' href='#'>{{nextItemStatus item.workflow.status}}</a>
-<!--                     {{else}}
-                      <p>{{uidVerified item}}</p> -->
-                    {{/if}}
+                    {{else}}
+                      <p>{{uidVerified item}}</p>
+                 {{/if}}
                   {{else}}
                     <p>{{item.workflow.status}}</p>
                   {{/if}}
@@ -79,8 +79,6 @@
               </tr>
             {{/each}}
           </tbody>
-
-
         </table>
       </div>
     </div>

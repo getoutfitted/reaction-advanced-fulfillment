@@ -2,6 +2,24 @@
   {{> afNavbar}}
   <div class='container'>
     <div class='row'>
+      <h3>Printing Orders</h3>
+      <div class='row'>
+        <a class='btn btn-lg btn-block btn-info print-all-todays' data-todays-date='{{dateToday}}' href="#">Print Today's Shipping Orders Invoices</a>
+      </div>
+      <br>
+      <div class='row'>
+        <div class='col-xs-10'>
+          <a class='btn btn-lg btn-block btn-info print-specific-date' href="#">Select Date to Print Shipping Invoices</a>
+        </div>
+        <div class='col-xs-2'>
+          <div class='picker'>
+              <input type="text" class="form-control"  placeholder='select date' id='print-date'>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class='row'>
       <a class='btn btn-default' href="{{pathFor 'allShipping'}}">View All Orders Waiting to Be Shipped</a>
     </div>
     <div class='row'>

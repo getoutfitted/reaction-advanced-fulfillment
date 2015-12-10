@@ -147,8 +147,9 @@ Meteor.methods({
     check(userId, String);
     check(status, String);
     let workflow = {
-      orderCreated: 'orderPicking',
-      orderPicking: 'orderPacking',
+      orderPrinted: 'orderPicking',
+      orderPicking: 'orderPicked',
+      orderPicked: 'orderPacking',
       orderPacking: 'orderFulfilled',
       orderFulfilled: 'orderShipping',
       orderShipping: 'orderReturning',
@@ -263,6 +264,24 @@ Meteor.methods({
       }
     }, {
       multi: true
+    });
+  },
+  'advancedFulfillment/printInvoice': function (orderId, userId) {
+    check(orderId, String);
+    check(userId, String);
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderPrinted'
+      },
+      $addToSet: {
+        history: {
+          event: 'orderPrinted',
+          userId: userId,
+          updatedAt: new Date()
+        }
+      }
     });
   }
 });

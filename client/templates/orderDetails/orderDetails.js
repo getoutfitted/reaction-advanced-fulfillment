@@ -18,57 +18,20 @@ Template.orderDetails.helpers({
     let date = this.advancedFulfillment.returnDate;
     return moment(date).format('MMMM Do, YYYY');
   },
+  orderCreated: function () {
+    let valid = this.advancedFulfillment.workflow.status === 'orderCreated';
+    return valid;
+  },
   nextStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
-    let options = [
-      'orderCreated',
-      'orderPicking',
-      'orderPacking',
-      'orderFulfilled',
-      'orderShipping',
-      'orderReturning',
-      'orderInspecting'
-    ];
+    let options = AdvancedFulfillment.workflow;
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
   },
   readyForAssignment: function () {
     let status = this.advancedFulfillment.workflow.status;
-    let itemsArray = this.advancedFulfillment.items;
-    let itemsPicked = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'picked';
-    });
-    let itemsPacked = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'packed';
-    });
-    let itemsShipped = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'shipped';
-    });
-    let itemsReturned = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'returned' || item.workflow.status === 'missing';
-    });
-    let result = false;
-    switch (status) {
-    case 'orderCreated':
-      result = true;
-      break;
-    case 'orderPicking':
-      result = itemsPicked;
-      break;
-    case 'orderPacking':
-      result = itemsPacked;
-      break;
-    case 'orderShipping':
-      result = itemsShipped;
-      break;
-    case 'orderReturning':
-      result = itemsReturned;
-      break;
-    default:
-      result = false;
-      break;
-    }
-    return result;
+    let updateableStatuses = AdvancedFulfillment.assignmentStatuses;
+    return _.contains(updateableStatuses, status);
   },
   shopifyOrder: function () {
     if (this.shopifyOrderNumber) {
@@ -177,14 +140,6 @@ Template.orderDetails.events({
     let currentStatus = this.advancedFulfillment.workflow.status;
     let orderId = this._id;
     let userId = Meteor.userId();
-    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
-  },
-  'click .print-invoice': function (event) {
-    let orderId = this._id;
-    let order = this;
-    let userId = Meteor.userId();
-    let currentStatus = this.advancedFulfillment.workflow.status;
-    Meteor.call('advancedFulfillment/updateAllItemsToShipped', order);
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   },
   'blur .notes': function (event) {

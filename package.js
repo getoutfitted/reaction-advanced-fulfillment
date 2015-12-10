@@ -70,7 +70,11 @@ Package.onUse(function (api) {
     'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.html',
     'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.js',
     'client/templates/print/printInvoiceButton.html',
-    'client/templates/print/printInvoiceButton.js'
+    'client/templates/print/printInvoiceButton.js',
+    'client/templates/orderDetails/status/default/defaultStatus.html',
+    'client/templates/orderDetails/status/default/defaultStatus.js',
+    'client/templates/orderDetails/status/orderPicking/orderPicking.html',
+    'client/templates/orderDetails/status/orderPicking/orderPicking.js'
   ], 'client');
 
   api.addFiles([

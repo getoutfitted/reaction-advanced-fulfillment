@@ -9,6 +9,11 @@ Template.orderPacked.helpers({
     afShipping.state = shippingInfo.region;
     afShipping.zipcode = shippingInfo.postal;
     return afShipping;
+  },
+  localDelivery: function () {
+    let shipping = this.shipping[0];
+    let zipcode = shipping.address.postal;
+    return _.contains(AdvancedFulfillment.localDeliveryZipcodes, zipcode);
   }
 });
 

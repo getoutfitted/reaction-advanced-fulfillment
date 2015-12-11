@@ -1,7 +1,14 @@
 <template name="fulfillmentOrders">
 {{> afNavbar}}
   <div class='container'>
-    <h1>Orders Waiting to Be {{routeStatus}}</h1>
+    <div class='col-md-9 col-sm-12'>
+      <h1>Orders Waiting to Be {{routeStatus}}</h1>
+    </div>
+    <div class="col-md-3 col-sm-12">
+      {{#if showPrintOrdersLink}}
+        <a class='btn btn-block btn-lg btn-info print-invoice' target='_blank' href="{{pathFor 'orders.printAllForDate' date=shippingDate }}">Print Todays Invoices</a>
+      {{/if}}
+    </div>
   </div>
     {{#each orders}}
       {{> fulfillmentOrder}}

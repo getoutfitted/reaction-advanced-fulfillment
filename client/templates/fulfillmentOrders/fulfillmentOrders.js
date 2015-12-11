@@ -7,6 +7,16 @@ Template.fulfillmentOrders.helpers({
     } else if (thisRoute === 'returns') {
       return 'Returned';
     }
+  },
+  showPrintOrdersLink: function () {
+    let currentRoute = Router.current().route.getName();
+    if (currentRoute === 'dateShipping') {
+      return true;
+    }
+    return false;
+  },
+  shippingDate: function () {
+    return Router.current().params.date;
   }
 });
 

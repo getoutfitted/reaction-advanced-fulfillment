@@ -134,6 +134,36 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
   }
 });
 
+Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
+  name: 'orders.printAllForDate',
+  controller: PrintController,
+  path: 'dashboard/advanced-fulfillment/orders/pdf/:date',
+  template: 'advancedFulfillmentOrdersPrint',
+  onBeforeAction() {
+    this.layout('print');
+    return this.next();
+  },
+  subscriptions: function () {
+    this.subscribe('Orders');
+  },
+  data: function () {
+    let day = this.params.date;
+    let startOfDay = moment(day, 'MM-DD-YYYY').startOf('day').toDate();
+    let endOfDay = moment(day, 'MM-DD-YYYY').endOf('day').toDate();
+    return {
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.workflow.status': {
+          $in: ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled']
+        },
+        'advancedFulfillment.shipmentDate': {
+          $gte: startOfDay,
+          $lte: endOfDay
+        }
+      })
+    };
+  }
+});
+
 Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
   name: 'orderByStatus',
   template: 'fulfillmentOrders',

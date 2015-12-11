@@ -321,3 +321,4 @@ Template.itemDetails.events({
     Meteor.call('advancedFulfillment/allItemsToPacked', order);
   }
 });
+

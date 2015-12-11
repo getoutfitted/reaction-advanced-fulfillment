@@ -147,12 +147,14 @@ Meteor.methods({
     check(userId, String);
     check(status, String);
     let workflow = {
-      orderCreated: 'orderPicking',
-      orderPicking: 'orderPacking',
-      orderPacking: 'orderFulfilled',
-      orderFulfilled: 'orderShipping',
-      orderShipping: 'orderReturning',
-      orderReturning: 'orderInspecting'
+      orderPrinted: 'orderPicking',
+      orderPicking: 'orderPicked',
+      orderPicked: 'orderPacking',
+      orderPacking: 'orderPacked',
+      orderPacked: 'orderReadyToShip',
+      orderReadyToShip: 'orderShipped',
+      orderReturning: 'orderCompleted',
+      orderIncomplete: 'orderCompleted'
     };
     let date = new Date();
     let historyEvent = {
@@ -239,6 +241,48 @@ Meteor.methods({
     check(orderNotes, String);
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {orderNotes: orderNotes}
+    });
+  },
+  'advancedFulfillment/printInvoices': function (startDate, endDate, userId) {
+    check(startDate, Date);
+    check(endDate, Date);
+    check(userId, String);
+    ReactionCore.Collections.Orders.update({
+      'advancedFulfillment.shipmentDate': {
+        $gte: startDate,
+        $lte: endDate
+      }
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderPrinted'
+      },
+      $addToSet: {
+        history: {
+          event: 'orderPrinted',
+          userId: userId,
+          updatedAt: new Date()
+        }
+      }
+    }, {
+      multi: true
+    });
+  },
+  'advancedFulfillment/printInvoice': function (orderId, userId) {
+    check(orderId, String);
+    check(userId, String);
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderPrinted'
+      },
+      $addToSet: {
+        history: {
+          event: 'orderPrinted',
+          userId: userId,
+          updatedAt: new Date()
+        }
+      }
     });
   }
 });

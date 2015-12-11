@@ -42,28 +42,35 @@
           Number of a-la-carte Items in Order {{totalItemsCount}}
         </div>
       </div> -->
-      {{#if readyForAssignment}}
+
+<!--       {{readyForAssignment}}
+ -->      {{#if readyForAssignment}}
         <div class="row">
           <div class='col-xs-12 col-sm-6'>
-            <a class='btn btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Add to my {{nextStatus}} queue and go</a>
+            <a class='btn btn-lg btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Add to my {{nextStatus}} queue and go</a>
           </div>
           <div class='col-xs-12 col-sm-6'>
-            <a class='btn btn-block btn-success selfAssignOrder' data-status='{{status}}' href='#'>Add to my {{nextStatus}} queue</a>
+            <a class='btn btn-lg btn-block btn-success selfAssignOrder' data-status='{{status}}' href='#'>Add to my {{nextStatus}} queue</a>
           </div>
         </div>
       {{else}}
-        <!-- <div class='row text-center'>
-          <p class='bg-success'> {{status}} assigned to: <strong>{{currentlyAssignedUser}}</strong> at {{currentlyAssignedTime}}</p>
-        </div> -->
-        <div class='col-xs-12'>
-          {{#if isMyOrder}}
-            <button class='btn btn-block btn-info viewOrder' data-status='{{status}}'>Work on Order</button>
-          {{else}}
-            <button class='btn btn-block btn-default viewOrder' data-status='{{status}}'>View Order</button>
-          {{/if}}
+        <div class='row'>
+          <div class='col-xs-12'>
+            {{#if isMyOrder}}
+              <button class='btn btn-lg btn-block btn-info viewOrder' data-status='{{status}}'>Work on Order</button>
+            {{else}}
+              <button class='btn btn-lg btn-block btn-default viewOrder' data-status='{{status}}'>View Order</button>
+            {{/if}}
+          </div>
         </div>
       {{/if}}
-      <hr>
     </div>
   </a>
+    {{#if orderCreated}}
+      <br>
+      {{> printInvoice}}
+    {{/if}}
+    <hr>
 </template>
+
+

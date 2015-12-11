@@ -30,19 +30,19 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
-      items: {$ne: []},
-      $or: [{
-        'advancedFulfillment.workflow.status': 'orderCreated'
-      },
-      {
-        'advancedFulfillment.workflow.status': 'orderPicking'
-      },
-      {
-        'advancedFulfillment.workflow.status': 'orderPacking'
-      },
-      {
-        'advancedFulfillment.workflow.status': 'orderFulfilled'
-      }]
+      'items': {$ne: []},
+      'advancedFulfillment.workflow.status': {
+        $in: [
+          'orderCreated',
+          'orderPrinted',
+          'orderPicking',
+          'orderPicked',
+          'orderPacking',
+          'orderPacked',
+          'orderReadyToShip',
+          'orderShipped'
+        ]
+      }
     }, {
       sort: {'advancedFulfillment.shipmentDate': 1}
     }
@@ -62,19 +62,18 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
     return {orders: ReactionCore.Collections.Orders.find({
-      // Use $in to shrink these down.
-      $or: [{
-        'advancedFulfillment.workflow.status': 'orderCreated'
+      'advancedFulfillment.workflow.status': {
+        $in: [
+          'orderCreated',
+          'orderPrinted',
+          'orderPicking',
+          'orderPicked',
+          'orderPacking',
+          'orderPacked',
+          'orderReadyToShip',
+          'orderShipped'
+        ]
       },
-      {
-        'advancedFulfillment.workflow.status': 'orderPicking'
-      },
-      {
-        'advancedFulfillment.workflow.status': 'orderPacking'
-      },
-      {
-        'advancedFulfillment.workflow.status': 'orderFulfilled'
-      }],
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)

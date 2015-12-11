@@ -1,16 +1,16 @@
 <template name='orderDetails'>
   {{> afNavbar}}
   <div class='container-fluid'>
-    {{#if printLabel}}
-      <a class='btn btn-block btn-danger print-invoice' target='_blank' href="{{pathFor 'advancedFulfillmentPDF' }}">Print Invoice</a>
+    {{#if orderCreated}}
+      {{> printInvoice}}
     {{/if}}
     <div>
     {{#if readyForAssignment}}
-      <a class='btn btn-block btn-warning advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to progress Order #{{_id}} to: {{nextStatus}}</a>
+      <a class='btn btn-block btn-lg btn-warning advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to progress Order #{{_id}} to: {{nextStatus}}</a>
     {{else}}
-      <div class='row text-center'>
+<!--       <div class='row text-center'>
         <p class='bg-success'> {{status}} assigned to: <strong>{{currentlyAssignedUser}}</strong> at {{currentlyAssignedTime}}</p>
-      </div>
+      </div> -->
     {{/if}}
     </div>
 
@@ -60,7 +60,8 @@
       </div>
     </div>
     <hr>
-    {{> itemDetails}}
+    {{> Template.dynamic template=currentStatus}}
+    <!-- {{> itemDetails}} -->
     <div class="row">
       <div class="col-xs-12 col-sm-6 text-center">
         {{#if myOrdersInCurrentStep.hasPrevOrder}}

@@ -153,7 +153,7 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
     return {
       orders: ReactionCore.Collections.Orders.find({
         'advancedFulfillment.workflow.status': {
-          $in: ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled']
+          $in: AdvancedFulfillment.orderActive
         },
         'advancedFulfillment.shipmentDate': {
           $gte: startOfDay,

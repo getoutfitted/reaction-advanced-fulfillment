@@ -1,19 +1,14 @@
-function getDate() {
-  return $('#print-date').val();
-}
-function getUser() {
-  return Meteor.userId();
-}
 Template.dashboardAdvancedFulfillmment.onRendered(function () {
   $('#print-date').datepicker();
 });
 
 Template.dashboardAdvancedFulfillmment.helpers({
-  dateToday: function () {
-    return moment().format('MM-DD-YYYY');
+  chosenDate: function () {
+    Session.setDefault('chosenDate', moment().format('MM/DD/YYYY'));
+    return Session.get('chosenDate');
   },
-  selectedDate: function () {
-
+  chosenDateText: function () {
+    return moment(Session.get('chosenDate'), 'MM/DD/YYYY').calendar(null, AdvancedFulfillment.calendarReferenceTime);
   },
   todaysOrdersExist: function () {
     let rawDate = new Date();
@@ -44,23 +39,25 @@ Template.dashboardAdvancedFulfillmment.helpers({
 });
 
 Template.dashboardAdvancedFulfillmment.events({
-  'click .print-all-todays': function (event) {
-    event.preventDefault();
-    let date = event.target.dataset.todaysDate;
-    let startDate = new Date(date);
-    let userId = getUser();
-    let endDate = moment(startDate).endOf('day').toDate();
-    Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, userId);
+  'blur #print-date': function (event) {
+    let date = event.currentTarget.value;
+    Session.set('chosenDate', date);
   },
+  // 'click .print-all-todays': function (event) {
+  //   event.preventDefault();
+  //   let date = event.target.dataset.todaysDate;
+  //   let startDate = new Date(date);
+  //   let endDate = moment(startDate).endOf('day').toDate();
+  //   Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, Meteor.userId());
+  //   Router.go('orders.printAllForDate', {date: date});
+  // },
   'click .print-specific-date': function (event) {
     event.preventDefault();
-    let date = getDate();
-    let userId = getUser();
-    let startDate = new Date(date);
-    let validDate = moment(startDate).isValid();
-    if (validDate) {
-      let endDate = moment(startDate).endOf('day').toDate();
-      Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, userId);
+    let chosenDate = Session.get('chosenDate');
+    let date = moment(chosenDate, 'MM-DD-YYYY');
+    if (date.isValid()) {
+      Meteor.call('advancedFulfillment/printInvoices', date.startOf('day').toDate(), date.endOf('day').toDate(), Meteor.userId());
+      Router.go('orders.printAllForDate', {date: date.format('MM-DD-YYYY')});
     } else {
       Alerts.removeSeen();
       Alerts.add('please select a valid date', 'danger', {

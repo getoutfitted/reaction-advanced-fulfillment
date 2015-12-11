@@ -41,12 +41,13 @@ Meteor.methods({
       }
     });
   },
-  'advancedFulfillment/itemMissing': function (orderId, itemId, userId) {
+  'advancedFulfillment/itemIssue': function (orderId, itemId, userId, issue) {
     check(orderId, String);
     check(itemId, String);
     check(userId, String);
+    check(issue, String);
     let historyEvent = {
-      event: 'missingItem',
+      event: issue + 'Item',
       userId: userId,
       updatedAt: new Date()
     };
@@ -54,33 +55,53 @@ Meteor.methods({
       '_id': orderId,
       'advancedFulfillment.items._id': itemId
     }, {
-      $set: {'advancedFulfillment.items.$.workflow.status': 'missing'},
+      $set: {'advancedFulfillment.items.$.workflow.status': issue},
       $addToSet: {
         'history': historyEvent,
-        'advancedFulfillment.items.$.workflow.workflow': 'missing'
+        'advancedFulfillment.items.$.workflow.workflow': issue
       }
     });
   },
-  'advancedFulfillment/itemDamaged': function (orderId, itemId, userId) {
-    check(orderId, String);
-    check(itemId, String);
-    check(userId, String);
-    let historyEvent = {
-      event: 'damagedItem',
-      userId: userId,
-      updatedAt: new Date()
-    };
-    ReactionCore.Collections.Orders.update({
-      '_id': orderId,
-      'advancedFulfillment.items._id': itemId
-    }, {
-      $set: {'advancedFulfillment.items.$.workflow.status': 'damaged'},
-      $addToSet: {
-        'history': historyEvent,
-        'advancedFulfillment.items.$.workflow.workflow': 'damaged'
-      }
-    });
-  },
+  // 'advancedFulfillment/itemMissing': function (orderId, itemId, userId) {
+  //   check(orderId, String);
+  //   check(itemId, String);
+  //   check(userId, String);
+  //   let historyEvent = {
+  //     event: 'missingItem',
+  //     userId: userId,
+  //     updatedAt: new Date()
+  //   };
+  //   ReactionCore.Collections.Orders.update({
+  //     '_id': orderId,
+  //     'advancedFulfillment.items._id': itemId
+  //   }, {
+  //     $set: {'advancedFulfillment.items.$.workflow.status': 'missing'},
+  //     $addToSet: {
+  //       'history': historyEvent,
+  //       'advancedFulfillment.items.$.workflow.workflow': 'missing'
+  //     }
+  //   });
+  // },
+  // 'advancedFulfillment/itemDamaged': function (orderId, itemId, userId) {
+  //   check(orderId, String);
+  //   check(itemId, String);
+  //   check(userId, String);
+  //   let historyEvent = {
+  //     event: 'damagedItem',
+  //     userId: userId,
+  //     updatedAt: new Date()
+  //   };
+  //   ReactionCore.Collections.Orders.update({
+  //     '_id': orderId,
+  //     'advancedFulfillment.items._id': itemId
+  //   }, {
+  //     $set: {'advancedFulfillment.items.$.workflow.status': 'damaged'},
+  //     $addToSet: {
+  //       'history': historyEvent,
+  //       'advancedFulfillment.items.$.workflow.workflow': 'damaged'
+  //     }
+  //   });
+  // },
   'advancedFulfillment/itemReturned': function (orderId, itemId) {
     check(orderId, String);
     check(itemId, String);
@@ -98,7 +119,7 @@ Meteor.methods({
       '_id': orderId,
       'advancedFulfillment.items._id': itemId
     }, {
-      $set: {'advancedFulfillment.items.$.workflow.status': 'completed'}
+      $set: {'advancedFulfillment.items.$.workflow.status': 'returned'}
     });
   },
   'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId) {

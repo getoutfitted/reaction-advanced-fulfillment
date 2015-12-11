@@ -173,44 +173,71 @@ Meteor.methods({
       }
     });
   },
-  'advancedFulfillment/orderCompleted': function (order, userId) {
+  'advancedFulfillment/orderCompletionVerifier': function (order, userId) {
     check(order, Object);
     check(userId, String);
+    let afItems = order.advancedFulfillment.items;
+    let allItemsReturned = _.every(afItems, function (item) {
+      return item.workflow.status === 'returned';
+    });
+    let orderStatus = 'orderIncomplete';
+    if (allItemsReturned) {
+      orderStatus = 'orderCompleted';
+    }
     let date = new Date();
     let historyEvent = {
-      event: 'orderCompleted',
+      event: orderStatus,
       userId: userId,
       updatedAt: date
     };
     ReactionCore.Collections.Orders.update({_id: order._id}, {
       $addToSet: {
         'history': historyEvent,
-        'advancedFulfillment.workflow.workflow': 'orderInspected'
+        'advancedFulfillment.workflow.workflow': order.advancedFulfillment.workflow.status
       },
       $set: {
-        'advancedFulfillment.workflow.status': 'orderCompleted'
+        'advancedFulfillment.workflow.status': orderStatus
       }
     });
   },
-  'advancedFulfillment/orderIncomplete': function (order, userId) {
-    check(order, Object);
-    check(userId, String);
-    let date = new Date();
-    let historyEvent = {
-      event: 'orderIncomplete',
-      userId: userId,
-      updatedAt: date
-    };
-    ReactionCore.Collections.Orders.update({_id: order._id}, {
-      $addToSet: {
-        'history': historyEvent,
-        'advancedFulfillment.workflow.workflow': 'orderInspected'
-      },
-      $set: {
-        'advancedFulfillment.workflow.status': 'orderIncomplete'
-      }
-    });
-  },
+  // 'advancedFulfillment/orderCompleted': function (order, userId) {
+  //   check(order, Object);
+  //   check(userId, String);
+  //   let date = new Date();
+  //   let historyEvent = {
+  //     event: 'orderCompleted',
+  //     userId: userId,
+  //     updatedAt: date
+  //   };
+  //   ReactionCore.Collections.Orders.update({_id: order._id}, {
+  //     $addToSet: {
+  //       'history': historyEvent,
+  //       'advancedFulfillment.workflow.workflow': 'orderInspected'
+  //     },
+  //     $set: {
+  //       'advancedFulfillment.workflow.status': 'orderCompleted'
+  //     }
+  //   });
+  // },
+  // 'advancedFulfillment/orderIncomplete': function (order, userId) {
+  //   check(order, Object);
+  //   check(userId, String);
+  //   let date = new Date();
+  //   let historyEvent = {
+  //     event: 'orderIncomplete',
+  //     userId: userId,
+  //     updatedAt: date
+  //   };
+  //   ReactionCore.Collections.Orders.update({_id: order._id}, {
+  //     $addToSet: {
+  //       'history': historyEvent,
+  //       'advancedFulfillment.workflow.workflow': 'orderInspected'
+  //     },
+  //     $set: {
+  //       'advancedFulfillment.workflow.status': 'orderIncomplete'
+  //     }
+  //   });
+  // },
   'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate) {
     check(orderId, String);
     check(startDate, Date);

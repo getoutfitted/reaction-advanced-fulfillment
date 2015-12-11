@@ -1,4 +1,11 @@
 <template name='orderPacked'>
+  {{#if localDelivery}}
+    <div class='container-fluid'>
+      <div class='row bg-danger text-center'>
+        <h2> This order falls in a local delivery zipcode!</h2>
+      </div>
+    </div>
+  {{/if}}
   <div class='container'>
     <div class='row text-center'>
       <h1>Shipping Info to Be Entered Into Shipping Software</h1>

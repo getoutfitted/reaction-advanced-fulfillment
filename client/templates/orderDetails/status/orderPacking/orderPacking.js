@@ -56,7 +56,8 @@ Template.orderPacking.events({
     event.preventDefault();
     const order = this;
     const userId = Meteor.userId();
-    Meteor.call('advancedFulfillment/allItemsToPacked', order);
+    const currentItemStatus = 'picked';
+    Meteor.call('advancedFulfillment/updateAllItems', order, currentItemStatus);
     Meteor.call('advancedFulfillment/updateOrderWorkflow', order._id, userId, 'orderPacking');
   }
 });

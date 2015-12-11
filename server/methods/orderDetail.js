@@ -150,10 +150,11 @@ Meteor.methods({
       orderPrinted: 'orderPicking',
       orderPicking: 'orderPicked',
       orderPicked: 'orderPacking',
-      orderPacking: 'orderFulfilled',
-      orderFulfilled: 'orderShipping',
-      orderShipping: 'orderReturning',
-      orderReturning: 'orderInspecting'
+      orderPacking: 'orderPacked',
+      orderPacked: 'orderReadyToShip',
+      orderReadyToShip: 'orderShipped',
+      orderReturning: 'orderCompleted',
+      orderIncomplete: 'orderCompleted'
     };
     let date = new Date();
     let historyEvent = {

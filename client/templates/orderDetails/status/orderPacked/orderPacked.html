@@ -1,0 +1,25 @@
+<template name='orderPacked'>
+  <div class='container'>
+    <div class='row text-center'>
+      <h1>Shipping Info to Be Entered Into Shipping Software</h1>
+      <p>When entered, Order will update and move to ReadyToShip</p>
+    </div>
+    <div class='row text-center'>
+      <div class=' well col-xs-6'>
+        <h2>Info for Ship Station</h2>
+        <h3>Shopify Order #</h3>
+        <h3><strong>{{shopifyOrderNumber}}</strong></h3>
+        <br>
+        <br>
+      </div>
+      <div class=' well col-xs-6'>
+        <h2>Info for Endecia</h2>
+        <h3><strong>{{shippingInfo.fullName}}</strong></h3>
+        <h3><strong>{{shippingInfo.address1}}</strong></h3>
+        <h3><strong>{{shippingInfo.address2}}</strong></h3>
+        <h3><strong>{{shippingInfo.city}}, {{shippingInfo.state}} {{shippingInfo.zipcode}}</strong></h3>
+      </div>
+    </div>
+    <a class='btn btn-lg btn-block btn-info local-delivery' href="#">LOCAL DELIVERY</a>
+  </div>
+</template>

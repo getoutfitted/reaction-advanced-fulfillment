@@ -78,7 +78,11 @@ Package.onUse(function (api) {
     'client/templates/orderDetails/status/orderPacking/orderPacking.html',
     'client/templates/orderDetails/status/orderPacking/orderPacking.js',
     'client/templates/orderDetails/status/orderPacked/orderPacked.html',
-    'client/templates/orderDetails/status/orderPacked/orderPacked.js'
+    'client/templates/orderDetails/status/orderPacked/orderPacked.js',
+    'client/templates/orderDetails/status/orderReadyToShip/orderReadyToShip.html',
+    'client/templates/orderDetails/status/orderReadyToShip/orderReadyToShip.js',
+    'client/templates/orderDetails/status/orderReturned/orderReturned.html',
+    'client/templates/orderDetails/status/orderReturned/orderReturned.js'
   ], 'client');
 
   api.addFiles([

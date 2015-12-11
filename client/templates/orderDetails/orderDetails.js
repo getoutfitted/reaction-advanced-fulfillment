@@ -12,8 +12,12 @@ Template.orderDetails.helpers({
     let generalTemplates = [
       'orderCreated',
       'orderPrinted',
-      'orderPicked'
+      'orderPicked',
+      'orderShipped',
+      'orderIncomplete',
+      'orderCompleted'
     ];
+    // let generalTemplates = AdvancedFulfillment.assignmentStatuses;
     let valid = _.contains(generalTemplates, currentStatus);
     if (valid) {
       return 'defaultStatus';

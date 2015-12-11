@@ -62,6 +62,12 @@
     <hr>
     {{> Template.dynamic template=currentStatus}}
     <!-- {{> itemDetails}} -->
+    <div class='row'>
+      <hr>
+      <br>
+      <a class='btn btn-lg btn-block btn-info' href="{{pathFor 'updateOrder' orderNumber=_id}}">Adjust Order Items</a>
+      <br>
+    </div>
     <div class="row">
       <div class="col-xs-12 col-sm-6 text-center">
         {{#if myOrdersInCurrentStep.hasPrevOrder}}

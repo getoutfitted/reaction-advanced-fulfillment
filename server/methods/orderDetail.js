@@ -153,7 +153,8 @@ Meteor.methods({
       orderPacking: 'orderPacked',
       orderPacked: 'orderReadyToShip',
       orderReadyToShip: 'orderShipped',
-      orderReturning: 'orderCompleted',
+      orderShipped: 'orderReturned',
+      orderReturned: 'orderCompleted',
       orderIncomplete: 'orderCompleted'
     };
     let date = new Date();

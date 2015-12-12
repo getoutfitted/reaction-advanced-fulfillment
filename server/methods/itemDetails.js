@@ -62,65 +62,22 @@ Meteor.methods({
       }
     });
   },
-  // 'advancedFulfillment/itemMissing': function (orderId, itemId, userId) {
-  //   check(orderId, String);
-  //   check(itemId, String);
-  //   check(userId, String);
-  //   let historyEvent = {
-  //     event: 'missingItem',
-  //     userId: userId,
-  //     updatedAt: new Date()
-  //   };
-  //   ReactionCore.Collections.Orders.update({
-  //     '_id': orderId,
-  //     'advancedFulfillment.items._id': itemId
-  //   }, {
-  //     $set: {'advancedFulfillment.items.$.workflow.status': 'missing'},
-  //     $addToSet: {
-  //       'history': historyEvent,
-  //       'advancedFulfillment.items.$.workflow.workflow': 'missing'
-  //     }
-  //   });
-  // },
-  // 'advancedFulfillment/itemDamaged': function (orderId, itemId, userId) {
-  //   check(orderId, String);
-  //   check(itemId, String);
-  //   check(userId, String);
-  //   let historyEvent = {
-  //     event: 'damagedItem',
-  //     userId: userId,
-  //     updatedAt: new Date()
-  //   };
-  //   ReactionCore.Collections.Orders.update({
-  //     '_id': orderId,
-  //     'advancedFulfillment.items._id': itemId
-  //   }, {
-  //     $set: {'advancedFulfillment.items.$.workflow.status': 'damaged'},
-  //     $addToSet: {
-  //       'history': historyEvent,
-  //       'advancedFulfillment.items.$.workflow.workflow': 'damaged'
-  //     }
-  //   });
-  // },
-  'advancedFulfillment/itemReturned': function (orderId, itemId) {
+  'advancedFulfillment/itemResolved': function (orderId, itemId, issue) {
     check(orderId, String);
     check(itemId, String);
+    check(issue, String);
     ReactionCore.Collections.Orders.update({
       '_id': orderId,
       'advancedFulfillment.items._id': itemId
     }, {
-      $set: {'advancedFulfillment.items.$.workflow.status': 'returned'}
+      $set: {
+        'advancedFulfillment.items.$.workflow.status': 'returned'
+      },
+      $addToSet: {
+        'advancedFulfillment.items.$.workflow.status': issue
+      }
     });
-  },
-  'advancedFulfillment/itemRepaired': function (orderId, itemId) {
-    check(orderId, String);
-    check(itemId, String);
-    ReactionCore.Collections.Orders.update({
-      '_id': orderId,
-      'advancedFulfillment.items._id': itemId
-    }, {
-      $set: {'advancedFulfillment.items.$.workflow.status': 'returned'}
-    });
+    return ReactionCore.Collections.Orders.findOne(orderId);
   },
   'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId) {
     check(order, Object);

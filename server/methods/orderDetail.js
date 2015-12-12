@@ -200,44 +200,6 @@ Meteor.methods({
       }
     });
   },
-  // 'advancedFulfillment/orderCompleted': function (order, userId) {
-  //   check(order, Object);
-  //   check(userId, String);
-  //   let date = new Date();
-  //   let historyEvent = {
-  //     event: 'orderCompleted',
-  //     userId: userId,
-  //     updatedAt: date
-  //   };
-  //   ReactionCore.Collections.Orders.update({_id: order._id}, {
-  //     $addToSet: {
-  //       'history': historyEvent,
-  //       'advancedFulfillment.workflow.workflow': 'orderInspected'
-  //     },
-  //     $set: {
-  //       'advancedFulfillment.workflow.status': 'orderCompleted'
-  //     }
-  //   });
-  // },
-  // 'advancedFulfillment/orderIncomplete': function (order, userId) {
-  //   check(order, Object);
-  //   check(userId, String);
-  //   let date = new Date();
-  //   let historyEvent = {
-  //     event: 'orderIncomplete',
-  //     userId: userId,
-  //     updatedAt: date
-  //   };
-  //   ReactionCore.Collections.Orders.update({_id: order._id}, {
-  //     $addToSet: {
-  //       'history': historyEvent,
-  //       'advancedFulfillment.workflow.workflow': 'orderInspected'
-  //     },
-  //     $set: {
-  //       'advancedFulfillment.workflow.status': 'orderIncomplete'
-  //     }
-  //   });
-  // },
   'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate) {
     check(orderId, String);
     check(startDate, Date);
@@ -254,10 +216,10 @@ Meteor.methods({
     let orderCreated = {status: 'orderCreated'};
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {
-        startTime: startDate,
-        endTime: endDate,
-        rentalDays: rentalLength,
-        infoMissing: false,
+        'startTime': startDate,
+        'endTime': endDate,
+        'rentalDays': rentalLength,
+        'infoMissing': false,
         'advancedFulfillment.shipmentDate': shipmentChecker(shipmentDate),
         'advancedFulfillment.returnDate': returnChecker(returnDate),
         'advancedFulfillment.workflow': orderCreated

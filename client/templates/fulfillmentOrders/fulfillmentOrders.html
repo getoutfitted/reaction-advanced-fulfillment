@@ -6,7 +6,7 @@
     </div>
     <div class="col-md-3 col-sm-12">
       {{#if showPrintOrdersLink}}
-        <a class='btn btn-block btn-lg btn-info print-invoice' target='_blank' href="{{pathFor 'orders.printAllForDate' date=shippingDate }}">Print Todays Invoices</a>
+        <a class='btn btn-block btn-lg btn-info print-invoice' target='_blank' href="{{pathFor 'orders.printAllForDate' date=shippingDate }}">Print Invoices</a>
       {{/if}}
     </div>
   </div>
@@ -79,5 +79,3 @@
     {{/if}}
     <hr>
 </template>
-
-

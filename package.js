@@ -54,6 +54,8 @@ Package.onUse(function (api) {
     'client/templates/orderQueue/orderQueue.js',
     'client/templates/pdf/advancedFulfillment.html',
     'client/templates/pdf/advancedFulfillment.js',
+    'client/templates/pdf/ordersPrinting.html',
+    'client/templates/pdf/ordersPrinting.js',
     'client/templates/navbar/afNavbar.html',
     'client/templates/navbar/afNavbar.js',
     'client/templates/missingDamaged/missingDamaged.html',

@@ -58,7 +58,6 @@ Template.dashboardAdvancedFulfillmment.events({
     let date2 = moment(chosenDate, 'MM-DD-YYYY');
     let startDate = date.startOf('day').toDate();
     let endDate = date2.endOf('day').toDate();
-    debugger;
     if (date.isValid()) {
       Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, Meteor.userId());
       Router.go('orders.printAllForDate', {date: date.format('MM-DD-YYYY')});

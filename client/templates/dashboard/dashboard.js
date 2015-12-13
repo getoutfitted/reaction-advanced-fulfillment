@@ -55,8 +55,12 @@ Template.dashboardAdvancedFulfillmment.events({
     event.preventDefault();
     let chosenDate = Session.get('chosenDate');
     let date = moment(chosenDate, 'MM-DD-YYYY');
+    let date2 = moment(chosenDate, 'MM-DD-YYYY');
+    let startDate = date.startOf('day').toDate();
+    let endDate = date2.endOf('day').toDate();
+    debugger;
     if (date.isValid()) {
-      Meteor.call('advancedFulfillment/printInvoices', date.startOf('day').toDate(), date.endOf('day').toDate(), Meteor.userId());
+      Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, Meteor.userId());
       Router.go('orders.printAllForDate', {date: date.format('MM-DD-YYYY')});
     } else {
       Alerts.removeSeen();

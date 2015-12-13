@@ -1,6 +1,29 @@
-// Template.dashboardAdvancedFulfillmment.onRendered(function () {
-//   $('#print-date').datepicker();
-// });
+function pullOrders(date, timeLength) {
+  let rawDate = new Date(date);
+  let dayStart = moment(rawDate).startOf(timeLength)._d;
+  let dayEnd = moment(rawDate).endOf(timeLength)._d;
+  let orders =  ReactionCore.Collections.Orders.find({
+    'advancedFulfillment.workflow.status': {
+      $in: [
+        'orderCreated',
+        'orderPrinted',
+        'orderPicking',
+        'orderPicked',
+        'orderPacking',
+        'orderPacked',
+        'orderReadytoShip',
+        'orderShipped'
+      ]
+    },
+    'advancedFulfillment.shipmentDate': {
+      $gte: new Date(dayStart),
+      $lte: new Date(dayEnd)
+    }
+  }).fetch();
+  return _.countBy(orders, function (order) {
+    return order.advancedFulfillment.workflow.status;
+  });
+}
 
 Template.dashboardAdvancedFulfillmment.helpers({
   chosenDate: function () {
@@ -32,11 +55,27 @@ Template.dashboardAdvancedFulfillmment.helpers({
         $lte: new Date(dayEnd)
       }
     }).count();
-    debugger;
     if (allOfTodaysOrders > 0) {
       return true;
     }
     return false;
+  },
+  todaysOrders: function () {
+    return pullOrders(new Date(), 'day');
+  },
+  thisWeeksOrders: function () {
+    return pullOrders(new Date(), 'week');
+  },
+  tomorrowsOrder: function () {
+    let date = moment(new Date()).add(1, 'day');
+    return pullOrders(date, 'day');
+  },
+  yesterdaysOrders: function () {
+    let date = moment(new Date()).subtract(1, 'day');
+    return pullOrders(date, 'day');
+  },
+  thisMonthsOrders: function () {
+    return pullOrders(new Date(), 'month');
   }
 });
 

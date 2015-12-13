@@ -179,7 +179,19 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
   },
   onBeforeAction: function () {
     let status = this.params.status;
-    let viableStatuses = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let viableStatuses = [
+      'orderCreated',
+      'orderPrinted',
+      'orderPicking',
+      'orderPicked',
+      'orderPacking',
+      'orderPacked',
+      'orderReadyToShip',
+      'orderShipped',
+      'orderReturned',
+      'orderCompleted',
+      'orderIncomplete'
+    ];
     let validStatus = _.contains(viableStatuses, status);
     if (validStatus) {
       this.next();
@@ -198,17 +210,15 @@ Router.route('dashboard/advanced-fulfillment/returns', {
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
-      // 'advancedFulfillment.workflow.status': 'orderShipping'
-      $or: [{
-        'advancedFulfillment.workflow.status': 'orderShipping'
-      }, {
-        'advancedFulfillment.workflow.status': 'orderReturning'
-      }, {
-        'advancedFulfillment.workflow.status': 'orderInspecting'
-      }]}, {
-        sort: {'advancedFulfillment.returnDate': 1}
+      'advancedFulfillment.workflow.status': {
+        $in: [
+          'orderShipped',
+          'orderReturned'
+        ]
       }
-    )};
+    }, {
+      sort: {'advancedFulfillment.returnDate': 1}
+    })};
   }
 });
 
@@ -224,13 +234,12 @@ Router.route('dashboard/advanced-fulfillment/returns/:date', {
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
     return {orders: ReactionCore.Collections.Orders.find({
-      $or: [{
-        'advancedFulfillment.workflow.status': 'orderShipping'
-      }, {
-        'advancedFulfillment.workflow.status': 'orderReturning'
-      }, {
-        'advancedFulfillment.workflow.status': 'orderInspecting'
-      }],
+      'advancedFulfillment.workflow.status': {
+        $in: [
+          'orderShipped',
+          'orderReturned'
+        ]
+      },
       'advancedFulfillment.returnDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)

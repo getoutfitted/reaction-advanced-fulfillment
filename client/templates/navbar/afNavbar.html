@@ -25,9 +25,16 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders By Status <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a href="{{pathFor 'orderByStatus' status='orderCreated'}}">Created</a></li>
+              <li><a href="{{pathFor 'orderByStatus' status='orderPrinted'}}">Printed</a></li>
               <li><a href="{{pathFor 'orderByStatus' status='orderPicking'}}">Picking</a></li>
+              <li><a href="{{pathFor 'orderByStatus' status='orderPicked'}}">Picked</a></li>
               <li><a href="{{pathFor 'orderByStatus' status='orderPacking'}}">Packing</a></li>
-              <li><a href="{{pathFor 'orderByStatus' status='orderFulfilled'}}">Fulfilled</a></li>
+              <li><a href="{{pathFor 'orderByStatus' status='orderPacked'}}">Packed</a></li>
+              <li><a href="{{pathFor 'orderByStatus' status='orderReadyToShip'}}">Ready To Ship</a></li>
+              <li><a href="{{pathFor 'orderByStatus' status='orderShipped'}}">Shipped</a></li>
+              <li><a href="{{pathFor 'orderByStatus' status='orderReturned'}}">Returned</a></li>
+              <li><a href="{{pathFor 'orderByStatus' status='orderCompleted'}}">Completed</a></li>
+              <li><a href="{{pathFor 'orderByStatus' status='orderIncomplete'}}">InComplete</a></li>
             </ul>
           </li>
           <li class="dropdown">

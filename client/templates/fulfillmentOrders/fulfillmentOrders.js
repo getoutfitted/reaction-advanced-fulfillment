@@ -3,9 +3,11 @@ Template.fulfillmentOrders.helpers({
     let fullRoute = Iron.Location.get().path;
     let thisRoute = fullRoute.substr(32, 7);
     if (thisRoute === 'shippin') {
-      return 'Shipped';
+      return 'Orders Waiting to Be Shipped';
     } else if (thisRoute === 'returns') {
-      return 'Returned';
+      return 'Orders Waiting to Be Returned';
+    } else if (Router.current().params.status) {
+      return 'Orders in ' + Router.current().params.status + ' status';
     }
   },
   showPrintOrdersLink: function () {

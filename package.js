@@ -31,6 +31,7 @@ Package.onUse(function (api) {
   api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
 
   api.addFiles('lib/fedex.js',  'server');
+  api.addFiles('lib/advancedFulfillment.js');
 
   api.addFiles([
     'server/registry.js',
@@ -49,12 +50,12 @@ Package.onUse(function (api) {
     'client/templates/dashboard/dashboard.js',
     'client/templates/orderDetails/orderDetails.html',
     'client/templates/orderDetails/orderDetails.js',
-    'client/templates/orderDetails/itemDetails.html',
-    'client/templates/orderDetails/itemDetails.js',
     'client/templates/orderQueue/orderQueue.html',
     'client/templates/orderQueue/orderQueue.js',
     'client/templates/pdf/advancedFulfillment.html',
     'client/templates/pdf/advancedFulfillment.js',
+    'client/templates/pdf/ordersPrinting.html',
+    'client/templates/pdf/ordersPrinting.js',
     'client/templates/navbar/afNavbar.html',
     'client/templates/navbar/afNavbar.js',
     'client/templates/missingDamaged/missingDamaged.html',
@@ -67,7 +68,21 @@ Package.onUse(function (api) {
     'client/templates/search/searchOrders.html',
     'client/templates/orderUpdate/orderUpdate.css',
     'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.html',
-    'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.js'
+    'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.js',
+    'client/templates/print/printInvoiceButton.html',
+    'client/templates/print/printInvoiceButton.js',
+    'client/templates/orderDetails/status/default/defaultStatus.html',
+    'client/templates/orderDetails/status/default/defaultStatus.js',
+    'client/templates/orderDetails/status/orderPicking/orderPicking.html',
+    'client/templates/orderDetails/status/orderPicking/orderPicking.js',
+    'client/templates/orderDetails/status/orderPacking/orderPacking.html',
+    'client/templates/orderDetails/status/orderPacking/orderPacking.js',
+    'client/templates/orderDetails/status/orderPacked/orderPacked.html',
+    'client/templates/orderDetails/status/orderPacked/orderPacked.js',
+    'client/templates/orderDetails/status/orderReadyToShip/orderReadyToShip.html',
+    'client/templates/orderDetails/status/orderReadyToShip/orderReadyToShip.js',
+    'client/templates/orderDetails/status/orderReturned/orderReturned.html',
+    'client/templates/orderDetails/status/orderReturned/orderReturned.js'
   ], 'client');
 
   api.addFiles([

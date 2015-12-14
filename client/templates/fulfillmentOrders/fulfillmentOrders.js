@@ -3,10 +3,22 @@ Template.fulfillmentOrders.helpers({
     let fullRoute = Iron.Location.get().path;
     let thisRoute = fullRoute.substr(32, 7);
     if (thisRoute === 'shippin') {
-      return 'Shipped';
+      return 'Orders Waiting to Be Shipped';
     } else if (thisRoute === 'returns') {
-      return 'Returned';
+      return 'Orders Waiting to Be Returned';
+    } else if (Router.current().params.status) {
+      return 'Orders in ' + Router.current().params.status + ' status';
     }
+  },
+  showPrintOrdersLink: function () {
+    let currentRoute = Router.current().route.getName();
+    if (currentRoute === 'dateShipping') {
+      return true;
+    }
+    return false;
+  },
+  shippingDate: function () {
+    return Router.current().params.date;
   }
 });
 
@@ -54,66 +66,27 @@ Template.fulfillmentOrder.helpers({
   orderId: function () {
     return this._id;
   },
+  orderCreated: function () {
+    let valid = this.advancedFulfillment.workflow.status === 'orderCreated';
+    return valid;
+  },
   readyForAssignment: function () {
     let status = this.advancedFulfillment.workflow.status;
-    let itemsArray = this.advancedFulfillment.items;
-    if (itemsArray.length === 0) {
-      return false;
-      // TODO: flag summer orders.
-    }
-    let itemsPicked = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'picked';
-    });
-    let itemsPacked = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'packed';
-    });
-    let itemsShipped = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'shipped';
-    });
-
-    let itemsReturned = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'returned' || item.workflow.status === 'missing';
-    });
-
-    let result = false;
-    switch (status) {
-    case 'orderCreated':
-      result = true;
-      break;
-    case 'orderPicking':
-      result = itemsPicked;
-      break;
-    case 'orderPacking':
-      result = itemsPacked;
-      break;
-    case 'orderShipping':
-      result = itemsShipped;
-      break;
-    case 'orderReturning':
-      result = itemsReturned;
-      break;
-    default:
-      result = false;
-    }
-    return result;
+    let updateableStatuses = AdvancedFulfillment.assignmentStatuses;
+    return _.contains(updateableStatuses, status);
   },
   nextStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
-    let options = [
-      'orderCreated',
-      'orderPicking',
-      'orderPacking',
-      'orderFulfilled',
-      'orderShipping',
-      'orderReturning',
-      'orderInspecting'];
+    let options = AdvancedFulfillment.workflow
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
   },
   currentlyAssignedUser: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
     let history = _.findWhere(this.history, {event: currentStatus});
-    if (history) {
+    let nonUpdateableStatuses = AdvancedFulfillment.nonAssignmentStatuses;
+    let valid = _.contains(nonUpdateableStatuses, currentStatus);
+    if (history && valid) {
       let assignedUser = history.userId;
       return Meteor.users.findOne(assignedUser).username;
     }

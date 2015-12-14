@@ -18,15 +18,15 @@ Template.afNavbar.events({
   'click #afSearchButton': function (event) {
     event.preventDefault();
     let searchValue = $('#afSearchInput').val();
-    let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue)}]});
+    let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue, 10)}]});
     if (order) {
       let orderId = order._id;
       Router.go('orderDetails', {_id: orderId});
     } else {
       Alerts.removeSeen();
-      Alerts.add( searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
-      autoHide: true
-    });
+      Alerts.add(searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
+        autoHide: true
+      });
     }
   },
   'click #afShipButton': function (event) {
@@ -45,6 +45,20 @@ Template.afNavbar.events({
     if (verifiedDate) {
       let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
       Router.go('dateReturning', {date: date});
+    }
+  },
+  'submit .subnav-search-form': function (event) {
+    event.preventDefault();
+    let searchValue = event.target.orderNumber.value;
+    let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue, 10)}]});
+    if (order) {
+      let orderId = order._id;
+      Router.go('orderDetails', {_id: orderId});
+    } else {
+      Alerts.removeSeen();
+      Alerts.add(searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
+        autoHide: true
+      });
     }
   }
 });

@@ -147,12 +147,15 @@ Meteor.methods({
     check(userId, String);
     check(status, String);
     let workflow = {
-      orderCreated: 'orderPicking',
-      orderPicking: 'orderPacking',
-      orderPacking: 'orderFulfilled',
-      orderFulfilled: 'orderShipping',
-      orderShipping: 'orderReturning',
-      orderReturning: 'orderInspecting'
+      orderPrinted: 'orderPicking',
+      orderPicking: 'orderPicked',
+      orderPicked: 'orderPacking',
+      orderPacking: 'orderPacked',
+      orderPacked: 'orderReadyToShip',
+      orderReadyToShip: 'orderShipped',
+      orderShipped: 'orderReturned',
+      orderReturned: 'orderCompleted',
+      orderIncomplete: 'orderCompleted'
     };
     let date = new Date();
     let historyEvent = {
@@ -170,41 +173,30 @@ Meteor.methods({
       }
     });
   },
-  'advancedFulfillment/orderCompleted': function (order, userId) {
+  'advancedFulfillment/orderCompletionVerifier': function (order, userId) {
     check(order, Object);
     check(userId, String);
-    let date = new Date();
-    let historyEvent = {
-      event: 'orderCompleted',
-      userId: userId,
-      updatedAt: date
-    };
-    ReactionCore.Collections.Orders.update({_id: order._id}, {
-      $addToSet: {
-        'history': historyEvent,
-        'advancedFulfillment.workflow.workflow': 'orderInspected'
-      },
-      $set: {
-        'advancedFulfillment.workflow.status': 'orderCompleted'
-      }
+    let afItems = order.advancedFulfillment.items;
+    let allItemsReturned = _.every(afItems, function (item) {
+      return item.workflow.status === 'returned';
     });
-  },
-  'advancedFulfillment/orderIncomplete': function (order, userId) {
-    check(order, Object);
-    check(userId, String);
+    let orderStatus = 'orderIncomplete';
+    if (allItemsReturned) {
+      orderStatus = 'orderCompleted';
+    }
     let date = new Date();
     let historyEvent = {
-      event: 'orderIncomplete',
+      event: orderStatus,
       userId: userId,
       updatedAt: date
     };
     ReactionCore.Collections.Orders.update({_id: order._id}, {
       $addToSet: {
         'history': historyEvent,
-        'advancedFulfillment.workflow.workflow': 'orderInspected'
+        'advancedFulfillment.workflow.workflow': order.advancedFulfillment.workflow.status
       },
       $set: {
-        'advancedFulfillment.workflow.status': 'orderIncomplete'
+        'advancedFulfillment.workflow.status': orderStatus
       }
     });
   },
@@ -224,10 +216,10 @@ Meteor.methods({
     let orderCreated = {status: 'orderCreated'};
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {
-        startTime: startDate,
-        endTime: endDate,
-        rentalDays: rentalLength,
-        infoMissing: false,
+        'startTime': startDate,
+        'endTime': endDate,
+        'rentalDays': rentalLength,
+        'infoMissing': false,
         'advancedFulfillment.shipmentDate': shipmentChecker(shipmentDate),
         'advancedFulfillment.returnDate': returnChecker(returnDate),
         'advancedFulfillment.workflow': orderCreated
@@ -239,6 +231,48 @@ Meteor.methods({
     check(orderNotes, String);
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {orderNotes: orderNotes}
+    });
+  },
+  'advancedFulfillment/printInvoices': function (startDate, endDate, userId) {
+    check(startDate, Date);
+    check(endDate, Date);
+    check(userId, String);
+    ReactionCore.Collections.Orders.update({
+      'advancedFulfillment.shipmentDate': {
+        $gte: startDate,
+        $lte: endDate
+      }
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderPrinted'
+      },
+      $addToSet: {
+        history: {
+          event: 'orderPrinted',
+          userId: userId,
+          updatedAt: new Date()
+        }
+      }
+    }, {
+      multi: true
+    });
+  },
+  'advancedFulfillment/printInvoice': function (orderId, userId) {
+    check(orderId, String);
+    check(userId, String);
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderPrinted'
+      },
+      $addToSet: {
+        history: {
+          event: 'orderPrinted',
+          userId: userId,
+          updatedAt: new Date()
+        }
+      }
     });
   }
 });

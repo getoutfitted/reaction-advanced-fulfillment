@@ -1,4 +1,38 @@
+function pullOrders(date, timeLength) {
+  let rawDate = new Date(date);
+  let dayStart = moment(rawDate).startOf(timeLength)._d;
+  let dayEnd = moment(rawDate).endOf(timeLength)._d;
+  let orders =  ReactionCore.Collections.Orders.find({
+    'advancedFulfillment.workflow.status': {
+      $in: [
+        'orderCreated',
+        'orderPrinted',
+        'orderPicking',
+        'orderPicked',
+        'orderPacking',
+        'orderPacked',
+        'orderReadyToShip',
+        'orderShipped'
+      ]
+    },
+    'advancedFulfillment.shipmentDate': {
+      $gte: new Date(dayStart),
+      $lte: new Date(dayEnd)
+    }
+  }).fetch();
+  return _.countBy(orders, function (order) {
+    return order.advancedFulfillment.workflow.status;
+  });
+}
+
 Template.dashboardAdvancedFulfillmment.helpers({
+  chosenDate: function () {
+    Session.setDefault('chosenDate', moment().format('MM/DD/YYYY'));
+    return Session.get('chosenDate');
+  },
+  chosenDateText: function () {
+    return moment(Session.get('chosenDate'), 'MM/DD/YYYY').calendar(null, AdvancedFulfillment.calendarReferenceTime);
+  },
   dateToday: function () {
     return moment().format('MM-DD-YYYY');
   },
@@ -7,17 +41,18 @@ Template.dashboardAdvancedFulfillmment.helpers({
     let dayStart = moment(rawDate).startOf('day')._d;
     let dayEnd = moment(rawDate).endOf('day')._d;
     let allOfTodaysOrders = ReactionCore.Collections.Orders.find({
-      $or: [{
-        'advancedFulfillment.workflow.status': 'orderCreated'
-      }, {
-        'advancedFulfillment.workflow.status': 'orderPicking'
-      }, {
-        'advancedFulfillment.workflow.status': 'orderPacking'
-      }, {
-        'advancedFulfillment.workflow.status': 'orderFulfilled'
-      }, {
-        'advancedFulfillment.workflow.status': 'orderShipping'
-      }],
+      'advancedFulfillment.workflow.status': {
+        $in: [
+          'orderCreated',
+          'orderPrinted',
+          'orderPicking',
+          'orderPicked',
+          'orderPacking',
+          'orderPacked',
+          'orderReadytoShip',
+          'orderShipped'
+        ]
+      },
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)
@@ -27,10 +62,53 @@ Template.dashboardAdvancedFulfillmment.helpers({
       return true;
     }
     return false;
+  },
+  todaysOrders: function () {
+    return pullOrders(new Date(), 'day');
+  },
+  thisWeeksOrders: function () {
+    return pullOrders(new Date(), 'week');
+  },
+  tomorrowsOrder: function () {
+    let date = moment(new Date()).add(1, 'day');
+    return pullOrders(date, 'day');
+  },
+  yesterdaysOrders: function () {
+    let date = moment(new Date()).subtract(1, 'day');
+    return pullOrders(date, 'day');
+  },
+  thisMonthsOrders: function () {
+    return pullOrders(new Date(), 'month');
+  }
+});
+
+Template.dashboardAdvancedFulfillmment.events({
+  'blur #print-date': function (event) {
+    let date = event.currentTarget.value;
+    Session.set('chosenDate', date);
+  },
+  'click .print-specific-date': function (event) {
+    event.preventDefault();
+    let chosenDate = Session.get('chosenDate');
+    let date = moment(chosenDate, 'MM-DD-YYYY');
+    let date2 = moment(chosenDate, 'MM-DD-YYYY');
+    let startDate = date.startOf('day').toDate();
+    let endDate = date2.endOf('day').toDate();
+    if (date.isValid()) {
+      Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, Meteor.userId());
+      window.open(Router.url('orders.printAllForDate', {date: date.format('MM-DD-YYYY')}));
+    } else {
+      Alerts.removeSeen();
+      Alerts.add('please select a valid date', 'danger', {
+        autoHide: true
+      });
+    }
   }
 });
 
 Template.dashboardAdvancedFulfillmment.onRendered(function () {
+  $('#print-date').datepicker();
+
   let width = 960,
       height = 500,
       radius = Math.min(width, height) / 2 - 10;
@@ -38,17 +116,18 @@ Template.dashboardAdvancedFulfillmment.onRendered(function () {
   let dayStart = moment(rawDate).startOf('day')._d;
   let dayEnd = moment(rawDate).endOf('day')._d;
   let allOfTodaysOrders = ReactionCore.Collections.Orders.find({
-    $or: [{
-      'advancedFulfillment.workflow.status': 'orderCreated'
-    }, {
-      'advancedFulfillment.workflow.status': 'orderPicking'
-    }, {
-      'advancedFulfillment.workflow.status': 'orderPacking'
-    }, {
-      'advancedFulfillment.workflow.status': 'orderFulfilled'
-    }, {
-      'advancedFulfillment.workflow.status': 'orderShipping'
-    }],
+    'advancedFulfillment.workflow.status': {
+      $in: [
+        'orderCreated',
+        'orderPrinted',
+        'orderPicking',
+        'orderPicked',
+        'orderPacking',
+        'orderPacked',
+        'orderReadyToShip',
+        'orderShipped'
+      ]
+    },
     'advancedFulfillment.shipmentDate': {
       $gte: new Date(dayStart),
       $lte: new Date(dayEnd)
@@ -60,17 +139,29 @@ Template.dashboardAdvancedFulfillmment.onRendered(function () {
   });
 
   let data = [
-    orderByStatus.orderCreated || 0,
-    orderByStatus.orderPicking || 0,
-    orderByStatus.orderPacking || 0,
-    orderByStatus.orderFulfilled || 0,
-    orderByStatus.orderShipping || 0
+    orderByStatus.orderCreated     || 0,
+    orderByStatus.orderPrinted     || 0,
+    orderByStatus.orderPicking     || 0,
+    orderByStatus.orderPicked      || 0,
+    orderByStatus.orderPacking     || 0,
+    orderByStatus.orderPacked      || 0,
+    orderByStatus.orderReadyToShip || 0,
+    orderByStatus.orderShipped     || 0
   ];
 
 
   // let color = d3.scale.category10();
   let color = d3.scale.ordinal()
-  .range(['#000000', '#EE4043', '#FABA61', '#FDF6AF', '#429544']);
+  .range([
+    '#000000', // Black - orderCreated
+    '#808080', // Gray - orderPrinted
+    '#EE4043', // Red - orderPicking
+    '#f69fa1', // Pink - orderPicked
+    '#FABA61', // orange - orderPacking
+    'fde3bf', // light organge - orderPacked
+    '#FDF6AF', // light yellow - orderReadytoShip
+    '#429544' // green -'orderShipped'
+  ]);
   let arc = d3.svg.arc()
       .outerRadius(radius);
 

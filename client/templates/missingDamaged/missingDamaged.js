@@ -57,9 +57,14 @@ Template.missingDamagedItem.events({
     let orderId = event.target.dataset.orderId;
     let itemDescription = event.target.dataset.itemDescription;
     let itemId = this._id;
+    let userId = Meteor.userId();
     let confirmed = confirm(itemDescription + ' was returned for order # ' + orderId + '?');
     if (confirmed) {
-      Meteor.call('advancedFulfillment/itemReturned', orderId, itemId);
+      Meteor.call('advancedFulfillment/itemResolved', orderId, itemId, 'returned', function (err, result) {
+        if (result) {
+          Meteor.call('advancedFulfillment/orderCompletionVerifier', result, userId);
+        }
+      });
     }
   },
   'click .repaired-button': function (event) {
@@ -67,9 +72,14 @@ Template.missingDamagedItem.events({
     let orderId = event.target.dataset.orderId;
     let itemDescription = event.target.dataset.itemDescription;
     let itemId = this._id;
+    let userId = Meteor.userId();
     let confirmed = confirm(itemDescription + ' was repaired/resoved for order # ' + orderId + '?');
     if (confirmed) {
-      Meteor.call('advancedFulfillment/itemRepaired', orderId, itemId);
+      Meteor.call('advancedFulfillment/itemResolved', orderId, itemId, 'repaired', function (err, result) {
+        if (result) {
+          Meteor.call('advancedFulfillment/orderCompletionVerifier', result, userId);
+        }
+      });
     }
   }
 });

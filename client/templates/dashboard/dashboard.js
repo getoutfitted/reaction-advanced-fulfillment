@@ -11,7 +11,7 @@ function pullOrders(date, timeLength) {
         'orderPicked',
         'orderPacking',
         'orderPacked',
-        'orderReadytoShip',
+        'orderReadyToShip',
         'orderShipped'
       ]
     },

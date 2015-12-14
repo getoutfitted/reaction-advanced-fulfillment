@@ -33,6 +33,9 @@ Template.dashboardAdvancedFulfillmment.helpers({
   chosenDateText: function () {
     return moment(Session.get('chosenDate'), 'MM/DD/YYYY').calendar(null, AdvancedFulfillment.calendarReferenceTime);
   },
+  dateToday: function () {
+    return moment().format('MM-DD-YYYY');
+  },
   todaysOrdersExist: function () {
     let rawDate = new Date();
     let dayStart = moment(rawDate).startOf('day')._d;

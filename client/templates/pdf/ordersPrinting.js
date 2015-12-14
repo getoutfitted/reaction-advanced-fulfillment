@@ -8,5 +8,9 @@ Template.advancedFulfillmentOrdersPrint.helpers({
   },
   billingAddress: function (order) {
     return order.billing[0].address;
+  },
+  itemAttr: function (attr) {
+    item = _.findWhere(Template.parentData().items, {_id: this._id});
+    return item.variants[attr];
   }
 });

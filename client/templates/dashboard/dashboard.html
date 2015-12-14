@@ -17,10 +17,15 @@
     </div>
     <hr>
     <div class='row'>
-      <a class='btn btn-default' href="{{pathFor 'allShipping'}}">View All Orders Waiting to Be Shipped</a>
+      <div class="col-xs-12 col-sm-6">
+        <a class='btn btn-lg btn-default' href="{{pathFor 'allShipping'}}">View All Orders Waiting to Be Shipped</a>
+      </div>
+      <div class="col-xs-12 col-sm-6">
+        <a class='btn btn-lg btn-default' href="{{pathFor 'dateShipping' date=dateToday}}">All Orders that need to be shipped today</a>
+      </div>
     </div>
     <div class='row'>
-      <a class='btn btn-default' href="{{pathFor 'dateShipping' date=dateToday}}">All Orders that need to be shipped today</a>
+
     </div>
     <div class='row'>
       <h3>Orders Shipping in Near Future</h3>

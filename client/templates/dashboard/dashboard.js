@@ -11,7 +11,7 @@ function pullOrders(date, timeLength) {
         'orderPicked',
         'orderPacking',
         'orderPacked',
-        'orderReadytoShip',
+        'orderReadyToShip',
         'orderShipped'
       ]
     },
@@ -32,6 +32,9 @@ Template.dashboardAdvancedFulfillmment.helpers({
   },
   chosenDateText: function () {
     return moment(Session.get('chosenDate'), 'MM/DD/YYYY').calendar(null, AdvancedFulfillment.calendarReferenceTime);
+  },
+  dateToday: function () {
+    return moment().format('MM-DD-YYYY');
   },
   todaysOrdersExist: function () {
     let rawDate = new Date();
@@ -84,14 +87,6 @@ Template.dashboardAdvancedFulfillmment.events({
     let date = event.currentTarget.value;
     Session.set('chosenDate', date);
   },
-  // 'click .print-all-todays': function (event) {
-  //   event.preventDefault();
-  //   let date = event.target.dataset.todaysDate;
-  //   let startDate = new Date(date);
-  //   let endDate = moment(startDate).endOf('day').toDate();
-  //   Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, Meteor.userId());
-  //   Router.go('orders.printAllForDate', {date: date});
-  // },
   'click .print-specific-date': function (event) {
     event.preventDefault();
     let chosenDate = Session.get('chosenDate');
@@ -101,7 +96,7 @@ Template.dashboardAdvancedFulfillmment.events({
     let endDate = date2.endOf('day').toDate();
     if (date.isValid()) {
       Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, Meteor.userId());
-      Router.go('orders.printAllForDate', {date: date.format('MM-DD-YYYY')});
+      window.open(Router.url('orders.printAllForDate', {date: date.format('MM-DD-YYYY')}));
     } else {
       Alerts.removeSeen();
       Alerts.add('please select a valid date', 'danger', {

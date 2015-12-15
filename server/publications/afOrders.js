@@ -16,7 +16,8 @@ Meteor.publish('afOrders', function () {
         'shipping.address.phone': 1,
         'history': 1,
         'shipping.address.fullName': 1,
-        'billing.address.fullName': 1
+        'billing.address.fullName': 1,
+        'localDelivery': 1
       }
 
     });

@@ -1,11 +1,17 @@
 Template.fulfillmentOrders.helpers({
   routeStatus: function () {
-    let fullRoute = Iron.Location.get().path;
-    let thisRoute = fullRoute.substr(32, 7);
-    if (thisRoute === 'shippin') {
+    let fullRoute = Router.current().url;
+    let routeComponents = fullRoute.split('/');
+    // let thisRoute = fullRoute.substr(32, 7);
+    // if (thisRoute === 'shipping') {
+    if (_.contains(routeComponents, 'shipping')) {
       return 'Orders Waiting to Be Shipped';
-    } else if (thisRoute === 'returns') {
+    } else if (_.contains(routeComponents, 'returns')) {
       return 'Orders Waiting to Be Returned';
+    } else if (_.contains(routeComponents, 'local-deliveries')) {
+      return 'All Local Deliveries';
+    } else if (_.contains(routeComponents, 'local-delivery')) {
+      return 'Local Deliveries for ' + Router.current().params.date;
     } else if (Router.current().params.status) {
       return 'Orders in ' + Router.current().params.status + ' status';
     }
@@ -38,9 +44,10 @@ Template.fulfillmentOrder.helpers({
     return moment(longDate).format('MMMM Do, YYYY');
   },
   toBeShipped: function () {
-    let fullRoute = Iron.Location.get().path;
-    let thisRoute = fullRoute.substr(32, 8);
-    if (thisRoute === 'shipping') {
+    let fullRoute = Router.current().url;
+    let routeComponents = fullRoute.split('/');
+    let toBeShipped = _.intersection(routeComponents, ['shipping', 'local-delivery', 'local-deliveries']);
+    if (toBeShipped.length > 0) {
       return true;
     }
     return false;
@@ -83,7 +90,7 @@ Template.fulfillmentOrder.helpers({
   },
   nextStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
-    let options = AdvancedFulfillment.workflow
+    let options = AdvancedFulfillment.workflow;
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
   },

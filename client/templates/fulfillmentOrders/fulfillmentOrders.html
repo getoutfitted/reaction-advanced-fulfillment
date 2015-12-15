@@ -16,9 +16,14 @@
 </template>
 
 <template name='fulfillmentOrder'>
-  <br /><br />
+  <br/><br/>
   <a href="{{pathFor 'orderDetails' _id=this._id}}">
     <div>
+      {{#if this.localDelivery}}
+        <div class='row text-center'>
+          <p class="bg-success"> This order is eligible for Local Delivery</p>
+        </div>
+      {{/if}}
       <div class="row orderBox">
         <div class='col-sm-6'>
           <h3><strong>{{orderNumber}}</strong></h3>

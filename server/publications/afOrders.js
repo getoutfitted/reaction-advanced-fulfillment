@@ -14,7 +14,9 @@ Meteor.publish('afOrders', function () {
         'email': 1,
         'shopifyOrderNumber': 1,
         'shipping.address.phone': 1,
-        'history': 1
+        'history': 1,
+        'shipping.address.fullName': 1,
+        'billing.address.fullName': 1
       }
 
     });

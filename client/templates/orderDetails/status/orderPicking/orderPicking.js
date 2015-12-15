@@ -21,7 +21,14 @@ Template.orderPicking.onCreated(function () {
 
 Template.orderPicking.helpers({
   items: function () {
-    return this.advancedFulfillment.items;
+    let items = this.advancedFulfillment.items;
+    return _.sortBy(items, function (item) {
+      if (item.location) {
+        return parseInt(item.location.split('A')[1]);
+      } else {
+        return 999;
+      }
+    });
   },
   orderId: function () {
     return this._id;

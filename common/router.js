@@ -84,7 +84,7 @@ Router.route('dashboard/advanced-fulfillment/local-deliveries', {
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
       'items': {$ne: []},
-      'localDelivery': true,
+      'advancedFulfillment.localDelivery': true,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderActive
       }
@@ -108,7 +108,7 @@ Router.route('dashboard/advanced-fulfillment/local-delivery/:date', {
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
     return {orders: ReactionCore.Collections.Orders.find({
-      'localDelivery': true,
+      'advancedFulfillment.localDelivery': true,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderActive
       },

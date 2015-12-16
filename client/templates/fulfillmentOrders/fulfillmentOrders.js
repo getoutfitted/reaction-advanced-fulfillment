@@ -51,6 +51,12 @@ Template.fulfillmentOrder.helpers({
   contactInfo: function () {
     return this.email || 'Checked Out As Guest';
   },
+  names: function () {
+    return  {
+      shipping: this.shipping[0].address.fullName,
+      billing: this.shipping[0].address.fullName
+    };
+  },
   phoneNumber: function () {
     return this.shipping[0].address.phone || '';
   },

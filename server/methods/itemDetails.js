@@ -170,6 +170,9 @@ Meteor.methods({
       }
       return item;
     });
+    let allItemsUpdated = _.every(updatedAfItems, function (item) {
+      return item.variantId;
+    });
     let orderNotes = order.notes + '\nItem # ' + oldAfItem._id + ' - ' + oldAfItem.itemDescription + ' - ' + oldItem.variants.size + ' - ' + oldItem.variants.color + ' was replaced with: \n' + newAfItem.itemDescription + ' - ' + newItem.variants.size + ' - ' + newItem.variants.color;
     ReactionCore.Collections.Orders.update({
       _id: order._id
@@ -177,7 +180,8 @@ Meteor.methods({
       $set: {
         'items': updatedItems,
         'advancedFulfillment.items': updatedAfItems,
-        'orderNotes': orderNotes
+        'orderNotes': orderNotes,
+        'itemMissingDetails': !allItemsUpdated
       }
     });
   },

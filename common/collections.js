@@ -129,6 +129,10 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   localDelivery: {
     type: Boolean,
     optional: true
+  },
+  rushDelivery: {
+    type: Boolean,
+    optional: true
   }
 });
 

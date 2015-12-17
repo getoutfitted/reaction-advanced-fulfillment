@@ -6,6 +6,10 @@ function getIndexBy(array, name, value) {
   }
 }
 
+function dateFormater(date) {
+  return moment(date).format('MMMM Do, YYYY');
+}
+
 Template.orderDetails.helpers({
   currentStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
@@ -29,11 +33,27 @@ Template.orderDetails.helpers({
   },
   shippingDate: function () {
     let date = this.advancedFulfillment.shipmentDate;
-    return moment(date).format('MMMM Do, YYYY');
+    return dateFormater(date);
   },
   returnDate: function () {
     let date = this.advancedFulfillment.returnDate;
-    return moment(date).format('MMMM Do, YYYY');
+    return dateFormater(date);
+  },
+  arriveByDate: function () {
+    let date = this.advancedFulfillment.arriveBy;
+    return dateFormater(date);
+  },
+  returnByDate: function () {
+    let date = this.advancedFulfillment.shipReturnBy;
+    return dateFormater(date);
+  },
+  firstDay: function () {
+    let date = this.startTime;
+    return dateFormater(date);
+  },
+  lastDay: function () {
+    let date = this.endTime;
+    return dateFormater(date);
   },
   orderCreated: function () {
     let valid = this.advancedFulfillment.workflow.status === 'orderCreated';

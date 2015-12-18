@@ -41,6 +41,7 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
     )};
   }
 });
+
 Router.route('dashboard/advanced-fulfillment/shipping/:date', {
   name: 'dateShipping',
   controller: advancedFulfillmentController,
@@ -53,6 +54,61 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
     return {orders: ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderActive
+      },
+      'advancedFulfillment.shipmentDate': {
+        $gte: new Date(dayStart),
+        $lte: new Date(dayEnd)
+      }
+    })};
+  },
+  onBeforeAction: function () {
+    let date = this.params.date;
+    let validDate = moment(date, 'MM-DD-YYYY').isValid();
+    if (validDate) {
+      this.next();
+    }  else {
+      this.render('notFound');
+    }
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/local-deliveries', {
+  name: 'allLocalDeliveries',
+  controller: advancedFulfillmentController,
+  template: 'fulfillmentOrders',
+  waitOn: function () {
+    return this.subscribe('afOrders');
+  },
+  data: function () {
+    return {orders: ReactionCore.Collections.Orders.find({
+      'items': {$ne: []},
+      'localDelivery': true,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderActive
+      }
+    }, {
+      sort: {'advancedFulfillment.shipmentDate': 1}
+    }
+
+    )};
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/local-delivery/:date', {
+  name: 'dateLocalDelivery',
+  controller: advancedFulfillmentController,
+  template: 'fulfillmentOrders',
+  waitOn: function () {
+    return this.subscribe('afOrders');
+  },
+  data: function () {
+    let rawDate = this.params.date;
+    let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
+    let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
+    return {orders: ReactionCore.Collections.Orders.find({
+      'localDelivery': true,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderActive
       },

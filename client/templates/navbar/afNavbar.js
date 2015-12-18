@@ -38,6 +38,15 @@ Template.afNavbar.events({
       Router.go('dateShipping', {date: date});
     }
   },
+  'click #afLocalDeliveryButton': function (event) {
+    event.preventDefault();
+    let unfilteredDate = $('#afLocalDeliveryInput').val();
+    let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
+    if (verifiedDate) {
+      let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
+      Router.go('dateLocalDelivery', {date: date});
+    }
+  },
   'click #afReturnButton': function (event) {
     event.preventDefault();
     let unfilteredDate = $('#afReturnInput').val();

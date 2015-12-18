@@ -46,9 +46,16 @@
         <h4>Last Use Day: {{lastDay}}</h4>
       </div>
     </div>
-    <div class='row'>
-      <h3>Eligible for Local Delivery: <strong>{{this.advancedFulfillment.localDelivery}}</strong></h3>
-    </div>
+    {{#if this.advancedFulfillment.localDelivery}}
+      <div class='row'>
+        <h3>Eligible for Local Delivery: <strong>{{this.advancedFulfillment.localDelivery}}</strong></h3>
+      </div>
+    {{/if}}
+    {{#if this.advancedFulfillment.rushDelivery}}
+      <div class='row'>
+        <h3><strong>This order requires Rush Delivery</strong></h3>
+      </div>
+    {{/if}}
     <hr>
     <div class='row'>
       <div class='col-sm-2'>

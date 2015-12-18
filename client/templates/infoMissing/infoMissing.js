@@ -1,4 +1,19 @@
 Template.infoMissing.helpers({
+  orderIssues: function () {
+    let orderIssues = ReactionCore.Collections.Orders.find({
+      $or: [
+        {infoMissing: true},
+        {itemMissingDetails: true},
+        {bundleMissingColor: true},
+        {'advancedFulfillment.impossibleShipDate': true}
+      ]
+    }).count();
+    anyIssues = orderIssues > 0;
+    return {
+      count: orderIssues,
+      any: anyIssues
+    };
+  },
   missingRentalDates: function () {
     return ReactionCore.Collections.Orders.find({
       infoMissing: true,
@@ -11,6 +26,25 @@ Template.infoMissing.helpers({
       }]
     }, {$sort: {createdAt: 1}});
   },
+  anyMissingRentalDates: function () {
+    let ordersCount = ReactionCore.Collections.Orders.find({
+      infoMissing: true,
+      $or: [{
+        startTime: {$exists: false}
+      }, {
+        endTime: {$exists: false}
+      }, {
+        rentalDays: {$exists: false}
+      }]
+    }).count();
+    return ordersCount > 0;
+  },
+  anyMissingItemsFromOrder: function () {
+    let ordersCount =  ReactionCore.Collections.Orders.find({
+      itemMissingDetails: true
+    }).count();
+    return ordersCount > 0;
+  },
   missingItemsFromOrder: function () {
     return ReactionCore.Collections.Orders.find({
       itemMissingDetails: true
@@ -21,24 +55,22 @@ Template.infoMissing.helpers({
       bundleMissingColor: true
     });
   },
-  billingName: function (order) {
-    return order.billing[0].address.fullName;
+  anyMissingBundleInfo: function () {
+    let ordersCount = ReactionCore.Collections.Orders.find({
+      bundleMissingColor: true
+    }).count();
+    return ordersCount > 0;
   },
-  billingPhone: function (order) {
-    return order.billing[0].address.phone;
+  anyImpossibleDates: function () {
+    let ordersCount = ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.impossibleShipDate': true
+    }).count();
+    return ordersCount > 0;
   },
-  email: function (order) {
-    return order.email;
-  },
-  shippingName: function (order) {
-    return order.shipping[0].address.fullName;
-  },
-  shippingPhone: function (order) {
-    return order.shipping[0].address.phone;
-  },
-  shippingAddress: function (order) {
-    let address = order.shipping[0].address;
-    return '<p>' + address.fullName + '</p><p>' + address.address1 + ' ' + address.address2 + '</p><p>' + address.city + ', ' + address.region + ', ' + address.postal + '</p>';
+  impossibleDates: function () {
+    return ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.impossibleShipDate': true
+    });
   }
 });
 
@@ -62,3 +94,25 @@ Template.infoMissing.onRendered(function () {
     todayHighlight: true
   });
 });
+
+Template.csDetails.helpers({
+  billingName: function (order) {
+    return order.billing[0].address.fullName;
+  },
+  billingPhone: function (order) {
+    return order.billing[0].address.phone;
+  },
+  email: function (order) {
+    return order.email;
+  },
+  shippingName: function (order) {
+    return order.shipping[0].address.fullName;
+  },
+  shippingPhone: function (order) {
+    return order.shipping[0].address.phone;
+  },
+  shippingAddress: function (order) {
+    let address = order.shipping[0].address;
+    return '<p>' + address.fullName + '</p><p>' + address.address1 + ' ' + address.address2 + '</p><p>' + address.city + ', ' + address.region + ', ' + address.postal + '</p>';
+  }
+})

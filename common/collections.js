@@ -133,6 +133,10 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   rushDelivery: {
     type: Boolean,
     optional: true
+  },
+  impossibleShipDate: {
+    type: Boolean,
+    optional: true
   }
 });
 

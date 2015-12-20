@@ -19,9 +19,14 @@
   <br/><br/>
   <a href="{{pathFor 'orderDetails' _id=this._id}}">
     <div>
-      {{#if this.localDelivery}}
+      {{#if this.advancedFulfillment.localDelivery}}
         <div class='row text-center'>
           <p class="bg-success"> This order is eligible for Local Delivery</p>
+        </div>
+      {{/if}}
+      {{#if this.advancedFulfillment.rushDelivery}}
+        <div class='row text-center'>
+          <p class="bg-danger"> This order requires rush delivery</p>
         </div>
       {{/if}}
       <div class="row orderBox">
@@ -40,6 +45,8 @@
         <div class='col-sm-6 {{status}}'>
           Current Status: <strong class='{{status}}'>{{status}}</strong><br />
           Assigned User: {{currentlyAssignedUser}}
+          <br>
+          Eligible for Local Delivery: <strong>{{this.advancedFulfillment.localDelivery}}</strong>
         </div>
         <div class='col-sm-6'>
           OrderId: {{_id}}<br />

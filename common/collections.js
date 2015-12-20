@@ -113,6 +113,30 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   items: {
     type: [ReactionCore.Schemas.AdvancedFulfillmentItem],
     optional: true
+  },
+  arriveBy: {
+    type: Date,
+    optional: true
+  },
+  shipReturnBy: {
+    type: Date,
+    optional: true
+  },
+  transitTime: {
+    type: Number,
+    optional: true
+  },
+  localDelivery: {
+    type: Boolean,
+    optional: true
+  },
+  rushDelivery: {
+    type: Boolean,
+    optional: true
+  },
+  impossibleShipDate: {
+    type: Boolean,
+    optional: true
   }
 });
 

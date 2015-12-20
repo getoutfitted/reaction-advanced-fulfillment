@@ -47,7 +47,9 @@ Template.fulfillmentOrder.helpers({
     let fullRoute = Router.current().url;
     let routeComponents = fullRoute.split('/');
     let toBeShipped = _.intersection(routeComponents, ['shipping', 'local-delivery', 'local-deliveries']);
-    if (toBeShipped.length > 0) {
+    let params = Router.current().params.status;
+    let active = _.contains(AdvancedFulfillment.orderActive, params);
+    if (toBeShipped.length > 0 || active) {
       return true;
     }
     return false;

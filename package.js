@@ -38,7 +38,8 @@ Package.onUse(function (api) {
     'server/hooks/after_copyCartToOrder.js',
     'server/methods/orderDetail.js',
     'server/methods/itemDetails.js',
-    'server/publications/afOrders.js'
+    'server/publications/afOrders.js',
+    'server/methods/customerService.js'
   ], 'server');
 
   api.addFiles([
@@ -82,7 +83,14 @@ Package.onUse(function (api) {
     'client/templates/orderDetails/status/orderReadyToShip/orderReadyToShip.html',
     'client/templates/orderDetails/status/orderReadyToShip/orderReadyToShip.js',
     'client/templates/orderDetails/status/orderReturned/orderReturned.html',
-    'client/templates/orderDetails/status/orderReturned/orderReturned.js'
+    'client/templates/orderDetails/status/orderReturned/orderReturned.js',
+    'client/templates/customerService/impossibleDates/impossibleDates.html',
+    'client/templates/customerService/impossibleDates/impossibleDates.js',
+    'client/templates/customerService/csDetails/csDetails.html',
+    'client/templates/customerService/csDetails/csDetails.js',
+    'client/templates/customerService/missingRentalDates/missingRentalDates.html',
+    'client/templates/customerService/missingRentalDates/missingRentalDates.js'
+
   ], 'client');
 
   api.addFiles([

@@ -406,3 +406,21 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber/:itemId',
     }
   }
 });
+
+Router.route('dashboard/advanced-fulfillment/customer-service/impossible-dates', {
+  name: 'impossibleDates',
+  controller: advancedFulfillmentController,
+  template: 'impossibleDates',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/customer-service/missing-rental-dates', {
+  name: 'missingRentalDates',
+  controller: advancedFulfillmentController,
+  template: 'missingRentalDates',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  }
+});

@@ -424,3 +424,12 @@ Router.route('dashboard/advanced-fulfillment/customer-service/missing-rental-dat
     return this.subscribe('Orders');
   }
 });
+
+Router.route('dashboard/advanced-fulfillment/customer-service/missing-item-details', {
+  name: 'missingItemDetails',
+  controller: advancedFulfillmentController,
+  template: 'missingItemDetails',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  }
+});

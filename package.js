@@ -89,7 +89,9 @@ Package.onUse(function (api) {
     'client/templates/customerService/csDetails/csDetails.html',
     'client/templates/customerService/csDetails/csDetails.js',
     'client/templates/customerService/missingRentalDates/missingRentalDates.html',
-    'client/templates/customerService/missingRentalDates/missingRentalDates.js'
+    'client/templates/customerService/missingRentalDates/missingRentalDates.js',
+    'client/templates/customerService/missingItemDetails/missingItemDetails.html',
+    'client/templates/customerService/missingItemDetails/missingItemDetails.js'
 
   ], 'client');
 

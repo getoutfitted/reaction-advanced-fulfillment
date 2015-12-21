@@ -61,8 +61,6 @@ Package.onUse(function (api) {
     'client/templates/navbar/afNavbar.js',
     'client/templates/missingDamaged/missingDamaged.html',
     'client/templates/missingDamaged/missingDamaged.js',
-    'client/templates/infoMissing/infoMissing.html',
-    'client/templates/infoMissing/infoMissing.js',
     'client/templates/orderUpdate/orderUpdate.html',
     'client/templates/orderUpdate/orderUpdate.js',
     'client/templates/search/searchOrders.js',
@@ -91,8 +89,9 @@ Package.onUse(function (api) {
     'client/templates/customerService/missingRentalDates/missingRentalDates.html',
     'client/templates/customerService/missingRentalDates/missingRentalDates.js',
     'client/templates/customerService/missingItemDetails/missingItemDetails.html',
-    'client/templates/customerService/missingItemDetails/missingItemDetails.js'
-
+    'client/templates/customerService/missingItemDetails/missingItemDetails.js',
+    'client/templates/customerService/missingBundleColors/missingBundleColors.html',
+    'client/templates/customerService/missingBundleColors/missingBundleColors.js'
   ], 'client');
 
   api.addFiles([

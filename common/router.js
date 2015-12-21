@@ -321,15 +321,6 @@ Router.route('dashboard/advanced-fulfillment/damaged', {
   };}
 });
 
-Router.route('dashboard/advanced-fulfillment/information-missing', {
-  name: 'infoMissing',
-  controller: advancedFulfillmentController,
-  template: 'infoMissing',
-  waitOn: function () {
-    return this.subscribe('Orders');
-  }
-});
-
 Router.route('dashboard/advanced-fulfillment/search', {
   name: 'searchOrders',
   controller: advancedFulfillmentController,
@@ -429,6 +420,15 @@ Router.route('dashboard/advanced-fulfillment/customer-service/missing-item-detai
   name: 'missingItemDetails',
   controller: advancedFulfillmentController,
   template: 'missingItemDetails',
+  waitOn: function () {
+    return this.subscribe('Orders');
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/customer-service/missing-bundle-colors', {
+  name: 'missingBundleColors',
+  controller: advancedFulfillmentController,
+  template: 'missingBundleColors',
   waitOn: function () {
     return this.subscribe('Orders');
   }

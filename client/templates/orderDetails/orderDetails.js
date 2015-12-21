@@ -1,46 +1,92 @@
+function getIndexBy(array, name, value) {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i][name] === value) {
+      return i;
+    }
+  }
+}
+
+function dateFormater(date) {
+  return moment(date).format('MMMM Do, YYYY');
+}
+
 Template.orderDetails.helpers({
+  currentStatus: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let generalTemplates = [
+      'orderCreated',
+      'orderPrinted',
+      'orderPicked',
+      'orderShipped',
+      'orderIncomplete',
+      'orderCompleted'
+    ];
+    // let generalTemplates = AdvancedFulfillment.assignmentStatuses;
+    let valid = _.contains(generalTemplates, currentStatus);
+    if (valid) {
+      return 'defaultStatus';
+    };
+    return currentStatus;
+  },
   status: function () {
     return this.advancedFulfillment.workflow.status;
   },
   shippingDate: function () {
     let date = this.advancedFulfillment.shipmentDate;
-    return moment(date).format('MMMM Do, YYYY');
+    return dateFormater(date);
   },
   returnDate: function () {
     let date = this.advancedFulfillment.returnDate;
-    return moment(date).format('MMMM Do, YYYY');
+    return dateFormater(date);
+  },
+  arriveByDate: function () {
+    let date = this.advancedFulfillment.arriveBy;
+    return dateFormater(date);
+  },
+  returnByDate: function () {
+    let date = this.advancedFulfillment.shipReturnBy;
+    return dateFormater(date);
+  },
+  firstDay: function () {
+    let date = this.startTime;
+    return dateFormater(date);
+  },
+  lastDay: function () {
+    let date = this.endTime;
+    return dateFormater(date);
+  },
+  orderCreated: function () {
+    let valid = this.advancedFulfillment.workflow.status === 'orderCreated';
+    return valid;
   },
   nextStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
-    let options = ['orderCreated', 'orderPicking', 'orderPacking', 'orderFulfilled'];
+    let options = AdvancedFulfillment.workflow;
     let indexOfStatus = _.indexOf(options, currentStatus);
     return options[indexOfStatus + 1];
   },
   readyForAssignment: function () {
     let status = this.advancedFulfillment.workflow.status;
-    let itemsArray = this.advancedFulfillment.items;
-    let itemsPicked = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'picked';
-    });
-    let itemsPacked = _.every(itemsArray, function (item) {
-      return item.workflow.status === 'packed';
-    });
-    let result = false;
-    switch (status) {
-    case 'orderCreated':
-      result = true;
-      break;
-    case 'orderPicking':
-      result = itemsPicked;
-      break;
-    case 'orderPacking':
-      result = itemsPacked;
-      break;
-    default:
-      result = false;
-      break;
+    let updateableStatuses = AdvancedFulfillment.assignmentStatuses;
+    return _.contains(updateableStatuses, status);
+  },
+  shopifyOrder: function () {
+    if (this.shopifyOrderNumber) {
+      return true;
     }
-    return result;
+    return false;
+  },
+  displayOrderNumber: function () {
+    if (this.shopifyOrderId) {
+      return '<a href="http://getoutfitted.myshopify.com/admin/orders/'
+      + this.shopifyOrderId
+      + '">Order #' + this.shopifyOrderNumber + '</a>';
+    } else if (this.shopifyOrderNumber) {
+      return 'Order #' + this.shopifyOrderNumber;
+    }
+
+    // Default
+    return 'Order #' + this._id;
   },
   shippingTo: function () {
     return this.shipping[0].address.fullName;
@@ -63,12 +109,54 @@ Template.orderDetails.helpers({
   zipcode: function () {
     return this.shipping[0].address.postal;
   },
+  contactInfo: function () {
+    return this.email || 'Checked Out As Guest';
+  },
+  phoneNumber: function () {
+    return this.shipping[0].address.phone || '';
+  },
   printLabel: function () {
     let status = this.advancedFulfillment.workflow.status;
     if (status === 'orderFulfilled') {
       return true;
     }
     return false;
+  },
+  currentlyAssignedUser: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let history = _.findWhere(this.history, {event: currentStatus});
+    let assignedUser = history.userId;
+    return Meteor.users.findOne(assignedUser).username;
+  },
+  currentlyAssignedTime: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let history = _.findWhere(this.history, {event: currentStatus});
+    let assignedTime = history.updatedAt;
+    return assignedTime;
+  },
+  myOrdersInCurrentStep: function () {
+    let currentStatus = this.advancedFulfillment.workflow.status;
+    let history = _.findWhere(this.history, {event: currentStatus});
+    if (!history) {
+      return false;
+    }
+    // TODO: Maybe change to cursor?
+    let orders = Orders.find({
+      'history.userId': Meteor.userId(),
+      'history.event': currentStatus,
+      'advancedFulfillment.workflow.status': currentStatus
+    }).fetch();
+    let myOrder = history.userId === Meteor.userId();
+    let myOrders = {};
+    let currentOrder = getIndexBy(orders, '_id', this._id);
+    let nextOrder = myOrder ? orders[currentOrder - 1] : undefined;
+    let prevOrder = myOrder ? orders[currentOrder + 1] : undefined;
+    myOrders.nextOrderId = nextOrder ? nextOrder._id : undefined;
+    myOrders.hasNextOrder = nextOrder ? true : false;
+    myOrders.hasPrevOrder = prevOrder ? true : false;
+    myOrders.prevOrderId = prevOrder ? prevOrder._id : undefined;
+    myOrders.count = orders.length;
+    return myOrders;
   }
 });
 
@@ -86,9 +174,15 @@ Template.orderDetails.onRendered(function () {
 Template.orderDetails.events({
   'click .advanceOrder': function (event) {
     event.preventDefault();
-    let currentStatus = event.target.dataset.status;
+    let currentStatus = this.advancedFulfillment.workflow.status;
     let orderId = this._id;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+  },
+  'blur .notes': function (event) {
+    event.preventDefault();
+    let notes = event.target.value;
+    let orderId = this._id;
+    Meteor.call('advancedFulfillment/updateOrderNotes', orderId, notes)
   }
 });

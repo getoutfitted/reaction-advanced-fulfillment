@@ -17,8 +17,17 @@ Template.afNavbar.helpers({
 Template.afNavbar.events({
   'click #afSearchButton': function (event) {
     event.preventDefault();
-    let orderId = $('#afSearchInput').val();
-    Router.go('orderDetails', {_id: orderId});
+    let searchValue = $('#afSearchInput').val();
+    let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue, 10)}]});
+    if (order) {
+      let orderId = order._id;
+      Router.go('orderDetails', {_id: orderId});
+    } else {
+      Alerts.removeSeen();
+      Alerts.add(searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
+        autoHide: true
+      });
+    }
   },
   'click #afShipButton': function (event) {
     event.preventDefault();
@@ -27,6 +36,38 @@ Template.afNavbar.events({
     if (verifiedDate) {
       let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
       Router.go('dateShipping', {date: date});
+    }
+  },
+  'click #afLocalDeliveryButton': function (event) {
+    event.preventDefault();
+    let unfilteredDate = $('#afLocalDeliveryInput').val();
+    let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
+    if (verifiedDate) {
+      let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
+      Router.go('dateLocalDelivery', {date: date});
+    }
+  },
+  'click #afReturnButton': function (event) {
+    event.preventDefault();
+    let unfilteredDate = $('#afReturnInput').val();
+    let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
+    if (verifiedDate) {
+      let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
+      Router.go('dateReturning', {date: date});
+    }
+  },
+  'submit .subnav-search-form': function (event) {
+    event.preventDefault();
+    let searchValue = event.target.orderNumber.value;
+    let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue, 10)}]});
+    if (order) {
+      let orderId = order._id;
+      Router.go('orderDetails', {_id: orderId});
+    } else {
+      Alerts.removeSeen();
+      Alerts.add(searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
+        autoHide: true
+      });
     }
   }
 });

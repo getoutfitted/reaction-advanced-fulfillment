@@ -1,3 +1,21 @@
+
+ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
+  ReactionCore.Schemas.PackageConfig, {
+    'settings.buffer.shipping': {
+      type: Number,
+      defaultValue: 3,
+      label: 'Number of days to customer receiving date that orders need to fulfilled.',
+      optional: true
+    },
+    'settings.buffer.returning': {
+      type: Number,
+      defaultValue: 4,
+      label: 'Number of days past the customer use date, until orders should be returned.',
+      optional: true
+    }
+  }
+]);
+
 ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   _id: {
     type: String,
@@ -5,7 +23,9 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   },
   productId: {
     type: String,
-    index: 1
+    index: 1,
+    label: 'THE PRODUCT IN AF',
+    optional: true
   },
   shopId: {
     type: String,
@@ -14,13 +34,22 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   },
   quantity: {
     type: Number,
-    min: 0
+    min: 0,
+    optional: true
   },
   variantId: {
     type: String,
     optional: true
   },
   itemDescription: {
+    type: String,
+    optional: true
+  },
+  color: {
+    type: String,
+    optional: true
+  },
+  size: {
     type: String,
     optional: true
   },
@@ -41,6 +70,14 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   location: {
     type: String,
     optional: true
+  },
+  bundleName: {
+    type: String,
+    optional: true
+  },
+  customerName: {
+    type: String,
+    optional: true
   }
 });
 
@@ -53,6 +90,22 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
     type: Date,
     optional: true
   },
+  outboundTrackingNumbers: {
+    type: [String],
+    optional: true
+  },
+  outboundTrackingUrls: {
+    type: [String],
+    optional: true
+  },
+  inboundTrackingNumbers: {
+    type: [String],
+    optional: true
+  },
+  inboundTrackingUrls: {
+    type: [String],
+    optional: true
+  },
   workflow: {
     type: ReactionCore.Schemas.Workflow,
     optional: true
@@ -60,12 +113,40 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   items: {
     type: [ReactionCore.Schemas.AdvancedFulfillmentItem],
     optional: true
+  },
+  arriveBy: {
+    type: Date,
+    optional: true
+  },
+  shipReturnBy: {
+    type: Date,
+    optional: true
+  },
+  transitTime: {
+    type: Number,
+    optional: true
+  },
+  localDelivery: {
+    type: Boolean,
+    optional: true
+  },
+  rushDelivery: {
+    type: Boolean,
+    optional: true
+  },
+  impossibleShipDate: {
+    type: Boolean,
+    optional: true
   }
 });
 
 ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schemas.Orders, {
   advancedFulfillment: {
     type: ReactionCore.Schemas.AdvancedFulfillmentObject,
+    optional: true
+  },
+  orderNotes: {
+    type: String,
     optional: true
   }
 }]);

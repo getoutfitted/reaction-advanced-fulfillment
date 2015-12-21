@@ -1,50 +1,94 @@
 <template name="fulfillmentOrders">
 {{> afNavbar}}
   <div class='container'>
-    <h1>Orders Waiting to Be Shipped</h1>
+    <div class='col-md-9 col-sm-12'>
+      <h1>{{routeStatus}}</h1>
+    </div>
+    <div class="col-md-3 col-sm-12">
+      {{#if showPrintOrdersLink}}
+        <a class='btn btn-block btn-lg btn-info print-invoice' target='_blank' href="{{pathFor 'orders.printAllForDate' date=shippingDate }}">Print Invoices</a>
+      {{/if}}
+    </div>
   </div>
-  <div class='container'>
-      {{#each orders}}
-        {{> fulfillmentOrder}}
-      {{/each}}
-  </div>
+    {{#each orders}}
+      {{> fulfillmentOrder}}
+    {{/each}}
 </template>
 
 <template name='fulfillmentOrder'>
+  <br/><br/>
   <a href="{{pathFor 'orderDetails' _id=this._id}}">
     <div>
+      {{#if this.advancedFulfillment.localDelivery}}
+        <div class='row text-center'>
+          <p class="bg-success"> This order is eligible for Local Delivery</p>
+        </div>
+      {{/if}}
+      {{#if this.advancedFulfillment.rushDelivery}}
+        <div class='row text-center'>
+          <p class="bg-danger"> This order requires rush delivery</p>
+        </div>
+      {{/if}}
       <div class="row orderBox">
         <div class='col-sm-6'>
-          <h3>Order: {{_id}} </h3>
+          <h3><strong>{{orderNumber}}</strong></h3>
         </div>
         <div class='col-sm-6'>
-          <h3>Date Shipping: <strong>{{shippingDate}} </strong></h3>
+          {{#if toBeShipped}}
+            <h4>Date Shipping: <strong>{{shippingDate}} </strong></h4>
+          {{else}}
+            <h4>Date Returning: <strong>{{returningDate}} </strong></h4>
+          {{/if}}
         </div>
       </div>
       <div class="row">
         <div class='col-sm-6 {{status}}'>
-          Current Status: <strong class='{{status}}'>{{status}}</strong>
+          Current Status: <strong class='{{status}}'>{{status}}</strong><br />
+          Assigned User: {{currentlyAssignedUser}}
+          <br>
+          Eligible for Local Delivery: <strong>{{this.advancedFulfillment.localDelivery}}</strong>
         </div>
         <div class='col-sm-6'>
-          Contact Info: {{contactInfo}}
+          OrderId: {{_id}}<br />
+          <p>Shipping Name: {{names.shipping}} | Billing Name: {{names.billing}} </p>
+          Contact Info: {{contactInfo}} | {{phoneNumber}}
         </div>
       </div>
-      <div class='row'>
+      <!-- <div class='row'>
         <div class='col-sm-6'>
           Number of  Different Items in Order {{uniqueItemsCount}}
         </div>
         <div class='col-sm-6'>
-          Number of Indvidual Items in Order {{totalItemsCount}}
+          Number of a-la-carte Items in Order {{totalItemsCount}}
         </div>
-      </div>
-      {{#if readyForAssignment}}
-      <div class="row">
-        <div class='col-sm-12'>
-          <a class='btn btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to advance order to: {{nextStatus}}</a>
+      </div> -->
+
+<!--       {{readyForAssignment}}
+ -->      {{#if readyForAssignment}}
+        <div class="row">
+          <div class='col-xs-12 col-sm-6'>
+            <a class='btn btn-lg btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Add to my {{nextStatus}} queue and go</a>
+          </div>
+          <div class='col-xs-12 col-sm-6'>
+            <a class='btn btn-lg btn-block btn-success selfAssignOrder' data-status='{{status}}' href='#'>Add to my {{nextStatus}} queue</a>
+          </div>
         </div>
-      </div>
+      {{else}}
+        <div class='row'>
+          <div class='col-xs-12'>
+            {{#if isMyOrder}}
+              <button class='btn btn-lg btn-block btn-info viewOrder' data-status='{{status}}'>Work on Order</button>
+            {{else}}
+              <button class='btn btn-lg btn-block btn-default viewOrder' data-status='{{status}}'>View Order</button>
+            {{/if}}
+          </div>
+        </div>
       {{/if}}
-      <hr>
     </div>
   </a>
+    {{#if orderCreated}}
+      <br>
+      {{> printInvoice}}
+    {{/if}}
+    <hr>
 </template>

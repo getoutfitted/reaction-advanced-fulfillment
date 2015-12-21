@@ -1,18 +1,22 @@
 <template name='orderDetails'>
   {{> afNavbar}}
   <div class='container-fluid'>
-    {{#if printLabel}}
-      <a class='btn btn-block btn-danger' href="{{pathFor 'advancedFulfillmentPDF' }}">Print Invoice</a>
+    {{#if orderCreated}}
+      {{> printInvoice}}
     {{/if}}
     <div>
     {{#if readyForAssignment}}
-      <a class='btn btn-block btn-warning advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to progress Order #{{_id}} to: {{nextStatus}}</a>
-     {{/if}}
+      <a class='btn btn-block btn-lg btn-warning advanceOrder' data-status='{{status}}' href='#'>Assign {{currentUser.username}} to progress Order #{{_id}} to: {{nextStatus}}</a>
+    {{else}}
+<!--       <div class='row text-center'>
+        <p class='bg-success'> {{status}} assigned to: <strong>{{currentlyAssignedUser}}</strong> at {{currentlyAssignedTime}}</p>
+      </div> -->
+    {{/if}}
     </div>
 
     <div class='row'>
       <div class='col-sm-7'>
-        <h1>Order # {{_id}}</h1>
+        <h1>{{{displayOrderNumber}}}</h1>
       </div>
       <div class='col-sm-5'>
         <h1>Status: {{status}}</h1>
@@ -20,27 +24,87 @@
     </div>
     <div class='row'>
       <div class='col-sm-7'>
-        <h3>Ship: {{shippingDate}}</h3>
+        <h2>Ship: {{shippingDate}}</h2>
       </div>
       <div class='col-sm-5'>
-        <h3>Return: {{returnDate}}</h3>
+        <h2>Return On: {{returnDate}}</h2>
       </div>
     </div>
+    <div class='row'>
+      <div class='col-sm-7'>
+        <h4>Arrive By: {{arriveByDate}}</h4>
+      </div>
+      <div class='col-sm-5'>
+        <h4>Client Ship By: {{returnByDate}}</h4>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-sm-7'>
+        <h4>First Use Day: {{firstDay}}</h4>
+      </div>
+      <div class='col-sm-5'>
+        <h4>Last Use Day: {{lastDay}}</h4>
+      </div>
+    </div>
+    {{#if this.advancedFulfillment.localDelivery}}
+      <div class='row'>
+        <h3>Eligible for Local Delivery: <strong>{{this.advancedFulfillment.localDelivery}}</strong></h3>
+      </div>
+    {{/if}}
+    {{#if this.advancedFulfillment.rushDelivery}}
+      <div class='row'>
+        <h3><strong>This order requires Rush Delivery</strong></h3>
+      </div>
+    {{/if}}
     <hr>
     <div class='row'>
-      <div class='col-sm-5'>
+      <div class='col-sm-2'>
         <p><strong>Shipping Address:</strong></p>
         <p>{{shippingTo}}</p>
         <p>{{shippingAddress1}}</p>
         <p>{{shippingAddress2}}</p>
         <p>{{city}} {{state}}, {{zipcode}}</p>
       </div>
-      <div class='col-sm-5 col-sm-offset-2'>
+      <div class='col-sm-2'>
+        <p><strong>Contact:</strong></p>
+        <p>Email: {{contactInfo}}</p>
+        <p>Phone: {{phoneNumber}}</p>
+      </div>
+      <div class='col-sm-5 col-sm-offset-2 hidden-xs'>
         <div id='barcode'></div>
       </div>
     </div>
+    <div class='row'>
+      <div class='col-sm-1 col-sm-offset-1'>
+        <h4>Order Notes:</h4>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-sm-8 col-sm-offset-1'>
+      <textarea class="form-control notes"  value="{{orderNotes}}" rows="3"></textarea>
+
+      </div>
+    </div>
     <hr>
-    {{> itemDetails}}
+    {{> Template.dynamic template=currentStatus}}
+    <!-- {{> itemDetails}} -->
+    <div class='row'>
+      <hr>
+      <br>
+      <a class='btn btn-lg btn-block btn-info' href="{{pathFor 'updateOrder' orderNumber=_id}}">Adjust Order Items</a>
+      <br>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 text-center">
+        {{#if myOrdersInCurrentStep.hasPrevOrder}}
+          <a href="{{pathFor 'orderDetails' _id=myOrdersInCurrentStep.prevOrderId}}" class="prevOrder btn btn-large btn-default">Prev Order</a>
+        {{/if}}
+      </div>
+      <div class="col-xs-12 col-sm-6 text-center">
+        {{#if myOrdersInCurrentStep.hasNextOrder}}
+          <a href="{{pathFor 'orderDetails' _id=myOrdersInCurrentStep.nextOrderId}}" class="nextOrder btn btn-large btn-default">Next Order</a>
+        {{/if}}
+      </div>
+    </div>
   </div>
 </template>
-

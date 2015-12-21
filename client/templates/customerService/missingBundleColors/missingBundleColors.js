@@ -5,3 +5,12 @@ Template.missingBundleColors.helpers({
     });
   }
 });
+
+Template.missingBundleColors.events({
+  'click .confirm-bundle': function (event) {
+    event.preventDefault();
+    let orderId = this._id;
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/bundleColorConfirmation', orderId, userId);
+  }
+});

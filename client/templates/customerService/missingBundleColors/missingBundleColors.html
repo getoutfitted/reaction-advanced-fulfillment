@@ -7,6 +7,11 @@
   {{#each missingBundleInfo}}
     <div class='row'>
       {{> csDetails}}
+      <div class='col-xs-2'>
+        <a class='btn btn-lg btn-block btn-info' href="{{pathFor 'updateOrder' orderNumber=this._id}}">Go to Order Update</a>
+        <br>
+        <a  class='btn btn-success btn-block btn-lg confirm-bundle' href="#">Confirm Bundle Color Selection</a>
+      </div>
     </div>
     <hr>
   {{/each}}

@@ -16,7 +16,7 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
   }
 ]);
 
-ReactioCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal = new SimpleSchema({
+ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal = new SimpleSchema({
   qty: {
     type: Number,
     optional: true,
@@ -29,13 +29,13 @@ ReactioCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal = new SimpleSchema({
   }
 });
 
-ReactioCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
+ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
   packages: {
-    type: ReactioCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
     optional: true
   },
   products: {
-    type: ReactioCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
     optional: true
   }
 });
@@ -163,7 +163,7 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
     optional: true
   },
   damageCoverage: {
-    type: ReactioCore.Schemas.AdvancedFulfillmentDamageCoverage,
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage,
     optional: true
   }
 });

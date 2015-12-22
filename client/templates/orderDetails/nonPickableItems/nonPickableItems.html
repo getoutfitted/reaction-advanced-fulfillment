@@ -8,11 +8,11 @@
         </div>
         <div class='col-xs-3'>
           <h4>Packages Covered</h4>
-          <p>Qty: {{this.advancedFulfillment.damageCoverage.packages.qty}} | Cost: {{this.advancedFulfillment.damageCoverage.packages.subtotal}} </p>
+          <p>Qty: {{qty 'packages'}} | Cost: {{subtotal 'packages'}} </p>
         </div>
         <div class='col-xs-3'>
           <h4>Products Covered</h4>
-          <p>Qty: {{this.advancedFulfillment.damageCoverage.products.qty}} | Cost: {{this.advancedFulfillment.damageCoverage.products.subtotal}} </p>
+          <p>Qty: {{qty 'products'}} | Cost: {{subtotal 'products'}} </p>
         </div>
       </div>
     </div>

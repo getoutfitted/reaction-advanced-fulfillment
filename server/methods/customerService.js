@@ -52,7 +52,8 @@ Meteor.methods({
       $set: {
         'advancedFulfillment.skiPackages.$.age': age,
         'advancedFulfillment.skiPackages.$.shoeSize': shoeSize,
-        'advancedFulfillment.skiPackages.$.skiLevel': level
+        'advancedFulfillment.skiPackages.$.skiLevel': level,
+        'advancedFulfillment.skiPackages.$.contactedCustomer': true
       }
     });
   }

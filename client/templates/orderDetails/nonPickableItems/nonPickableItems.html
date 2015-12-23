@@ -46,6 +46,10 @@
           <th>Age</th>
           <th>Shoe Size</th>
           <th>Skill Level</th>
+          {{#if noCustomerInfo}}
+            <th></th>
+          {{/if}}
+
         </tr>
       </thead>
       <tbody>
@@ -58,9 +62,12 @@
           <td>{{gender}}</td>
           <td>{{height}}</td>
           <td>{{weight}}</td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>{{{ifAge}}}</td>
+          <td>{{{ifShoe}}}</td>
+          <td>{{{ifSkiLevel}}}</td>
+          {{#if noCustomerInfo}}
+            <td><a class='btn btn-success btn-lg save-customer-info' data-id={{_id}} href="#">Save</a></td>
+          {{/if}}
         </tr>
         {{/each}}
       </tbody>

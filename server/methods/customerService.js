@@ -37,5 +37,23 @@ Meteor.methods({
         bundleMissingColor: false
       }
     });
+  },
+  'advancedFulfillment/updateSkiPackageWithCustomerInfo': function (orderId, userId, skiId, age, shoeSize, level) {
+    check(orderId, String);
+    check(userId, String);
+    check(skiId, String);
+    check(age, Number);
+    check(shoeSize, String);
+    check(level, String);
+    ReactionCore.Collections.Orders.update({
+      '_id': orderId,
+      'advancedFulfillment.skiPackages._id': skiId
+    }, {
+      $set: {
+        'advancedFulfillment.skiPackages.$.age': age,
+        'advancedFulfillment.skiPackages.$.shoeSize': shoeSize,
+        'advancedFulfillment.skiPackages.$.skiLevel': level
+      }
+    });
   }
 });

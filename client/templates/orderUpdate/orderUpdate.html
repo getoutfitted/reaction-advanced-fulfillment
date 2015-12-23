@@ -53,7 +53,7 @@
                       <select id='size-selector-{{item._id}}' data-id='{{item._id}}' class='form-control size-selector'>
                         <option disabled selected> -- select a size -- </option>
                         {{#each possibleSize in sizeOptions item}}
-                          <option class='form-control' value={{possibleSize._id}}>{{possibleSize.size}}</option>
+                        <option class='form-control' value={{possibleSize._id}}>{{possibleSize.size}}</option>
                         {{/each}}
                       </select>
                     {{/if}}

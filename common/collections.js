@@ -41,6 +41,10 @@ ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
 });
 
 ReactionCore.Schemas.AdvancedFulfillmentSkiPackage = new SimpleSchema({
+  _id: {
+    type: String,
+    optional: true
+  },
   customerName: {
     type: String,
     optional: true

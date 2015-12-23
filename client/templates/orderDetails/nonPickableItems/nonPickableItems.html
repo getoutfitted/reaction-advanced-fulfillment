@@ -1,5 +1,14 @@
 <template name='nonPickableItems'>
-  <div class='container'>
+  <div class='container-fluid'>
+    {{> damageCoverage}}
+    {{#if skiPackagesPurchased}}
+      {{> skiPackages}}
+    {{/if}}
+  </div>
+</template>
+
+
+<template name='damageCoverage'>
     <div class='row'>
       <h2>Non Pickable Items included in this Order</h2>
       <div class='row'>
@@ -16,5 +25,46 @@
         </div>
       </div>
     </div>
+    <hr>
+</template>
+
+<template name='skiPackages'>
+  <div class='row'>
+    <h3>Ski Packages included in this order</h3>
   </div>
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th>Vendor</th>
+          <th>For</th>
+          <th>Package</th>
+          <th>Helmet Added</th>
+          <th>Gender</th>
+          <th>Height</th>
+          <th>Weight</th>
+          <th>Age</th>
+          <th>Shoe Size</th>
+          <th>Skill Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each skiPackages}}
+        <tr>
+          <td>{{vendor}}</td>
+          <td>{{customerName}}</td>
+          <td>{{packageName}}</td>
+          <td>{{helmet}}</td>
+          <td>{{gender}}</td>
+          <td>{{height}}</td>
+          <td>{{weight}}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
 </template>

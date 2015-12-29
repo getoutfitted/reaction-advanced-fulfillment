@@ -9,7 +9,7 @@ Template.nonPickableItems.helpers({
     return this.advancedFulfillment.rushShippingPaid;
   },
   anyOtherItems: function () {
-    return this.advancedFulfillment.other.length > 0;
+    return this.advancedFulfillment.other;
   }
 });
 

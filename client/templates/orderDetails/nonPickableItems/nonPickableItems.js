@@ -4,6 +4,9 @@ Template.nonPickableItems.helpers({
   },
   kayakRented: function () {
     return this.advancedFulfillment.kayakRental;
+  },
+  rushShippingPaid: function () {
+    return this.advancedFulfillment.rushShippingPaid;
   }
 });
 
@@ -63,7 +66,15 @@ Template.kayakRentals.helpers({
   kayakQty: function () {
     return this.advancedFulfillment.kayakRental.qty;
   }
+});
 
+Template.rushDeliveryPaid.helpers({
+  rushQuantity: function () {
+    return this.advancedFulfillment.rushShippingPaid.qty;
+  },
+  rushCost: function () {
+    return this.advancedFulfillment.rushShippingPaid.subtotal;
+  }
 });
 
 Template.skiPackages.events({

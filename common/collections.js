@@ -29,6 +29,17 @@ ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal = new SimpleSchema(
   }
 });
 
+ReactionCore.Schemas.AdvancedFulfillmentRushShippingPaid = new SimpleSchema({
+  qty: {
+    type: Number,
+    optional: true
+  },
+  subtotal: {
+    type: Number,
+    optional: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
   packages: {
     type: ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
@@ -263,6 +274,10 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   kayakRental: {
     type: ReactionCore.Schemas.AdvancedFulfillmentKayakRental,
+    optional: true
+  },
+  rushShippingPaid: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentRushShippingPaid,
     optional: true
   }
 });

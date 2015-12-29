@@ -138,6 +138,30 @@ ReactionCore.Schemas.AdvancedFulfillmentKayakRental = new SimpleSchema({
   }
 });
 
+ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems = new SimpleSchema({
+  vendor: {
+    type: String,
+    optional: true
+  },
+  qty: {
+    type: Number,
+    optional: true
+  },
+  product: {
+    type: String,
+    optional: true
+  },
+  price: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  variantTitle: {
+    type: String,
+    optional: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   _id: {
     type: String,
@@ -278,6 +302,10 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   rushShippingPaid: {
     type: ReactionCore.Schemas.AdvancedFulfillmentRushShippingPaid,
+    optional: true
+  },
+  other: {
+    type: [ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems],
     optional: true
   }
 });

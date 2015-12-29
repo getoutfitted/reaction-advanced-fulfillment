@@ -7,6 +7,9 @@ Template.nonPickableItems.helpers({
   },
   rushShippingPaid: function () {
     return this.advancedFulfillment.rushShippingPaid;
+  },
+  anyOtherItems: function () {
+    return this.advancedFulfillment.other.length > 0;
   }
 });
 
@@ -74,6 +77,12 @@ Template.rushDeliveryPaid.helpers({
   },
   rushCost: function () {
     return this.advancedFulfillment.rushShippingPaid.subtotal;
+  }
+});
+
+Template.otherItems.helpers({
+  otherItems: function () {
+    return this.advancedFulfillment.other;
   }
 });
 

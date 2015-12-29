@@ -10,6 +10,9 @@
     {{#if kayakRented}}
       {{> kayakRentals}}
     {{/if}}
+    {{#if anyOtherItems}}
+      {{> otherItems}}
+    {{/if}}
   </div>
 </template>
 
@@ -109,4 +112,34 @@
     </div>
   </div>
   <hr>
+</template>
+
+<template name='otherItems'>
+  <div class='row'>
+    <h3>Other Items In This Order</h3>
+  </div>
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Vendor</th>
+          <th>Variant</th>
+          <th>Quantity</th>
+          <th>Price Per</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each item in otherItems}}
+          <tr>
+            <td>{{item.product}}</td>
+            <td>{{item.vendor}}</td>
+            <td>{{item.variantTitle}}</td>
+            <td>{{item.qty}}</td>
+            <td> $ {{item.price}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </template>

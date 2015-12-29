@@ -1,0 +1,20 @@
+<template name='nonPickableItems'>
+  <div class='container'>
+    <div class='row'>
+      <h2>Non Pickable Items included in this Order</h2>
+      <div class='row'>
+        <div class='col-xs-3'>
+          <h3>Damage Coverage:</h3>
+        </div>
+        <div class='col-xs-3'>
+          <h4>Packages Covered</h4>
+          <p>Qty: {{qty 'packages'}} | Cost: {{subtotal 'packages'}} </p>
+        </div>
+        <div class='col-xs-3'>
+          <h4>Products Covered</h4>
+          <p>Qty: {{qty 'products'}} | Cost: {{subtotal 'products'}} </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

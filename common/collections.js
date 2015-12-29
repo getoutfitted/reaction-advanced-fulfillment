@@ -16,6 +16,30 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
   }
 ]);
 
+ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal = new SimpleSchema({
+  qty: {
+    type: Number,
+    optional: true,
+    defaultValue: 0
+  },
+  subtotal: {
+    type: Number,
+    optional: true,
+    defaultValue: 0
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
+  packages: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
+    optional: true
+  },
+  products: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
+    optional: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   _id: {
     type: String,
@@ -136,6 +160,10 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   impossibleShipDate: {
     type: Boolean,
+    optional: true
+  },
+  damageCoverage: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage,
     optional: true
   }
 });

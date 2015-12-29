@@ -91,7 +91,10 @@ Package.onUse(function (api) {
     'client/templates/customerService/missingItemDetails/missingItemDetails.html',
     'client/templates/customerService/missingItemDetails/missingItemDetails.js',
     'client/templates/customerService/missingBundleColors/missingBundleColors.html',
-    'client/templates/customerService/missingBundleColors/missingBundleColors.js'
+    'client/templates/customerService/missingBundleColors/missingBundleColors.js',
+    'client/templates/orderDetails/nonPickableItems/nonPickableItems.html',
+    'client/templates/orderDetails/nonPickableItems/nonPickableItems.js'
+
   ], 'client');
 
   api.addFiles([

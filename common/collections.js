@@ -40,6 +40,82 @@ ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
   }
 });
 
+ReactionCore.Schemas.AdvancedFulfillmentSkiPackage = new SimpleSchema({
+  _id: {
+    type: String,
+    optional: true
+  },
+  customerName: {
+    type: String,
+    optional: true
+  },
+  packageName: {
+    type: String,
+    optional: true
+  },
+  vendor: {
+    type: String,
+    optional: true
+  },
+  height: {
+    type: String,
+    optional: true
+  },
+  weight: {
+    type: String,
+    optional: true
+  },
+  gender: {
+    type: String,
+    optional: true
+  },
+  helmet: {
+    type: Boolean,
+    optional: true
+  },
+  age: {
+    type: Number,
+    optional: true
+  },
+  shoeSize: {
+    type: String,
+    optional: true
+  },
+  deliveryDateAndTime: {
+    type: Date,
+    optional: true
+  },
+  skiLevel: {
+    type: String,
+    optional: true
+  },
+  qty: {
+    type: Number,
+    optional: true
+  },
+  price: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  rentalLength: {
+    type: Number,
+    optional: true
+  },
+  variantTitle: {
+    type: String,
+    optional: true
+  },
+  confirmedWithMerchant: {
+    type: Boolean,
+    optional: true
+  },
+  contactedCustomer: {
+    type: Boolean,
+    optional: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   _id: {
     type: String,
@@ -164,6 +240,14 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   damageCoverage: {
     type: ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage,
+    optional: true
+  },
+  skiPackages: {
+    type: [ReactionCore.Schemas.AdvancedFulfillmentSkiPackage],
+    optional: true
+  },
+  skiPackagesPurchased: {
+    type: Boolean,
     optional: true
   }
 });

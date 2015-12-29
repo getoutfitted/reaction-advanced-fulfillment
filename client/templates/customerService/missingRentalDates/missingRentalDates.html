@@ -1,0 +1,27 @@
+<template name='missingRentalDates'>
+  {{> afNavbar}}
+  <div class='row text-center'>
+    <h2><strong>Orders with Missing Rental Dates</strong></h2>
+    </div>
+    {{#each missingRentalDates}}
+      <div class='row'>
+        {{> csDetails}}
+        <div class='col-xs-2'>
+        <div class='text-center'>
+          <strong>Select Trips Start Date and End Date</strong>
+          <br>
+        </div>
+          <div class='picker' id='{{_id}}'>
+            <div class='input-daterange input-group' id='datepicker'>
+              <input type='text' class='input-sm form-control' name='start' />
+              <span class='input-group-addon'>to</span>
+              <input type='text' class='input-sm form-control' name='end' />
+            </div>
+            <button class='btn btn-block btn-primary update-rental-dates'>Save Dates</button>
+          </div>
+        </div>
+      </div>
+      <hr>
+    {{/each}}
+  }
+</template>

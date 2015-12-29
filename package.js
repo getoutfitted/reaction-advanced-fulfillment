@@ -38,7 +38,8 @@ Package.onUse(function (api) {
     'server/hooks/after_copyCartToOrder.js',
     'server/methods/orderDetail.js',
     'server/methods/itemDetails.js',
-    'server/publications/afOrders.js'
+    'server/publications/afOrders.js',
+    'server/methods/customerService.js'
   ], 'server');
 
   api.addFiles([
@@ -60,8 +61,6 @@ Package.onUse(function (api) {
     'client/templates/navbar/afNavbar.js',
     'client/templates/missingDamaged/missingDamaged.html',
     'client/templates/missingDamaged/missingDamaged.js',
-    'client/templates/infoMissing/infoMissing.html',
-    'client/templates/infoMissing/infoMissing.js',
     'client/templates/orderUpdate/orderUpdate.html',
     'client/templates/orderUpdate/orderUpdate.js',
     'client/templates/search/searchOrders.js',
@@ -82,7 +81,17 @@ Package.onUse(function (api) {
     'client/templates/orderDetails/status/orderReadyToShip/orderReadyToShip.html',
     'client/templates/orderDetails/status/orderReadyToShip/orderReadyToShip.js',
     'client/templates/orderDetails/status/orderReturned/orderReturned.html',
-    'client/templates/orderDetails/status/orderReturned/orderReturned.js'
+    'client/templates/orderDetails/status/orderReturned/orderReturned.js',
+    'client/templates/customerService/impossibleDates/impossibleDates.html',
+    'client/templates/customerService/impossibleDates/impossibleDates.js',
+    'client/templates/customerService/csDetails/csDetails.html',
+    'client/templates/customerService/csDetails/csDetails.js',
+    'client/templates/customerService/missingRentalDates/missingRentalDates.html',
+    'client/templates/customerService/missingRentalDates/missingRentalDates.js',
+    'client/templates/customerService/missingItemDetails/missingItemDetails.html',
+    'client/templates/customerService/missingItemDetails/missingItemDetails.js',
+    'client/templates/customerService/missingBundleColors/missingBundleColors.html',
+    'client/templates/customerService/missingBundleColors/missingBundleColors.js'
   ], 'client');
 
   api.addFiles([

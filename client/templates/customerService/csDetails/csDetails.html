@@ -1,0 +1,24 @@
+<template name='csDetails'>
+  <div class='col-xs-2 col-xs-offset-1'>
+  <strong>Order Info</strong>
+  <p>Reaction Order: {{_id}}</p>
+  <p>Shopify Order: {{shopifyOrderNumber}}</p>
+  <p>{{createdAt}}</p>
+  </div>
+  <div class='col-xs-2'>
+    <strong>Billing Contact Info</strong>
+    <p>{{billingName this}}</p>
+    <p>{{billingPhone this}}</p>
+    <p>{{email this}}</p>
+  </div>
+  <div class='col-xs-2'>
+    <strong>Shipping Contact Info</strong>
+    <p>{{shippingName this}}</p>
+    <p>{{shippingPhone this}}</p>
+    <p>{{email this}}</p>
+  </div>
+  <div class='col-xs-2'>
+    <strong>Shipping Location</strong>
+    {{{shippingAddress this}}}
+  </div>
+</template>

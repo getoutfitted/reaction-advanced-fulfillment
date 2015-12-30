@@ -16,7 +16,7 @@
         <th><input type="checkbox" name="allOrders" id="checkboxAllOrders"></th>
         <th>#</th>
         <th><i class='fa fa-truck'></i></th>
-        <th>Shipping Date</th>
+        <th>Ship By</th>
         <th>Arrival Day</th>
         <th>First Ski Day</th>
         <th><i class="fa fa-map-marker"></i></th>
@@ -34,7 +34,7 @@
 
 <template name='fulfillmentOrder'>
   <tr class="orderRow" style="cursor: pointer;" data-id='{{_id}}'>
-    <td><input type="checkbox" name="order_{{_id}}" id="checkboxOrder_{{_id}}"></td>
+    <td><input type="checkbox" name="order_{{_id}}" id="checkboxOrder_{{_id}}" data-id={{_id}} checked={{orderSelected}}></td>
     <td><strong>{{orderNumber}}</strong></td>
     <td>
       {{#if this.advancedFulfillment.localDelivery}}

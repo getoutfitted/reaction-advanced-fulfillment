@@ -28,6 +28,20 @@ Template.fulfillmentOrders.helpers({
   }
 });
 
+Template.fulfillmentOrders.events({
+  'click #checkboxAllOrders': function (event) {
+    const checked = event.currentTarget.checked;
+    let selectedOrders = [];
+    $('input[type=checkbox]').prop('checked', checked);
+
+    $('input[type=checkbox]:checked').each(function () {
+      selectedOrders.push($(this).data('id'));
+    });
+
+    Session.set('selectedOrders', selectedOrders);
+  }
+});
+
 Template.fulfillmentOrder.helpers({
   orderNumber: function  () {
     if (this.shopifyOrderNumber) {
@@ -51,6 +65,10 @@ Template.fulfillmentOrder.helpers({
   },
   shippingState: function () {
     return this.shipping[0].address.region;
+  },
+  orderSelected: function () {
+    Session.setDefault('selectedOrders', []);
+    return Session.get('selectedOrders').indexOf(this._id) !== -1;
   },
   toBeShipped: function () {
     let fullRoute = Router.current().url;
@@ -152,5 +170,20 @@ Template.fulfillmentOrder.events({
     let orderId = this._id;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+  },
+  'click input[type=checkbox]': function (event) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    const checked = event.currentTarget.checked;
+    const _id = $(event.currentTarget).data('id');
+
+    let selectedOrders = Session.get('selectedOrders') || [];
+    if (checked) {
+      selectedOrders.push(_id);
+    } else {
+      selectedOrders = _.without(selectedOrders, _id);
+    }
+
+    Session.set('selectedOrders', selectedOrders);
   }
 });

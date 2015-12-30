@@ -1,3 +1,11 @@
+Template.fulfillmentOrders.onCreated(function () {
+  Session.setDefault('selectedOrders', []);
+});
+
+Template.fulfillmentOrders.onDestroyed(function () {
+  Session.set('selectedOrders', []);
+});
+
 Template.fulfillmentOrders.helpers({
   routeStatus: function () {
     let fullRoute = Router.current().url;
@@ -13,7 +21,7 @@ Template.fulfillmentOrders.helpers({
     } else if (_.contains(routeComponents, 'local-delivery')) {
       return 'Local Deliveries for ' + Router.current().params.date;
     } else if (Router.current().params.status) {
-      return 'Orders in ' + Router.current().params.status + ' status';
+      return AdvancedFulfillment.humanOrderStatuses[Router.current().params.status] + ' Orders';
     }
   },
   showPrintOrdersLink: function () {
@@ -25,14 +33,20 @@ Template.fulfillmentOrders.helpers({
   },
   shippingDate: function () {
     return Router.current().params.date;
+  },
+  ordersSelected: function () {
+    return Session.get('selectedOrders').length;
+  },
+  ordersAreSelected: function () {
+    return Session.get('selectedOrders').length > 0;
   }
 });
 
 Template.fulfillmentOrders.events({
-  'click #checkboxAllOrders': function (event) {
-    const checked = event.currentTarget.checked;
+  'click #checkboxAllOrders': function () {
+    const checked = Session.get('selectedOrders').length > 0;
     let selectedOrders = [];
-    $('input[type=checkbox]').prop('checked', checked);
+    $('input[type=checkbox]').prop('checked', !checked);
 
     $('input[type=checkbox]:checked').each(function () {
       selectedOrders.push($(this).data('id'));
@@ -67,7 +81,7 @@ Template.fulfillmentOrder.helpers({
     return this.shipping[0].address.region;
   },
   orderSelected: function () {
-    Session.setDefault('selectedOrders', []);
+    // Session.setDefault('selectedOrders', []);
     return Session.get('selectedOrders').indexOf(this._id) !== -1;
   },
   toBeShipped: function () {
@@ -82,7 +96,7 @@ Template.fulfillmentOrder.helpers({
     return false;
   },
   status: function () {
-    return this.advancedFulfillment.workflow.status;
+    return AdvancedFulfillment.humanOrderStatuses[this.advancedFulfillment.workflow.status];
   },
   contactInfo: function () {
     return this.email || 'Checked Out As Guest';
@@ -171,19 +185,24 @@ Template.fulfillmentOrder.events({
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   },
-  'click input[type=checkbox]': function (event) {
+  'click label .fa-check-square-o, click label .fa-square-o': function (event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
-    const checked = event.currentTarget.checked;
-    const _id = $(event.currentTarget).data('id');
+    const checked = $(event.currentTarget).parent().prev()[0].checked;
+    $(event.currentTarget).parent().prev()[0].checked = !checked;
+    const _id = $(event.currentTarget).parent().prev().data('id');
+    let selectedOrders = Session.get('selectedOrders');
 
-    let selectedOrders = Session.get('selectedOrders') || [];
-    if (checked) {
+    if (!checked) {
       selectedOrders.push(_id);
     } else {
       selectedOrders = _.without(selectedOrders, _id);
     }
 
     Session.set('selectedOrders', selectedOrders);
+  },
+  'click .no-click': function (event) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
   }
 });

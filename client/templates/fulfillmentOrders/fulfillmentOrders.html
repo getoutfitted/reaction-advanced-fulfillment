@@ -1,6 +1,6 @@
 <template name="fulfillmentOrders">
 {{> afNavbar}}
-  <div class='container'>
+  <div class='container-fluid'>
     <div class='col-md-9 col-sm-12'>
       <h1>{{routeStatus}}</h1>
     </div>
@@ -9,52 +9,77 @@
         <a class='btn btn-block btn-lg btn-info print-invoice' target='_blank' href="{{pathFor 'orders.printAllForDate' date=shippingDate }}">Print Invoices</a>
       {{/if}}
     </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          {{#if ordersAreSelected}}
+            <th colspan="9">
+              <div class="row">
+                <div class="col-xs-7 col-sm-3 col-md-2">
+                  <i class="fa fa-check-square-o fa-lg" style="cursor: pointer;" id="checkboxAllOrders"></i>
+                  {{ordersSelected}} Selected Orders
+                </div>
+                <div class="col-xs-5 col-sm-2 col-md-2">
+                  <select class="form-control input-sm">
+                    <option>Bulk Actions</option>
+                    <option>Print {{ordersSelected}} Orders</option>
+                  </select>
+                </div>
+              </div>
+            </th>
+          {{else}}
+            <th>
+              <i class="fa fa-square-o fa-lg" style="cursor: pointer;" id="checkboxAllOrders"></i>
+            </th>
+            <th>#</th>
+            <th><i class='fa fa-truck'></i></th>
+            <th>Ship By</th>
+            <th class="hidden-xs hidden-sm">Arrival Day</th>
+            <th class="hidden-xs hidden-sm">First Ski Day</th>
+            <th><i class="fa fa-map"></i></th>
+            <th>Status</th>
+            <th>Current User</th>
+          {{/if}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each orders}}
+          {{> fulfillmentOrder}}
+        {{/each}}
+      </tbody>
+    </table>
   </div>
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th><input type="checkbox" name="allOrders" id="checkboxAllOrders"></th>
-        <th>#</th>
-        <th><i class='fa fa-truck'></i></th>
-        <th>Ship By</th>
-        <th>Arrival Day</th>
-        <th>First Ski Day</th>
-        <th><i class="fa fa-map-marker"></i></th>
-        <th>Status</th>
-        <th>Current User</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each orders}}
-        {{> fulfillmentOrder}}
-      {{/each}}
-    </tbody>
-  </table>
 </template>
 
 <template name='fulfillmentOrder'>
   <tr class="orderRow" style="cursor: pointer;" data-id='{{_id}}'>
-    <td><input type="checkbox" name="order_{{_id}}" id="checkboxOrder_{{_id}}" data-id={{_id}} checked={{orderSelected}}></td>
+    <td class="no-click">
+      {{#if orderSelected}}
+        <input type="checkbox" name="order_{{_id}}" id="checkboxOrder_{{_id}}" class="hide" data-id={{_id}} checked=checked><label for="order_{{_id}}" style="cursor: pointer;"><i class="fa fa-check-square-o fa-lg"></i></label>
+      {{else}}
+        <input type="checkbox" name="order_{{_id}}" id="checkboxOrder_{{_id}}" class="hide" data-id={{_id}}><label for="order_{{_id}}" style="cursor: pointer;"><i class="fa fa-square-o fa-lg"></i></label>
+      {{/if}}
+    </td>
     <td><strong>{{orderNumber}}</strong></td>
     <td>
       {{#if this.advancedFulfillment.localDelivery}}
-        <span class="label label-info">LOCAL</span>
+        <span class="label label-info" style="font-size: 14px;">LOCAL</span>
       {{/if}}
       {{#if this.advancedFulfillment.rushDelivery}}
-        <span class="label label-warning">RUSH</span>
+        <span class="label label-warning" style="font-size: 14px;">RUSH</span>
       {{/if}}
     </td>
     {{#if startTime}}
       <td>{{shippingDate}}</td>
-      <td>{{arrivalDay}}</td>
-      <td>{{firstSkiDay}}</td>
+      <td class="hidden-xs hidden-sm">{{arrivalDay}}</td>
+      <td class="hidden-xs hidden-sm">{{firstSkiDay}}</td>
     {{else}}
       <td colspan=3>First Ski Day Missing!</td>
     {{/if}}
     <td>{{shippingState}}</td>
-    <td>{{status}}</td>
+    <td>{{status}}</td> <!-- TODO: Add badge for statuses -->
     {{#if readyForAssignment }}
-      <td><a class='btn btn-lg btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Get Order</a></td>
+      <td><a class='btn btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Get Order</a></td>
     {{else}}
       <td>{{currentlyAssignedUser}}</td>
     {{/if}}

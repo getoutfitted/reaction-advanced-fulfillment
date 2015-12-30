@@ -116,6 +116,17 @@ ReactionCore.Schemas.AdvancedFulfillmentSkiPackage = new SimpleSchema({
   }
 });
 
+ReactionCore.Schemas.AdvancedFulfillmentKayakRental = new SimpleSchema({
+  vendor: {
+    type: String,
+    optional: true
+  },
+  qty: {
+    type: Number,
+    optional: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   _id: {
     type: String,
@@ -248,6 +259,10 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   skiPackagesPurchased: {
     type: Boolean,
+    optional: true
+  },
+  kayakRental: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentKayakRental,
     optional: true
   }
 });

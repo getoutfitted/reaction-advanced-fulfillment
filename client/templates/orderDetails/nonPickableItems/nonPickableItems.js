@@ -1,6 +1,9 @@
 Template.nonPickableItems.helpers({
   skiPackagesPurchased: function () {
     return this.advancedFulfillment.skiPackagesPurchased;
+  },
+  kayakRented: function () {
+    return this.advancedFulfillment.kayakRental;
   }
 });
 
@@ -51,6 +54,16 @@ Template.skiPackages.helpers({
     }
     return true;
   }
+});
+
+Template.kayakRentals.helpers({
+  kayakVendor: function () {
+    return this.advancedFulfillment.kayakRental.vendor;
+  },
+  kayakQty: function () {
+    return this.advancedFulfillment.kayakRental.qty;
+  }
+
 });
 
 Template.skiPackages.events({

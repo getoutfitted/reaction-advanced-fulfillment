@@ -10,85 +10,53 @@
       {{/if}}
     </div>
   </div>
-    {{#each orders}}
-      {{> fulfillmentOrder}}
-    {{/each}}
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th><input type="checkbox" name="allOrders" id="checkboxAllOrders"></th>
+        <th>#</th>
+        <th><i class='fa fa-truck'></i></th>
+        <th>Shipping Date</th>
+        <th>Arrival Day</th>
+        <th>First Ski Day</th>
+        <th><i class="fa fa-map-marker"></i></th>
+        <th>Status</th>
+        <th>Current User</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each orders}}
+        {{> fulfillmentOrder}}
+      {{/each}}
+    </tbody>
+  </table>
 </template>
 
 <template name='fulfillmentOrder'>
-  <br/><br/>
-  <a href="{{pathFor 'orderDetails' _id=this._id}}">
-    <div>
+  <tr class="orderRow" style="cursor: pointer;" data-id='{{_id}}'>
+    <td><input type="checkbox" name="order_{{_id}}" id="checkboxOrder_{{_id}}"></td>
+    <td><strong>{{orderNumber}}</strong></td>
+    <td>
       {{#if this.advancedFulfillment.localDelivery}}
-        <div class='row text-center'>
-          <p class="bg-success"> This order is eligible for Local Delivery</p>
-        </div>
+        <span class="label label-info">LOCAL</span>
       {{/if}}
       {{#if this.advancedFulfillment.rushDelivery}}
-        <div class='row text-center'>
-          <p class="bg-danger"> This order requires rush delivery</p>
-        </div>
+        <span class="label label-warning">RUSH</span>
       {{/if}}
-      <div class="row orderBox">
-        <div class='col-sm-6'>
-          <h3><strong>{{orderNumber}}</strong></h3>
-        </div>
-        <div class='col-sm-6'>
-          {{#if toBeShipped}}
-            <h4>Date Shipping: <strong>{{shippingDate}} </strong></h4>
-          {{else}}
-            <h4>Date Returning: <strong>{{returningDate}} </strong></h4>
-          {{/if}}
-        </div>
-      </div>
-      <div class="row">
-        <div class='col-sm-6 {{status}}'>
-          Current Status: <strong class='{{status}}'>{{status}}</strong><br />
-          Assigned User: {{currentlyAssignedUser}}
-          <br>
-          Eligible for Local Delivery: <strong>{{this.advancedFulfillment.localDelivery}}</strong>
-        </div>
-        <div class='col-sm-6'>
-          OrderId: {{_id}}<br />
-          <p>Shipping Name: {{names.shipping}} | Billing Name: {{names.billing}} </p>
-          Contact Info: {{contactInfo}} | {{phoneNumber}}
-        </div>
-      </div>
-      <!-- <div class='row'>
-        <div class='col-sm-6'>
-          Number of  Different Items in Order {{uniqueItemsCount}}
-        </div>
-        <div class='col-sm-6'>
-          Number of a-la-carte Items in Order {{totalItemsCount}}
-        </div>
-      </div> -->
-
-<!--       {{readyForAssignment}}
- -->      {{#if readyForAssignment}}
-        <div class="row">
-          <div class='col-xs-12 col-sm-6'>
-            <a class='btn btn-lg btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Add to my {{nextStatus}} queue and go</a>
-          </div>
-          <div class='col-xs-12 col-sm-6'>
-            <a class='btn btn-lg btn-block btn-success selfAssignOrder' data-status='{{status}}' href='#'>Add to my {{nextStatus}} queue</a>
-          </div>
-        </div>
-      {{else}}
-        <div class='row'>
-          <div class='col-xs-12'>
-            {{#if isMyOrder}}
-              <button class='btn btn-lg btn-block btn-info viewOrder' data-status='{{status}}'>Work on Order</button>
-            {{else}}
-              <button class='btn btn-lg btn-block btn-default viewOrder' data-status='{{status}}'>View Order</button>
-            {{/if}}
-          </div>
-        </div>
-      {{/if}}
-    </div>
-  </a>
-    {{#if orderCreated}}
-      <br>
-      {{> printInvoice}}
+    </td>
+    {{#if startTime}}
+      <td>{{shippingDate}}</td>
+      <td>{{arrivalDay}}</td>
+      <td>{{firstSkiDay}}</td>
+    {{else}}
+      <td colspan=3>First Ski Day Missing!</td>
     {{/if}}
-    <hr>
+    <td>{{shippingState}}</td>
+    <td>{{status}}</td>
+    {{#if readyForAssignment }}
+      <td><a class='btn btn-lg btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Get Order</a></td>
+    {{else}}
+      <td>{{currentlyAssignedUser}}</td>
+    {{/if}}
+  </tr>
 </template>

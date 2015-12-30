@@ -39,9 +39,18 @@ Template.fulfillmentOrder.helpers({
     let longDate = this.advancedFulfillment.shipmentDate;
     return moment(longDate).format('MMMM Do, YYYY');
   },
+  arrivalDay: function () {
+    return moment(this.advancedFulfillment.arriveBy).format('MMMM Do, YYYY');
+  },
+  firstSkiDay: function () {
+    return moment(this.startTime).format('MMMM Do, YYYY');
+  },
   returningDate: function () {
     let longDate = this.advancedFulfillment.returnDate;
     return moment(longDate).format('MMMM Do, YYYY');
+  },
+  shippingState: function () {
+    return this.shipping[0].address.region;
   },
   toBeShipped: function () {
     let fullRoute = Router.current().url;
@@ -124,8 +133,13 @@ Template.fulfillmentOrder.helpers({
 });
 
 Template.fulfillmentOrder.events({
+  'click .orderRow': function (event) {
+    Router.go('orderDetails', {_id: $(event.currentTarget).data('id')});
+  },
   'click .advanceOrder': function (event) {
     event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
     let currentStatus = event.target.dataset.status;
     let orderId = this._id;
     let userId = Meteor.userId();

@@ -33,9 +33,12 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
       'items': {$ne: []},
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderActive
-      }
+      },
+      'startTime': {$ne: undefined}
     }, {
-      sort: {'advancedFulfillment.shipmentDate': 1}
+      sort: {
+        'advancedFulfillment.shipmentDate': 1
+      }
     }
 
     )};
@@ -213,7 +216,7 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
     let status = this.params.status;
     return {orders: ReactionCore.Collections.Orders.find({
       'advancedFulfillment.workflow.status': status
-    })};
+    }, {sort: {'advancedFulfillment.shipmentDate': 1}})};
   },
   onBeforeAction: function () {
     let status = this.params.status;

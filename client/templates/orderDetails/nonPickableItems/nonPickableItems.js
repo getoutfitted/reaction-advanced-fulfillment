@@ -10,6 +10,14 @@ Template.nonPickableItems.helpers({
   },
   anyOtherItems: function () {
     return this.advancedFulfillment.other;
+  },
+  anydamageCoverage: function () {
+    let packages = this.advancedFulfillment.damageCoverage.packages.qty;
+    let products = this.advancedFulfillment.damageCoverage.products.qty;
+    if (packages > 0 || products > 0) {
+      return true;
+    }
+    return false;
   }
 });
 

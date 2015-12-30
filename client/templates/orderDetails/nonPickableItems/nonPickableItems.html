@@ -1,6 +1,11 @@
 <template name='nonPickableItems'>
   <div class='container-fluid'>
-    {{> damageCoverage}}
+    <div class='row'>
+      <h2>Non Pickable Items included in this Order</h2>
+    </div>
+    {{# if anydamageCoverage}}
+      {{> damageCoverage}}
+    {{/if}}
     {{#if rushShippingPaid}}
       {{> rushDeliveryPaid}}
     {{/if}}
@@ -19,7 +24,6 @@
 
 <template name='damageCoverage'>
     <div class='row'>
-      <h2>Non Pickable Items included in this Order</h2>
       <div class='row'>
         <div class='col-xs-3'>
           <h3>Damage Coverage:</h3>

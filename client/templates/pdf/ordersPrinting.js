@@ -12,5 +12,15 @@ Template.advancedFulfillmentOrdersPrint.helpers({
   itemAttr: function (attr) {
     item = _.findWhere(Template.parentData().items, {_id: this._id});
     return item.variants[attr];
+  },
+  orders: function () {
+    return ReactionCore.Collections.Orders.find({
+      '_id': {
+        $in: Session.get('selectedOrders') || []
+      },
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderActive
+      }
+    });
   }
 });

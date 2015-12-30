@@ -205,6 +205,20 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
   }
 });
 
+Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
+  name: 'orders.printSelected',
+  controller: PrintController,
+  path: 'dashboard/advanced-fulfillment/orders/pdf/selected',
+  template: 'advancedFulfillmentOrdersPrint',
+  onBeforeAction() {
+    this.layout('print');
+    return this.next();
+  },
+  subscriptions: function () {
+    this.subscribe('Orders'); // TODO: Optimize this subscription
+  }
+});
+
 Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
   name: 'orderByStatus',
   template: 'fulfillmentOrders',

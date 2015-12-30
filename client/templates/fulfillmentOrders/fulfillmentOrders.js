@@ -1,8 +1,4 @@
 Template.fulfillmentOrders.onCreated(function () {
-  Session.setDefault('selectedOrders', []);
-});
-
-Template.fulfillmentOrders.onDestroyed(function () {
   Session.set('selectedOrders', []);
 });
 
@@ -53,6 +49,11 @@ Template.fulfillmentOrders.events({
     });
 
     Session.set('selectedOrders', selectedOrders);
+  },
+  'change #bulkActions': function (event) {
+    if (event.currentTarget.value === 'print') {
+      Router.go('orders.printSelected');
+    }
   }
 });
 

@@ -1,6 +1,23 @@
 Template.nonPickableItems.helpers({
   skiPackagesPurchased: function () {
     return this.advancedFulfillment.skiPackagesPurchased;
+  },
+  kayakRented: function () {
+    return this.advancedFulfillment.kayakRental;
+  },
+  rushShippingPaid: function () {
+    return this.advancedFulfillment.rushShippingPaid;
+  },
+  anyOtherItems: function () {
+    return this.advancedFulfillment.other;
+  },
+  anydamageCoverage: function () {
+    let packages = this.advancedFulfillment.damageCoverage.packages.qty;
+    let products = this.advancedFulfillment.damageCoverage.products.qty;
+    if (packages > 0 || products > 0) {
+      return true;
+    }
+    return false;
   }
 });
 
@@ -50,6 +67,30 @@ Template.skiPackages.helpers({
       return false;
     }
     return true;
+  }
+});
+
+Template.kayakRentals.helpers({
+  kayakVendor: function () {
+    return this.advancedFulfillment.kayakRental.vendor;
+  },
+  kayakQty: function () {
+    return this.advancedFulfillment.kayakRental.qty;
+  }
+});
+
+Template.rushDeliveryPaid.helpers({
+  rushQuantity: function () {
+    return this.advancedFulfillment.rushShippingPaid.qty;
+  },
+  rushCost: function () {
+    return this.advancedFulfillment.rushShippingPaid.subtotal;
+  }
+});
+
+Template.otherItems.helpers({
+  otherItems: function () {
+    return this.advancedFulfillment.other;
   }
 });
 

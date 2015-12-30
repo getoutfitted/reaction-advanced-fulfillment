@@ -1,8 +1,22 @@
 <template name='nonPickableItems'>
   <div class='container-fluid'>
-    {{> damageCoverage}}
+    <div class='row'>
+      <h2>Non Pickable Items included in this Order</h2>
+    </div>
+    {{# if anydamageCoverage}}
+      {{> damageCoverage}}
+    {{/if}}
+    {{#if rushShippingPaid}}
+      {{> rushDeliveryPaid}}
+    {{/if}}
     {{#if skiPackagesPurchased}}
       {{> skiPackages}}
+    {{/if}}
+    {{#if kayakRented}}
+      {{> kayakRentals}}
+    {{/if}}
+    {{#if anyOtherItems}}
+      {{> otherItems}}
     {{/if}}
   </div>
 </template>
@@ -10,7 +24,6 @@
 
 <template name='damageCoverage'>
     <div class='row'>
-      <h2>Non Pickable Items included in this Order</h2>
       <div class='row'>
         <div class='col-xs-3'>
           <h3>Damage Coverage:</h3>
@@ -73,5 +86,64 @@
       </tbody>
     </table>
   </div>
+</template>
 
+<template name='kayakRentals'>
+  <div class='row'>
+    <div class='col-xs-3'>
+      <h3>Kayak Rental Details:</h3>
+    </div>
+    <div class='col-xs-3'>
+      <h4>Vendor: <strong>{{kayakVendor}}</strong></h4>
+    </div>
+    <div class='col-xs-3'>
+      <h4>Quantity: <strong>{{kayakQty}}</strong></h4>
+    </div>
+  </div>
+  <hr>
+</template>
+
+<template name='rushDeliveryPaid'>
+  <div class='row'>
+    <div class='col-xs-3'>
+      <h3>Rush Delivery Paid:</h3>
+    </div>
+    <div class='col-xs-3'>
+      <h4>Rush Quantity: <strong>{{rushQuantity}}</strong></h4>
+    </div>
+    <div class='col-xs-3'>
+      <h4>Cost: <strong>{{rushCost}}</strong></h4>
+    </div>
+  </div>
+  <hr>
+</template>
+
+<template name='otherItems'>
+  <div class='row'>
+    <h3>Other Items In This Order</h3>
+  </div>
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Vendor</th>
+          <th>Variant</th>
+          <th>Quantity</th>
+          <th>Price Per</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each item in otherItems}}
+          <tr>
+            <td>{{item.product}}</td>
+            <td>{{item.vendor}}</td>
+            <td>{{item.variantTitle}}</td>
+            <td>{{item.qty}}</td>
+            <td> $ {{item.price}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </template>

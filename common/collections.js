@@ -29,6 +29,17 @@ ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal = new SimpleSchema(
   }
 });
 
+ReactionCore.Schemas.AdvancedFulfillmentRushShippingPaid = new SimpleSchema({
+  qty: {
+    type: Number,
+    optional: true
+  },
+  subtotal: {
+    type: Number,
+    optional: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
   packages: {
     type: ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
@@ -112,6 +123,41 @@ ReactionCore.Schemas.AdvancedFulfillmentSkiPackage = new SimpleSchema({
   },
   contactedCustomer: {
     type: Boolean,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentKayakRental = new SimpleSchema({
+  vendor: {
+    type: String,
+    optional: true
+  },
+  qty: {
+    type: Number,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems = new SimpleSchema({
+  vendor: {
+    type: String,
+    optional: true
+  },
+  qty: {
+    type: Number,
+    optional: true
+  },
+  product: {
+    type: String,
+    optional: true
+  },
+  price: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  variantTitle: {
+    type: String,
     optional: true
   }
 });
@@ -248,6 +294,18 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   skiPackagesPurchased: {
     type: Boolean,
+    optional: true
+  },
+  kayakRental: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentKayakRental,
+    optional: true
+  },
+  rushShippingPaid: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentRushShippingPaid,
+    optional: true
+  },
+  other: {
+    type: [ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems],
     optional: true
   }
 });

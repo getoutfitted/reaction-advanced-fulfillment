@@ -53,7 +53,7 @@ Template.fulfillmentOrders.events({
   'change #bulkActions': function (event) {
     if (event.currentTarget.value === 'print') {
       localStorage.selectedOrdersToPrint = JSON.stringify(Session.get('selectedOrders'));
-      Router.go('orders.printSelected');
+      window.open(Router.url('orders.printSelected'));
     }
   }
 });

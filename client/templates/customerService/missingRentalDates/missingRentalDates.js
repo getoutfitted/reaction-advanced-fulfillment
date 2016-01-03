@@ -10,6 +10,16 @@ Template.missingRentalDates.helpers({
         rentalDays: {$exists: false}
       }]
     }, {$sort: {createdAt: 1}});
+  },
+  billingName: function () {
+    return this.billing[0].address.fullName;
+  },
+  billingPhone: function () {
+    return this.billing[0].address.phone;
+  },
+  shippingAddress: function () {
+    let address = this.shipping[0].address;
+    return address.address1 + ' ' + address.city + ', ' + address.region + ' ' + address.postal;
   }
 });
 

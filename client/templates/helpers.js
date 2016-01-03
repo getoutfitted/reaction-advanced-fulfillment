@@ -1,5 +1,4 @@
 Template.registerHelper('displayOrderNumber', (order) => {
-  console.log(order);
   if (order.shopifyOrderId) {
     return '<a href="http://getoutfitted.myshopify.com/admin/orders/'
     + order.shopifyOrderId
@@ -10,4 +9,8 @@ Template.registerHelper('displayOrderNumber', (order) => {
 
   // Default
   return 'Order #' + order._id;
+});
+
+Template.registerHelper('formattedDate', (date) => {
+  return moment(date).format('MMMM Do, YYYY');
 });

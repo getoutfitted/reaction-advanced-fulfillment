@@ -43,6 +43,7 @@ Package.onUse(function (api) {
   ], 'server');
 
   api.addFiles([
+    'client/templates/helpers.js',
     'client/templates/settings/settings.html',
     'client/templates/settings/settings.js',
     'client/templates/fulfillmentOrders/fulfillmentOrders.html',

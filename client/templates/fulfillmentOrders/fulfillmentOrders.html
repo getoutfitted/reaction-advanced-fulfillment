@@ -64,10 +64,13 @@
     <td>
       {{#if this.advancedFulfillment.localDelivery}}
         <span class="label label-info" style="font-size: 14px;">LOCAL</span>
-      {{/if}}
-      {{#if this.advancedFulfillment.rushDelivery}}
-        <span class="label label-warning" style="font-size: 14px;">RUSH</span>
-      {{/if}}
+      {{else}}
+        {{#if this.advancedFulfillment.rushDelivery}}
+          <span class="label label-warning" style="font-size: 14px;">RUSH</span>
+        {{else}}
+          <span class="label label-primary" style="font-size: 14px;">GROUND</span>
+        {{/if}}
+      {{/if}}  
     </td>
     {{#if startTime}}
       <td>{{shippingDate}}</td>

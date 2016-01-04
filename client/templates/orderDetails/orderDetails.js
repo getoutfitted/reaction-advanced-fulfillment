@@ -25,35 +25,20 @@ Template.orderDetails.helpers({
     let valid = _.contains(generalTemplates, currentStatus);
     if (valid) {
       return 'defaultStatus';
-    };
+    }
     return currentStatus;
   },
   status: function () {
     return this.advancedFulfillment.workflow.status;
   },
-  shippingDate: function () {
-    let date = this.advancedFulfillment.shipmentDate;
-    return dateFormater(date);
+  humanStatus: function () {
+    return AdvancedFulfillment.humanOrderStatuses[this.advancedFulfillment.workflow.status];
   },
-  returnDate: function () {
-    let date = this.advancedFulfillment.returnDate;
-    return dateFormater(date);
+  actionStatus: function () {
+    return AdvancedFulfillment.humanActionStatuses[this.advancedFulfillment.workflow.status];
   },
-  arriveByDate: function () {
-    let date = this.advancedFulfillment.arriveBy;
-    return dateFormater(date);
-  },
-  returnByDate: function () {
-    let date = this.advancedFulfillment.shipReturnBy;
-    return dateFormater(date);
-  },
-  firstDay: function () {
-    let date = this.startTime;
-    return dateFormater(date);
-  },
-  lastDay: function () {
-    let date = this.endTime;
-    return dateFormater(date);
+  formattedDate: function (date) {
+    return AdvancedFulfillment.dateFormatter(date);
   },
   orderCreated: function () {
     let valid = this.advancedFulfillment.workflow.status === 'orderCreated';
@@ -157,6 +142,14 @@ Template.orderDetails.helpers({
     myOrders.prevOrderId = prevOrder ? prevOrder._id : undefined;
     myOrders.count = orders.length;
     return myOrders;
+  },
+  hasNonPickableItems: function () {
+    const af = this.advancedFulfillment;
+    const damageCoverage = af.damageCoverage.packages.qty > 0 || af.damageCoverage.products.qty > 0;
+    if (af.skiPackagesPurchased || af.kayakRental || af.other || damageCoverage) {
+      return true;
+    }
+    return false;
   }
 });
 
@@ -183,6 +176,11 @@ Template.orderDetails.events({
     event.preventDefault();
     let notes = event.target.value;
     let orderId = this._id;
-    Meteor.call('advancedFulfillment/updateOrderNotes', orderId, notes)
+    Meteor.call('advancedFulfillment/updateOrderNotes', orderId, notes);
+  },
+  'click .print-invoice': function () {
+    let orderId = event.target.dataset.orderId;
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/printInvoice', orderId, userId);
   }
 });

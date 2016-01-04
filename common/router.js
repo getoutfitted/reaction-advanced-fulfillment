@@ -73,7 +73,8 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)
-      }
+      },
+      'startTime': {$ne: undefined}
     })};
   },
   onBeforeAction: function () {

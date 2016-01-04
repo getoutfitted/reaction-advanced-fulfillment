@@ -2,16 +2,13 @@
   {{> afNavbar}}
   <div class='container-fluid'>
     <div class='row text-center'>
-      <h1>Order Number {{_id}} | Shopify Order {{shopifyOrderNumber}}</h1>
-      <h3>Order Details:</h3>
-      <div class='row'>
-        <div class='col-xs-6'>
-          <p>Shipping Date: {{advancedFulfillment.shipmentDate}}</p>
-        </div>
-        <div class='col-xs-6'>
-          <p>Return Date: {{advancedFulfillment.returnDate}}</p>
-        </div>
+      <div class='col-sm-4 col-md-4 hidden-xs hidden-sm'>
+        <h2><a href="{{pathFor route='orderDetails' _id=_id}}"><i class="fa fa-chevron-left"></i> Back to Order</a></h2>
       </div>
+      <div class='col-sm-7 col-md-4 col-md-offset-4'>
+        <h2>{{{displayOrderNumber this}}}</h2>
+      </div>
+      
     </div>
     <div class='row'>
       <h3>Items in this Order:</h3>

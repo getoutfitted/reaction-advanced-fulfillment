@@ -61,18 +61,6 @@ Template.orderDetails.helpers({
     }
     return false;
   },
-  displayOrderNumber: function () {
-    if (this.shopifyOrderId) {
-      return '<a href="http://getoutfitted.myshopify.com/admin/orders/'
-      + this.shopifyOrderId
-      + '">Order #' + this.shopifyOrderNumber + '</a>';
-    } else if (this.shopifyOrderNumber) {
-      return 'Order #' + this.shopifyOrderNumber;
-    }
-
-    // Default
-    return 'Order #' + this._id;
-  },
   shippingTo: function () {
     return this.shipping[0].address.fullName;
   },

@@ -8,10 +8,8 @@
       <div class='col-sm-7 col-md-4 col-md-offset-4'>
         <h2>{{{displayOrderNumber this}}}</h2>
       </div>
-      
     </div>
     <div class='row'>
-      <h3>Items in this Order:</h3>
       <div class='table-responsive'>
         <table class='table table-hover'>
           <thead>
@@ -67,8 +65,34 @@
         </table>
       </div>
     </div>
+    <hr>
     <div class='container'>
-      <a class='btn btn-lg btn-success btn-block add-new-item' href='#'>Add an item to this order</a>
+      <div class='row text-center'>
+        <div class="col-md-8 hidden-xs hidden-sm">
+          <h3>Change Order Dates</h3>
+        </div>
+        <div class="col-md-4 hidden-xs hidden-sm">
+          <h3>Add Items</h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-md-4">
+          <div class='picker' id='{{_id}}'>
+            <div class='input-daterange input-group' id='datepicker'>
+              <input type='text' class='input-lg form-control' name='start' placeholder="First Ski Day" />
+              <span class='input-group-addon'>to</span>
+              <input type='text' class='input-lg form-control' name='end' placeholder="Last Ski Day" />
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-4">
+          <button class='btn btn-lg btn-primary update-rental-dates'>Update First/Last Ski Date</button>
+        </div>
+        <div class="col-xs-12 col-md-4 text-center">
+          <a class='btn btn-lg btn-success add-new-item' href='#'>Add an item to this order</a>
+        </div>
+      </div>
+      
     </div>
     <div class='row item-selector'>
     {{#if addingItems}}

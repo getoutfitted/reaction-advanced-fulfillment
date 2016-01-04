@@ -4,15 +4,32 @@
     <h2><strong>Orders containing Bundles with Missing Colors</strong></h2>
     <p class='text-danger'>These Orders came in with a color, so it was automaticlly assigned, please contact customer and confirm or update bundle color</p>
   </div>
-  {{#each missingBundleInfo}}
-    <div class='row'>
-      {{> csDetails}}
-      <div class='col-xs-2'>
-        <a class='btn btn-lg btn-block btn-info' href="{{pathFor 'updateOrder' orderNumber=this._id}}">Go to Order Update</a>
-        <br>
-        <a  class='btn btn-success btn-block btn-lg confirm-bundle' href="#">Confirm Bundle Color Selection</a>
-      </div>
-    </div>
-    <hr>
-  {{/each}}
+  <table class="table table-hover">
+    <thead>
+      <th>#</th>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Email</th>
+      <th>Shipping Address</th>
+      <th class="text-center">Update Order</th>
+      <th>Confirm Colors</th>
+    </thead>
+    <tbody>
+      {{#each missingBundleInfo}}
+        <tr>
+          <td><a href="{{pathFor 'orderDetails'}}"><strong>{{shopifyOrderNumber}}</strong></a></td>
+          <td>{{billingName}}</td>
+          <td><a href="tel:{{billingPhone}}">{{billingPhone}}</a></td>
+          <td><a href="mailto: {{email}}">{{email}}</a></td>
+          <td>{{shippingAddress}}</td>
+          <td>
+            <a class='btn btn-info btn-block' href="{{pathFor 'updateOrder' orderNumber=this._id}}">Update</a>
+          </td>
+          <td>
+            <a class='btn btn-success btn-block confirm-bundle' href="#">Confirm Colors</a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </template>

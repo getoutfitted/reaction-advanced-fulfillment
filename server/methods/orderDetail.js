@@ -134,9 +134,9 @@ function getFedexTransitTime(address) {
 }
 
 function buffer() {
-  let settings = ReactionCore.Collections.Packages.findOne({name: 'reaction-advanced-fulfillment'}).settings;
-  if (settings.buffer) {
-    return settings.buffer;
+  let af = ReactionCore.Collections.Packages.findOne({name: 'reaction-advanced-fulfillment'});
+  if (af && af.settings && af.settings.buffer) {
+    return af.settings.buffer;
   }
   return {shipping: 0, returning: 0};
 }

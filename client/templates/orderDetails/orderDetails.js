@@ -6,10 +6,6 @@ function getIndexBy(array, name, value) {
   }
 }
 
-function dateFormater(date) {
-  return moment(date).format('MMMM Do, YYYY');
-}
-
 Template.orderDetails.helpers({
   currentStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
@@ -36,9 +32,6 @@ Template.orderDetails.helpers({
   },
   actionStatus: function () {
     return AdvancedFulfillment.humanActionStatuses[this.advancedFulfillment.workflow.status];
-  },
-  formattedDate: function (date) {
-    return AdvancedFulfillment.dateFormatter(date);
   },
   orderCreated: function () {
     let valid = this.advancedFulfillment.workflow.status === 'orderCreated';

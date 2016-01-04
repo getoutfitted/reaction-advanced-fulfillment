@@ -14,9 +14,11 @@
         <th>Shipping Address</th>
         <th>Update</th>
       </thead>
-      {{#each missingItemsFromOrder}}
-        {{> csDetails}}
-      {{/each}}
+      <tbody>
+        {{#each missingItemsFromOrder}}
+          {{> csDetails}}
+        {{/each}}
+      </tbody>
     </table>
   </div>
 </template>

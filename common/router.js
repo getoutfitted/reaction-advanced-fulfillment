@@ -21,6 +21,16 @@ Router.route('dashboard/advanced-fulfillment', {
   }
 });
 
+Router.route('dashboard/advanced-fulfillment/picker', {
+  name: 'advancedFulfillment.picker',
+  path: 'dashboard/advanced-fulfillment/picker',
+  template: 'advancedFulfillment.picker.search',
+  controller: 'ShopAdminController',
+  waitOn: function () {
+    return this.subscribe('searchOrders');
+  }
+});
+
 Router.route('dashboard/advanced-fulfillment/shipping', {
   name: 'allShipping',
   controller: advancedFulfillmentController,
@@ -63,7 +73,8 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)
-      }
+      },
+      'startTime': {$ne: undefined}
     })};
   },
   onBeforeAction: function () {
@@ -137,11 +148,10 @@ Router.route('dashboard/advanced-fulfillment/order/:_id', {
   template: 'orderDetails',
   controller: advancedFulfillmentController,
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
-    let orderId = this.params._id;
-    return ReactionCore.Collections.Orders.findOne({_id: orderId});
+    return ReactionCore.Collections.Orders.findOne();
   }
 });
 

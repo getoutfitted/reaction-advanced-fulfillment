@@ -47,3 +47,21 @@ Meteor.publish('advancedFulfillmentOrder', function (orderId) {
   }
   return this.ready();
 });
+
+Meteor.publish('searchOrders', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderActive
+      }
+    }, {
+      fields: {
+        _id: 1,
+        shopifyOrderNumber: 1
+      }
+    });
+  }
+  return this.ready();
+});

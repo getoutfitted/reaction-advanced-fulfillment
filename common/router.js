@@ -21,6 +21,16 @@ Router.route('dashboard/advanced-fulfillment', {
   }
 });
 
+Router.route('dashboard/advanced-fulfillment/picker', {
+  name: 'advancedFulfillment.picker',
+  path: 'dashboard/advanced-fulfillment/picker',
+  template: 'advancedFulfillment.picker.search',
+  controller: 'ShopAdminController',
+  waitOn: function () {
+    return this.subscribe('searchOrders');
+  }
+});
+
 Router.route('dashboard/advanced-fulfillment/shipping', {
   name: 'allShipping',
   controller: advancedFulfillmentController,

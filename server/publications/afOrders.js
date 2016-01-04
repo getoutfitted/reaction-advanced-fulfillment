@@ -35,3 +35,15 @@ Meteor.publish('afOrders', function () {
 Meteor.publish('afProducts', function () {
   return ReactionCore.Collections.Products.find({});
 });
+
+Meteor.publish('advancedFulfillmentOrder', function (orderId) {
+  check(orderId, String);
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      _id: orderId,
+      shopId: shopId
+    });
+  }
+  return this.ready();
+});

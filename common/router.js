@@ -137,11 +137,10 @@ Router.route('dashboard/advanced-fulfillment/order/:_id', {
   template: 'orderDetails',
   controller: advancedFulfillmentController,
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
-    let orderId = this.params._id;
-    return ReactionCore.Collections.Orders.findOne({_id: orderId});
+    return ReactionCore.Collections.Orders.findOne();
   }
 });
 

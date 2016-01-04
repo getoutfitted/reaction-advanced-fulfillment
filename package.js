@@ -95,6 +95,8 @@ Package.onUse(function (api) {
     'client/templates/customerService/missingBundleColors/missingBundleColors.js',
     'client/templates/orderDetails/nonPickableItems/nonPickableItems.html',
     'client/templates/orderDetails/nonPickableItems/nonPickableItems.js',
+    'client/templates/customerService/nonWarehouseOrders/nonWarehouseOrders.html',
+    'client/templates/customerService/nonWarehouseOrders/nonWarehouseOrders.js',
 
     // Picker templates
     'client/templates/picker/search.html',

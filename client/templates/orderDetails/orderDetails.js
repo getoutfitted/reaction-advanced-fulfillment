@@ -15,7 +15,8 @@ Template.orderDetails.helpers({
       'orderPicked',
       'orderShipped',
       'orderIncomplete',
-      'orderCompleted'
+      'orderCompleted',
+      'nonWarehouseOrder'
     ];
     // let generalTemplates = AdvancedFulfillment.assignmentStatuses;
     let valid = _.contains(generalTemplates, currentStatus);
@@ -100,6 +101,14 @@ Template.orderDetails.helpers({
     let assignedTime = history.updatedAt;
     return assignedTime;
   },
+  noItemsToPick: function () {
+    let numberOfItems = this.advancedFulfillment.items.length;
+    let status = this.advancedFulfillment.workflow.status;
+    if (status !== 'nonWarehouseOrder') {
+      return numberOfItems === 0;
+    }
+    return false;
+  },
   myOrdersInCurrentStep: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
     let history = _.findWhere(this.history, {event: currentStatus});
@@ -126,6 +135,9 @@ Template.orderDetails.helpers({
   },
   hasNonPickableItems: function () {
     const af = this.advancedFulfillment;
+    if (!af.damageCoverage) {
+      return false;
+    }
     const damageCoverage = af.damageCoverage.packages.qty > 0 || af.damageCoverage.products.qty > 0;
     if (af.skiPackagesPurchased || af.kayakRental || af.other || damageCoverage) {
       return true;
@@ -163,5 +175,11 @@ Template.orderDetails.events({
     let orderId = event.target.dataset.orderId;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/printInvoice', orderId, userId);
+  },
+  'click .noWarehouseItems': function (event) {
+    event.preventDefault();
+    let orderId = this._id;
+    let userId = Meteor.userId();
+    Meteor.call('advancedFulfillment/nonWarehouseOrder', orderId, userId);
   }
 });

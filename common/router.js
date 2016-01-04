@@ -460,3 +460,12 @@ Router.route('dashboard/advanced-fulfillment/customer-service/missing-bundle-col
     return this.subscribe('Orders');
   }
 });
+
+Router.route('dashboard/advanced-fulfillment/customer-service/non-warehouse-orders', {
+  name: 'nonWarehouseOrders',
+  controller: advancedFulfillmentController,
+  template: 'nonWarehouseOrders',
+  waitOn: function () {
+    return this.subscribe('nonWarehouseOrders');
+  }
+});

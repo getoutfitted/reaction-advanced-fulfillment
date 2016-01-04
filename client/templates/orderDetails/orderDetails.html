@@ -20,7 +20,7 @@
             <a class='btn btn-block btn-lg btn-success advanceOrder' style="line-height: 36px; font-size: 36px; font-weight: bold; margin-top: 10px; margin-bottom: 10px;" data-status='{{status}}' href='#'>{{actionStatus}}</a>
           {{/if}}
         {{/if}}
-          
+
       </div>
       <div class='col-sm-5 col-md-4'>
         <h1>Status: {{humanStatus}}</h1>
@@ -78,6 +78,11 @@
     </div>
     <hr>
     {{> Template.dynamic template=currentStatus}}
+    {{#if noItemsToPick}}
+      <div class='row text-center'>
+        <a class='btn btn-lg btn-warning noWarehouseItems'>This order ONLY contains items that aren't located in Dillon Warehouse</a>
+      </div>
+    {{/if}}
     <hr>
     {{#if hasNonPickableItems}}
       {{> nonPickableItems}}

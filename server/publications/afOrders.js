@@ -18,7 +18,8 @@ Meteor.publish('afOrders', function () {
         // 'shipping.address.phone': 1,
         'history': 1,
         'shipping.address.region': 1,
-        // 'shipping.address.fullName': 1,
+        'shipping.address.city': 1,
+        'shipping.address.fullName': 1,
         // 'billing.address.fullName': 1,
         'advancedFulfillment.localDelivery': 1,
         'advancedFulfillment.rushDelivery': 1,
@@ -26,7 +27,6 @@ Meteor.publish('afOrders', function () {
         'advancedFulfillment.kayakRental.qty': 1,
         'advancedFulfillment.rushShippingPaid': 1
       }
-
     });
   }
   return this.ready();

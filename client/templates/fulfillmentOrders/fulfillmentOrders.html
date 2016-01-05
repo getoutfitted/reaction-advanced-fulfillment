@@ -36,9 +36,10 @@
             <th>Ship By</th>
             <th class="hidden-xs hidden-sm">Arrival Day</th>
             <th class="hidden-xs hidden-sm">First Ski Day</th>
-            <th><i class="fa fa-map"></i></th>
+            <th>Customer</th>
+            <th>Destination</th>
             <th>Status</th>
-            <th>Current User</th>
+            <!-- <th>Current User</th> -->
           {{/if}}
         </tr>
       </thead>
@@ -70,7 +71,7 @@
         {{else}}
           <span class="label label-primary" style="font-size: 14px;">GROUND</span>
         {{/if}}
-      {{/if}}  
+      {{/if}}
     </td>
     {{#if startTime}}
       <td>{{shippingDate}}</td>
@@ -79,12 +80,8 @@
     {{else}}
       <td colspan=3>First Ski Day Missing!</td>
     {{/if}}
-    <td>{{shippingState}}</td>
-    <td>{{status}}</td> <!-- TODO: Add badge for statuses -->
-    {{#if readyForAssignment }}
-      <td><a class='btn btn-block btn-default advanceOrder' data-status='{{status}}' href='#'>Get Order</a></td>
-    {{else}}
-      <td>{{currentlyAssignedUser}}</td>
-    {{/if}}
+    <td>{{shippingName}}</td>
+    <td>{{shippingLoc}}</td>
+    <td>{{status}}</td>
   </tr>
 </template>

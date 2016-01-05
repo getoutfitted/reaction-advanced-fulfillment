@@ -56,5 +56,24 @@ Meteor.methods({
         'advancedFulfillment.skiPackages.$.contactedCustomer': true
       }
     });
+  },
+  'advancedFulfillment/nonWarehouseOrder': function (orderId, userId) {
+    check(orderId, String);
+    check(userId, String);
+    let history = {
+      event: 'nonWarehouseOrder',
+      userId: userId,
+      updatedAt: new Date()
+    };
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'nonWarehouseOrder'
+      },
+      $addToSet: {
+        history: history
+      }
+    });
   }
 });

@@ -65,3 +65,14 @@ Meteor.publish('searchOrders', function () {
   }
   return this.ready();
 });
+
+Meteor.publish('nonWarehouseOrders', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': 'nonWarehouseOrder'
+    });
+  }
+  return this.ready();
+});

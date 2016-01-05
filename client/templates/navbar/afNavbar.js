@@ -1,3 +1,7 @@
+Template.afNavbar.onCreated(function () {
+  this.subscribe('afOrders');
+});
+
 Template.afNavbar.onRendered(function () {
   $('.navbar-primary-tags').hide();
 });

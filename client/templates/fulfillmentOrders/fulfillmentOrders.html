@@ -64,18 +64,16 @@
     </td>
     <td><strong>{{orderNumber}}</strong></td>
     <td>
-      {{#if this.advancedFulfillment.localDelivery}}
-        <span class="label label-info" style="font-size: 14px;">LOCAL</span>
-      {{else}}
-        {{#if this.advancedFulfillment.rushDelivery}}
-          <span class="label label-warning" style="font-size: 14px;">RUSH</span>
-        {{else}}
-          <span class="label label-primary" style="font-size: 14px;">GROUND</span>
-        {{/if}}
-      {{/if}}
+      {{> deliveryLabels}}
     </td>
     {{#if startTime}}
-      <td>{{shippingDate}}</td>
+      <td>
+      {{#if pastDate this.advancedFulfillment.shipmentDate}}
+        <span class='text-danger'><strong>Today</strong></span>
+      {{else}}
+        {{shippingDate}}
+      {{/if}}
+      </td>
       <td class="hidden-xs hidden-sm">{{arrivalDay}}</td>
       <td class="hidden-xs hidden-sm">{{firstSkiDay}}</td>
     {{else}}

@@ -101,8 +101,11 @@ Package.onUse(function (api) {
 
     // Picker templates
     'client/templates/picker/search.html',
-    'client/templates/picker/search.js'
+    'client/templates/picker/search.js',
 
+    // Delivery labels as a template
+    'client/templates/deliveryLabels/deliveryLabels.html',
+    'client/templates/deliveryLabels/deliveryLabels.js'
   ], 'client');
 
   api.addFiles([

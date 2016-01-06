@@ -38,17 +38,15 @@
       <tbody>
         <tr>
           <td>
-            {{#if this.advancedFulfillment.localDelivery}}
-              <span class="label label-info" style="font-size: 16px;">LOCAL</span>
+            {{> deliveryLabels}}
+          </td>
+          <td>
+            {{#if pastDate this.advancedFulfillment.shipmentDate}}
+              <span class='text-danger'><strong>Today</strong></span>
             {{else}}
-              {{#if this.advancedFulfillment.rushDelivery}}
-                <span class="label label-warning" style="font-size: 16px;">RUSH</span>
-              {{else}}
-                <span class="label label-primary" style="font-size: 16px;">GROUND</span>
-              {{/if}}
+              {{formattedDate advancedFulfillment.shipmentDate}}
             {{/if}}
           </td>
-          <td>{{formattedDate advancedFulfillment.shipmentDate}}</td>
           <td>{{formattedDate advancedFulfillment.arriveBy}}</td>
           <td>{{formattedDate startTime}} <br /> {{formattedDate endTime}}</td>
           <td>{{actualTransitTime}}</td>

@@ -87,6 +87,14 @@ ReactionCore.Schemas.AdvancedFulfillmentAfterShip = new SimpleSchema({
     type: String,
     optional: true
   },
+  currentCity: {
+    type: String,
+    optional: true
+  },
+  currentState: {
+    type: String,
+    optional: true
+  },
   history: {
     type: [ReactionCore.Schemas.AdvancedFulfillmentAfterShipShippingHistory],
     optional: true

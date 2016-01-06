@@ -143,6 +143,9 @@ Template.orderDetails.helpers({
       return true;
     }
     return false;
+  },
+  hasShippingInfo: function () {
+    return this.advancedFulfillment.shippingHistory && this.advancedFulfillment.workflow.status === 'orderShipped';
   }
 });
 

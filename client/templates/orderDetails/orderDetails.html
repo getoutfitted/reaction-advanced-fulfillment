@@ -55,6 +55,27 @@
       </tbody>
     </table>
     <hr>
+    {{#if hasShippingInfo}}
+      <div class='row'>
+        <table class="table text-center" style="font-size: 16px; margin-top: 15px;">
+          <thead class="text-center">
+            <th class="text-center">Tracking Number</th>
+            <th class="text-center">Current Shipping Status</th>
+            <th class="text-center">Last Shipping CheckPoint</th>
+            <th class="text-center">Current Location</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a  target='_blank' href="https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber={{advancedFulfillment.shippingHistory.trackingNumber}}&cntry_code=us">{{advancedFulfillment.shippingHistory.trackingNumber}}</a></td>
+              <td>{{advancedFulfillment.shippingHistory.currentStatus}}</td>
+              <td>{{advancedFulfillment.shippingHistory.currentMessage}}</td>
+              <td>{{advancedFulfillment.shippingHistory.currentCity}}, {{advancedFulfillment.shippingHistory.currentState}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+      </div>
+    {{/if}}
     <div class='row'>
       <div class="col-xs-12 col-sm-4 text-center">
         <p><strong>Order Notes:</strong></p>

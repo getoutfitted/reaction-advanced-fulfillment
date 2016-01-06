@@ -51,6 +51,56 @@ ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
   }
 });
 
+ReactionCore.Schemas.AdvancedFulfillmentAfterShipShippingHistory = new SimpleSchema({
+  city: {
+    type: String,
+    optional: true
+  },
+  state: {
+    type: String,
+    optional: true
+  },
+  message: {
+    type: String,
+    optional: true
+  },
+  status: {
+    type: String,
+    optional: true
+  },
+  checkPointTime: {
+    type: Date,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentAfterShip = new SimpleSchema({
+  currentStatus: {
+    type: String,
+    optional: true
+  },
+  currentMessage: {
+    type: String,
+    optional: true
+  },
+  trackingNumber: {
+    type: String,
+    optional: true
+  },
+  currentCity: {
+    type: String,
+    optional: true
+  },
+  currentState: {
+    type: String,
+    optional: true
+  },
+  history: {
+    type: [ReactionCore.Schemas.AdvancedFulfillmentAfterShipShippingHistory],
+    optional: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentSkiPackage = new SimpleSchema({
   _id: {
     type: String,
@@ -306,6 +356,10 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   other: {
     type: [ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems],
+    optional: true
+  },
+  shippingHistory: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentAfterShip,
     optional: true
   }
 });

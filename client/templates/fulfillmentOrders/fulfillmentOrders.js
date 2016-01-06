@@ -1,3 +1,12 @@
+let calendarFormat = {
+  sameDay: '[Today]',
+  nextDay: '[Tomorrow]',
+  nextWeek: 'dddd',
+  lastDay: '[Yesterday]',
+  lastWeek: '[Last] dddd',
+  sameElse: 'ddd MMM D, YYYY'
+};
+
 Template.fulfillmentOrders.onCreated(function () {
   Session.set('selectedOrders', []);
 });
@@ -54,6 +63,8 @@ Template.fulfillmentOrders.events({
     if (event.currentTarget.value === 'print') {
       localStorage.selectedOrdersToPrint = JSON.stringify(Session.get('selectedOrders'));
       window.open(Router.url('orders.printSelected'));
+    } else if (event.currentTarget.value === 'ship') {
+      Meteor.call('advancedFulfillment/shipSelectedOrders', Session.get('selectedOrders'));
     }
   }
 });
@@ -66,21 +77,20 @@ Template.fulfillmentOrder.helpers({
     return '';
   },
   shippingDate: function () {
-    let longDate = this.advancedFulfillment.shipmentDate;
-    return moment(longDate).format('MMMM Do, YYYY');
+    return moment(this.advancedFulfillment.shipmentDate).calendar(null, calendarFormat);
   },
   arrivalDay: function () {
-    return moment(this.advancedFulfillment.arriveBy).format('MMMM Do, YYYY');
+    return moment(this.advancedFulfillment.arriveBy).calendar(null, calendarFormat);
   },
   firstSkiDay: function () {
-    return moment(this.startTime).format('MMMM Do, YYYY');
+    return moment(this.startTime).calendar(null, calendarFormat);
   },
   returningDate: function () {
     let longDate = this.advancedFulfillment.returnDate;
     return moment(longDate).format('MMMM Do, YYYY');
   },
-  shippingState: function () {
-    return this.shipping[0].address.region;
+  shippingLoc: function () {
+    return this.shipping[0].address.city + ', ' + this.shipping[0].address.region;
   },
   orderSelected: function () {
     // Session.setDefault('selectedOrders', []);
@@ -103,11 +113,8 @@ Template.fulfillmentOrder.helpers({
   contactInfo: function () {
     return this.email || 'Checked Out As Guest';
   },
-  names: function () {
-    return  {
-      shipping: this.shipping[0].address.fullName,
-      billing: this.shipping[0].address.fullName
-    };
+  shippingName: function () {
+    return this.shipping[0].address.fullName;
   },
   phoneNumber: function () {
     return this.shipping[0].address.phone || '';

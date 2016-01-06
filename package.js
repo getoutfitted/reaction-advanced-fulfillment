@@ -38,8 +38,9 @@ Package.onUse(function (api) {
     'server/hooks/after_copyCartToOrder.js',
     'server/methods/orderDetail.js',
     'server/methods/itemDetails.js',
-    'server/publications/afOrders.js',
-    'server/methods/customerService.js'
+    'server/methods/customerService.js',
+    'server/methods/bulkActions.js',
+    'server/publications/afOrders.js'
   ], 'server');
 
   api.addFiles([

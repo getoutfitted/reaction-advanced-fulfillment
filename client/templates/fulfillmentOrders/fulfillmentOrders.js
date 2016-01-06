@@ -1,12 +1,3 @@
-let calendarFormat = {
-  sameDay: '[Today]',
-  nextDay: '[Tomorrow]',
-  nextWeek: 'dddd',
-  lastDay: '[Yesterday]',
-  lastWeek: '[Last] dddd',
-  sameElse: 'ddd MMM D, YYYY'
-};
-
 Template.fulfillmentOrders.onCreated(function () {
   Session.set('selectedOrders', []);
 });
@@ -62,7 +53,7 @@ Template.fulfillmentOrders.events({
   'change #bulkActions': function (event) {
     if (event.currentTarget.value === 'print') {
       localStorage.selectedOrdersToPrint = JSON.stringify(Session.get('selectedOrders'));
-      window.open(Router.url('orders.printSelected'));
+      window.open(window.location.origin + Router.path('orders.printSelected'));
     } else if (event.currentTarget.value === 'ship') {
       Meteor.call('advancedFulfillment/shipSelectedOrders', Session.get('selectedOrders'));
     }
@@ -77,13 +68,13 @@ Template.fulfillmentOrder.helpers({
     return '';
   },
   shippingDate: function () {
-    return moment(this.advancedFulfillment.shipmentDate).calendar(null, calendarFormat);
+    return moment(this.advancedFulfillment.shipmentDate).calendar(null, AdvancedFulfillment.shippingCalendarReference);
   },
   arrivalDay: function () {
-    return moment(this.advancedFulfillment.arriveBy).calendar(null, calendarFormat);
+    return moment(this.advancedFulfillment.arriveBy).calendar(null, AdvancedFulfillment.shippingCalendarReference);
   },
   firstSkiDay: function () {
-    return moment(this.startTime).calendar(null, calendarFormat);
+    return moment(this.startTime).calendar(null, AdvancedFulfillment.shippingCalendarReference);
   },
   returningDate: function () {
     let longDate = this.advancedFulfillment.returnDate;

@@ -28,6 +28,10 @@ Template.orderDetails.helpers({
   status: function () {
     return this.advancedFulfillment.workflow.status;
   },
+  actualTransitTime: function () {
+    let transitTime = this.advancedFulfillment.transitTime - 1;
+    return transitTime > 0 ? transitTime : 0;
+  },
   humanStatus: function () {
     return AdvancedFulfillment.humanOrderStatuses[this.advancedFulfillment.workflow.status];
   },

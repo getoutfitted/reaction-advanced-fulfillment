@@ -17,5 +17,5 @@ Template.registerHelper('formattedDate', (date) => {
 
 Template.registerHelper('pastDate', (date) => {
   check(date, Date);
-  return new Date() > moment(date).startOf('day').add(12, 'hours');
+  return new Date() > moment(date).startOf('day').add(16, 'hours');
 });

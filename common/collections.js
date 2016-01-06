@@ -87,7 +87,7 @@ ReactionCore.Schemas.AdvancedFulfillmentAfterShip = new SimpleSchema({
     type: String,
     optional: true
   },
-  shippingHistory: {
+  history: {
     type: [ReactionCore.Schemas.AdvancedFulfillmentAfterShipShippingHistory],
     optional: true
   }
@@ -350,7 +350,7 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
     type: [ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems],
     optional: true
   },
-  afterShip: {
+  shippingHistory: {
     type: ReactionCore.Schemas.AdvancedFulfillmentAfterShip,
     optional: true
   }

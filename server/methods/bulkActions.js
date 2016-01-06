@@ -4,7 +4,6 @@ Meteor.methods({
     // if (!ReactionCore.hasPermission('reaction-advanced-fulfillment')) {
     //   throw new Meteor.Error(403, 'Access Denied');
     // }
-    console.log(orderIds);
     this.unblock();
     _.each(orderIds, function (orderId) {
       let order = ReactionCore.Collections.Orders.findOne(orderId);

@@ -39,7 +39,13 @@
           <td>
             {{> deliveryLabels}}
           </td>
-          <td>{{formattedDate advancedFulfillment.shipmentDate}}</td>
+          <td>
+            {{#if pastDate this.advancedFulfillment.shipmentDate}}
+              <span class='text-danger'><strong>Today</strong></span>
+            {{else}}
+              {{formattedDate advancedFulfillment.shipmentDate}}
+            {{/if}}
+          </td>
           <td>{{formattedDate advancedFulfillment.arriveBy}}</td>
           <td>{{formattedDate startTime}} <br /> {{formattedDate endTime}}</td>
           <td>{{state}}</td>

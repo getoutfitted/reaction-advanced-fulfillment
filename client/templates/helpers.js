@@ -14,3 +14,8 @@ Template.registerHelper('displayOrderNumber', (order) => {
 Template.registerHelper('formattedDate', (date) => {
   return moment(date).format('MMMM Do, YYYY');
 });
+
+Template.registerHelper('pastDate', (date) => {
+  check(date, Date);
+  return new Date() > moment(date).startOf('day').add(12, 'hours');
+});

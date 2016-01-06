@@ -1,5 +1,5 @@
 Template.afNavbar.onCreated(function () {
-  this.subscribe('afOrders');
+  this.subscribe('searchOrders');
 });
 
 Template.afNavbar.onRendered(function () {

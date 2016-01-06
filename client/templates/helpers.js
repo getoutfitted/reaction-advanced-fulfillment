@@ -12,5 +12,5 @@ Template.registerHelper('displayOrderNumber', (order) => {
 });
 
 Template.registerHelper('formattedDate', (date) => {
-  return moment(date).format('MMMM Do, YYYY');
+  return moment(date).calendar(null, AdvancedFulfillment.shippingCalendarReference);
 });

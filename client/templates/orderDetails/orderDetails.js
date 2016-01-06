@@ -28,6 +28,9 @@ Template.orderDetails.helpers({
   status: function () {
     return this.advancedFulfillment.workflow.status;
   },
+  actualTransitTime: function () {
+    return this.advancedFulfillment.transitTime - 2;
+  },
   humanStatus: function () {
     return AdvancedFulfillment.humanOrderStatuses[this.advancedFulfillment.workflow.status];
   },

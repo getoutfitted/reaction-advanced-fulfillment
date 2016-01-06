@@ -3,13 +3,13 @@ Template.nonPickableItems.helpers({
     return this.advancedFulfillment.skiPackagesPurchased;
   },
   kayakRented: function () {
-    return this.advancedFulfillment.kayakRental;
+    return !_.isEmpty(this.advancedFulfillment.kayakRental);
   },
   rushShippingPaid: function () {
     return this.advancedFulfillment.rushShippingPaid;
   },
   anyOtherItems: function () {
-    return this.advancedFulfillment.other;
+    return !_.isEmpty(this.advancedFulfillment.other);
   },
   anydamageCoverage: function () {
     let packages = this.advancedFulfillment.damageCoverage.packages.qty;

@@ -151,7 +151,7 @@ Router.route('dashboard/advanced-fulfillment/order/:_id', {
     return this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
-    return ReactionCore.Collections.Orders.findOne();
+    return ReactionCore.Collections.Orders.findOne(this.params._id);
   }
 });
 

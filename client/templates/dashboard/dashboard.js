@@ -96,7 +96,7 @@ Template.dashboardAdvancedFulfillmment.events({
     let endDate = date2.endOf('day').toDate();
     if (date.isValid()) {
       Meteor.call('advancedFulfillment/printInvoices', startDate, endDate, Meteor.userId());
-      window.open(Router.path('orders.printAllForDate', {date: date.format('MM-DD-YYYY')}));
+      window.open(window.location.host + Router.path('orders.printAllForDate', {date: date.format('MM-DD-YYYY')}));
     } else {
       Alerts.removeSeen();
       Alerts.add('please select a valid date', 'danger', {

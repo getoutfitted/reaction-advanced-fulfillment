@@ -47,7 +47,10 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
       'startTime': {$ne: undefined}
     }, {
       sort: {
-        'advancedFulfillment.shipmentDate': 1
+        'advancedFulfillment.shipmentDate': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
       }
     }
 

@@ -66,6 +66,53 @@ Meteor.publish('searchOrders', function () {
   return this.ready();
 });
 
+Meteor.publish('shippingOrders', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'items': {$ne: []},
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderShipping
+      },
+      'startTime': {$ne: undefined}
+    }, {
+      fields: AdvancedFulfillment.fields.ordersList
+    });
+  }
+});
+
+Meteor.publish('ordersByStatus', function (status) {
+  check(status, String);
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': status
+    }, {
+      fields: AdvancedFulfillment.fields.ordersList
+    });
+  }
+});
+
+Meteor.publish('selectedOrders', function (orderIds) {
+  check(orderIds, [String]);
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      _id: {
+        $in: orderIds
+      }
+    }, {
+      fields: {
+        'items': 0,
+        'advancedFulfillment.paymentInformation.refunds': 0,
+        'advancedFulfillment.paymentInformation.transactions': 0
+      }
+    });
+  }
+});
+
 Meteor.publish('nonWarehouseOrders', function () {
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {

@@ -53,6 +53,7 @@ Template.fulfillmentOrders.events({
   'change #bulkActions': function (event) {
     if (event.currentTarget.value === 'print') {
       localStorage.selectedOrdersToPrint = JSON.stringify(Session.get('selectedOrders'));
+      Meteor.call('advancedFulfillment/printSelectedOrders', Session.get('selectedOrders'));
       window.open(window.location.origin + Router.path('orders.printSelected'));
     } else if (event.currentTarget.value === 'ship') {
       Meteor.call('advancedFulfillment/shipSelectedOrders', Session.get('selectedOrders'));

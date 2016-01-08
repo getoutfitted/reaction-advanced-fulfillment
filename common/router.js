@@ -17,7 +17,7 @@ Router.route('dashboard/advanced-fulfillment', {
   template: 'fulfillmentOrders',
   controller: 'ShopAdminController',
   waitOn: function () {
-    return this.subscribe('afOrders');
+    return this.subscribe('shippingOrders');
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
@@ -54,7 +54,7 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
   controller: advancedFulfillmentController,
   template: 'fulfillmentOrders',
   waitOn: function () {
-    return this.subscribe('afOrders');
+    return this.subscribe('shippingOrders');
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
@@ -81,7 +81,7 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
   controller: advancedFulfillmentController,
   template: 'fulfillmentOrders',
   waitOn: function () {
-    return this.subscribe('afOrders');
+    return this.subscribe('shippingOrders');
   },
   data: function () {
     let rawDate = this.params.date;
@@ -265,7 +265,7 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('Orders'); // TODO: Optimize this subscription, migrate it to template subscription
+    this.subscribe('selectedOrders', Session.get('selectedOrders')); // TODO: Optimize this subscription, migrate it to template subscription
   }
 });
 
@@ -274,7 +274,7 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
   template: 'fulfillmentOrders',
   controller: advancedFulfillmentController,
   waitOn: function () {
-    return this.subscribe('afOrders');
+    return this.subscribe('ordersByStatus', this.params.status);
   },
   data: function () {
     let status = this.params.status;

@@ -147,6 +147,7 @@ Meteor.methods({
     check(userId, String);
     check(status, String);
     let workflow = {
+      orderCreated: 'orderPrinted',
       orderPrinted: 'orderPicking',
       orderPicking: 'orderPicked',
       orderPicked: 'orderPacking',

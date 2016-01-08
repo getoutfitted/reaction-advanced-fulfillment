@@ -14,10 +14,28 @@ advancedFulfillmentController = ShopAdminController.extend({
 Router.route('dashboard/advanced-fulfillment', {
   name: 'dashboard/advanced-fulfillment',
   path: 'dashboard/advanced-fulfillment',
-  template: 'dashboardAdvancedFulfillmment',
+  template: 'fulfillmentOrders',
   controller: 'ShopAdminController',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('afOrders');
+  },
+  data: function () {
+    return {orders: ReactionCore.Collections.Orders.find({
+      'items': {$ne: []},
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderActive
+      },
+      'startTime': {$ne: undefined}
+    }, {
+      sort: {
+        'advancedFulfillment.shipmentDate': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
+      }
+    }
+
+    )};
   }
 });
 

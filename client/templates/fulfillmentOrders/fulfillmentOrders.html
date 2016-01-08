@@ -68,11 +68,11 @@
     </td>
     {{#if startTime}}
       <td>
-      {{#if pastDate this.advancedFulfillment.shipmentDate}}
-        <span class='text-danger'><strong>Today</strong></span>
-      {{else}}
-        {{shippingDate}}
-      {{/if}}
+        {{#if pastDate this.advancedFulfillment.shipmentDate}}
+          <span class='text-danger'><strong>Today</strong></span>
+        {{else}}
+          {{shippingDate}}
+        {{/if}}
       </td>
       <td class="hidden-xs hidden-sm">{{arrivalDay}}</td>
       <td class="hidden-xs hidden-sm">{{firstSkiDay}}</td>

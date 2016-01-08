@@ -78,6 +78,12 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
         $lte: new Date(dayEnd)
       },
       'startTime': {$ne: undefined}
+    }, {
+      sort: {
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
+      }
     })};
   },
   onBeforeAction: function () {
@@ -106,7 +112,12 @@ Router.route('dashboard/advanced-fulfillment/local-deliveries', {
         $in: AdvancedFulfillment.orderActive
       }
     }, {
-      sort: {'advancedFulfillment.shipmentDate': 1}
+      sort: {
+        'advancedFulfillment.shipmentDate': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
+      }
     }
 
     )};
@@ -132,6 +143,10 @@ Router.route('dashboard/advanced-fulfillment/local-delivery/:date', {
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)
+      }
+    }, {
+      sort: {
+        shopifyOrderNumber: 1
       }
     })};
   },
@@ -213,6 +228,10 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
           $gte: startOfDay,
           $lte: endOfDay
         }
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
       })
     };
   }
@@ -228,7 +247,7 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('Orders'); // TODO: Optimize this subscription
+    this.subscribe('Orders'); // TODO: Optimize this subscription, migrate it to template subscription
   }
 });
 
@@ -241,9 +260,17 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
   },
   data: function () {
     let status = this.params.status;
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': status
-    }, {sort: {'advancedFulfillment.shipmentDate': 1}})};
+    return {
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.workflow.status': status
+      }, {
+        sort: {
+          'advancedFulfillment.shipmentDate': 1,
+          'advancedFulfillment.localDelivery': 1,
+          'advancedFulfillment.rushDelivery': 1,
+          'shopifyOrderNumber': 1
+        }
+      })};
   },
   onBeforeAction: function () {
     let status = this.params.status;
@@ -285,7 +312,10 @@ Router.route('dashboard/advanced-fulfillment/returns', {
         ]
       }
     }, {
-      sort: {'advancedFulfillment.returnDate': 1}
+      sort: {
+        'advancedFulfillment.returnDate': 1,
+        'shopifyOrderNumber': 1
+      }
     })};
   }
 });
@@ -301,18 +331,23 @@ Router.route('dashboard/advanced-fulfillment/returns/:date', {
     let rawDate = this.params.date;
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': {
-        $in: [
-          'orderShipped',
-          'orderReturned'
-        ]
-      },
-      'advancedFulfillment.returnDate': {
-        $gte: new Date(dayStart),
-        $lte: new Date(dayEnd)
-      }
-    })};
+    return {
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.workflow.status': {
+          $in: [
+            'orderShipped',
+            'orderReturned'
+          ]
+        },
+        'advancedFulfillment.returnDate': {
+          $gte: new Date(dayStart),
+          $lte: new Date(dayEnd)
+        }
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      })};
   },
   onBeforeAction: function () {
     let date = this.params.date;
@@ -333,9 +368,16 @@ Router.route('dashboard/advanced-fulfillment/missing', {
     return this.subscribe('Orders');
   },
   data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.items.workflow.status': 'missing'})
-  };}
+    return {
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.items.workflow.status': 'missing'
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      })
+    };
+  }
 });
 
 Router.route('dashboard/advanced-fulfillment/damaged', {
@@ -346,9 +388,16 @@ Router.route('dashboard/advanced-fulfillment/damaged', {
     return this.subscribe('Orders');
   },
   data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.items.workflow.status': 'damaged'})
-  };}
+    return {
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.items.workflow.status': 'damaged'
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      })
+    };
+  }
 });
 
 Router.route('dashboard/advanced-fulfillment/search', {
@@ -356,7 +405,7 @@ Router.route('dashboard/advanced-fulfillment/search', {
   controller: advancedFulfillmentController,
   template: 'searchOrders',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('searchOrders');
   }
 });
 
@@ -371,24 +420,26 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber', {
   data: function () {
     let orderNumber = this.params.orderNumber;
     let order = ReactionCore.Collections.Orders.findOne({
-      $or: [
-        {_id: orderNumber},
-        {shopifyOrderNumber: parseInt(orderNumber)}
-      ]
+      $or: [{
+        _id: orderNumber
+      }, {
+        shopifyOrderNumber: parseInt(orderNumber, 10)
+      }]
     });
     return order;
   },
   onBeforeAction: function () {
     let orderNumber = this.params.orderNumber;
     let validOrder = ReactionCore.Collections.Orders.findOne({
-      $or: [
-        {_id: orderNumber},
-        {shopifyOrderNumber: parseInt(orderNumber)}
-      ]
+      $or: [{
+        _id: orderNumber
+      }, {
+        shopifyOrderNumber: parseInt(orderNumber, 10)
+      }]
     });
     if (validOrder) {
       this.next();
-    }  else {
+    } else {
       this.render('notFound');
     }
   }

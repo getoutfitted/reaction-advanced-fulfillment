@@ -279,6 +279,7 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
   data: function () {
     let status = this.params.status;
     return {
+      status: this.params.status,
       orders: ReactionCore.Collections.Orders.find({
         'advancedFulfillment.workflow.status': status
       }, {

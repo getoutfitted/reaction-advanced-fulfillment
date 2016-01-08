@@ -35,6 +35,11 @@ Template.fulfillmentOrders.helpers({
   },
   ordersAreSelected: function () {
     return Session.get('selectedOrders').length > 0;
+  },
+  contextBulkActions: function (status) {
+    if (status === 'orderShipped') {
+      return '<option value="undoShipped">Mark ' + Session.get('selectedOrders').length + ' Orders as Labeled</option>';
+    }
   }
 });
 
@@ -57,7 +62,11 @@ Template.fulfillmentOrders.events({
       window.open(window.location.origin + Router.path('orders.printSelected'));
     } else if (event.currentTarget.value === 'ship') {
       Meteor.call('advancedFulfillment/shipSelectedOrders', Session.get('selectedOrders'));
+    } else if (event.currentTarget.value === 'undoShipped') {
+      Meteor.call('advancedFulfillment/unshipSelectedOrders', Session.get('selectedOrders'));
     }
+    // TODO: Alert user of success or failure
+    Session.set('selectedOrders', []);
   }
 });
 

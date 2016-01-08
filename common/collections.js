@@ -188,6 +188,55 @@ ReactionCore.Schemas.AdvancedFulfillmentKayakRental = new SimpleSchema({
   }
 });
 
+ReactionCore.Schemas.AdvancedFulfillmentCancelInfo = new SimpleSchema({
+  canceledAt: {
+    type: Date,
+    optional: true
+  },
+  reason: {
+    type: String,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentPaymentInfo = new SimpleSchema({
+  totalPrice: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  totalTax: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  subtotalPrice: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  totalItemsPrice: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  totalDiscount: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  discountCodes: {
+    type: [Object],
+    optional: true,
+    blackbox: true
+  },
+  refunds: {
+    type: [Object],
+    optional: true,
+    blackbox: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems = new SimpleSchema({
   vendor: {
     type: String,
@@ -360,6 +409,14 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   shippingHistory: {
     type: ReactionCore.Schemas.AdvancedFulfillmentAfterShip,
+    optional: true
+  },
+  paymentInformation: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentPaymentInfo,
+    optional: true
+  },
+  canceledInformation: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentCancelInfo,
     optional: true
   }
 });

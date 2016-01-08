@@ -174,6 +174,38 @@ Meteor.methods({
       }
     });
   },
+  'advancedFulfillment/reverseOrderWorkflow': function (orderId, userId, status) {
+    check(orderId, String);
+    check(userId, String);
+    check(status, String);
+    let reverseWorkflow = {
+      orderPrinted: 'orderCreated',
+      orderPicking: 'orderPrinted',
+      orderPicked: 'orderPicking',
+      orderPacking: 'orderPicked',
+      orderPacked: 'orderPacking',
+      orderReadyToShip: 'orderPacked',
+      orderShipped: 'orderReadyToShip',
+      orderReturned: 'orderShipped',
+      orderIncomplete: 'orderReturned',
+      orderCompleted: 'orderReturned'
+    };
+    let date = new Date();
+    let historyEvent = {
+      event: reverseWorkflow[status],
+      userId: userId,
+      updatedAt: date
+    };
+    ReactionCore.Collections.Orders.update({_id: orderId}, {
+      $addToSet: {
+        'history': historyEvent,
+        'advancedFulfillment.workflow.workflow': status
+      },
+      $set: {
+        'advancedFulfillment.workflow.status': reverseWorkflow[status]
+      }
+    });
+  },
   'advancedFulfillment/orderCompletionVerifier': function (order, userId) {
     check(order, Object);
     check(userId, String);

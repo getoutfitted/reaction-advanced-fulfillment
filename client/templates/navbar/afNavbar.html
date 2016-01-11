@@ -15,12 +15,15 @@
         <ul class="nav navbar-nav navbar-right">
           <form class="navbar-form navbar-left" role="search">
             <div class="form-group">
-              <input type="text" class="form-control" id='afSearchInput' placeholder="Search by Order Number/Id">
+              <input type="number" class="form-control" id='afSearchInput' placeholder="Search by Order Number/Id">
             </div>
             <button type="submit" id='afSearchButton' class="btn btn-default">Submit</button>
           </form>
           <li><a href="{{pathFor 'dashboard/advanced-fulfillment'}}">Dashboard</a></li>
-          <li><a href="{{pathFor 'orderQueue'}}">My Orders</a></li>
+          <li><a href="{{pathFor 'advancedFulfillment.picker'}}">Picker</a></li>
+          <!-- <li><a href="{{pathFor 'orderQueue'}}">My Orders</a></li> -->
+
+          <!-- Status Section -->
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders By Status <span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -37,6 +40,7 @@
               <li><a href="{{pathFor 'orderByStatus' status='orderIncomplete'}}">InComplete</a></li>
             </ul>
           </li>
+          <!-- Shipping Section -->
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Shipping <span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -56,6 +60,7 @@
               </li>
             </ul>
           </li>
+          <!-- Local Deliveries Section -->
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Local Deliveries <span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -75,6 +80,7 @@
               </li>
             </ul>
           </li>
+          <!-- Returns Section -->
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Returns <span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -95,12 +101,17 @@
 
             </ul>
           </li>
+          <!-- Customer Service Section -->
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Customer Service <span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="{{pathFor 'missing'}}">Missing Items</a></li>
-              <li><a href="{{pathFor 'damaged'}}">Damaged Items</a></li>
-              <li><a href="{{pathFor 'infoMissing'}}">Orders with Missing Information</a></li>
+              <li><a href="{{pathFor 'missing'}}">Returns with Missing Items</a></li>
+              <li><a href="{{pathFor 'damaged'}}">Returns with Damaged Items</a></li>
+              <li><a href="{{pathFor 'impossibleDates'}}">Impossible Shipping Dates <span class='badge'>{{impossibleDates}}</span></a></li>
+              <li><a href="{{pathFor 'missingRentalDates'}}">Missing Rental Dates <span class="badge">{{missingRentalDates}}</span></a></li>
+              <li><a href="{{pathFor 'missingItemDetails'}}">Orders with Missing Item Details <span class='badge'>{{missingItemsFromOrder}}</span></a></li>
+              <li><a href="{{pathFor 'missingBundleColors'}}">Orders with Missing Bundle Colors <span class='badge'>{{missingBundleInfo}}</span></a></li>
+              <li><a href="{{pathFor 'nonWarehouseOrders'}}">Non Warehouse Orders</a></li>
             </ul>
           </li>
         </ul>

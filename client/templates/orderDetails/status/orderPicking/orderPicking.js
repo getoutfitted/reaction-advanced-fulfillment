@@ -97,5 +97,23 @@ Template.orderPicking.events({
         autoHide: false
       });
     }
+  },
+  'click #all-items-picked-new-order': function (event) {
+    event.preventDefault();
+    let orderId = this._id;
+    let userId = Meteor.userId();
+    let session = Session.get('orderPicking-' + orderId);
+    let allItemsPicked = _.every(session.itemStatus, function (item) {
+      return item === false;
+    });
+    if (allItemsPicked) {
+      Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, 'orderPicking');
+      Router.go('advancedFulfillment.picker');
+    } else {
+      Alerts.removeSeen();
+      Alerts.add('All Items Have Not Been Picked', 'danger', {
+        autoHide: false
+      });
+    }
   }
 });

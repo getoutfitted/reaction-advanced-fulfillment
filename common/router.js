@@ -14,10 +14,38 @@ advancedFulfillmentController = ShopAdminController.extend({
 Router.route('dashboard/advanced-fulfillment', {
   name: 'dashboard/advanced-fulfillment',
   path: 'dashboard/advanced-fulfillment',
-  template: 'dashboardAdvancedFulfillmment',
+  template: 'fulfillmentOrders',
   controller: 'ShopAdminController',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('shippingOrders');
+  },
+  data: function () {
+    return {orders: ReactionCore.Collections.Orders.find({
+      'items': {$ne: []},
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderActive
+      },
+      'startTime': {$ne: undefined}
+    }, {
+      sort: {
+        'advancedFulfillment.shipmentDate': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
+      }
+    }
+
+    )};
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/picker', {
+  name: 'advancedFulfillment.picker',
+  path: 'dashboard/advanced-fulfillment/picker',
+  template: 'advancedFulfillment.picker.search',
+  controller: 'ShopAdminController',
+  waitOn: function () {
+    return this.subscribe('searchOrders');
   }
 });
 
@@ -26,16 +54,22 @@ Router.route('dashboard/advanced-fulfillment/shipping', {
   controller: advancedFulfillmentController,
   template: 'fulfillmentOrders',
   waitOn: function () {
-    return this.subscribe('afOrders');
+    return this.subscribe('shippingOrders');
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
       'items': {$ne: []},
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderActive
-      }
+      },
+      'startTime': {$ne: undefined}
     }, {
-      sort: {'advancedFulfillment.shipmentDate': 1}
+      sort: {
+        'advancedFulfillment.shipmentDate': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
+      }
     }
 
     )};
@@ -47,7 +81,7 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
   controller: advancedFulfillmentController,
   template: 'fulfillmentOrders',
   waitOn: function () {
-    return this.subscribe('afOrders');
+    return this.subscribe('shippingOrders');
   },
   data: function () {
     let rawDate = this.params.date;
@@ -60,6 +94,13 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
       'advancedFulfillment.shipmentDate': {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)
+      },
+      'startTime': {$ne: undefined}
+    }, {
+      sort: {
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
       }
     })};
   },
@@ -89,7 +130,12 @@ Router.route('dashboard/advanced-fulfillment/local-deliveries', {
         $in: AdvancedFulfillment.orderActive
       }
     }, {
-      sort: {'advancedFulfillment.shipmentDate': 1}
+      sort: {
+        'advancedFulfillment.shipmentDate': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
+      }
     }
 
     )};
@@ -116,6 +162,10 @@ Router.route('dashboard/advanced-fulfillment/local-delivery/:date', {
         $gte: new Date(dayStart),
         $lte: new Date(dayEnd)
       }
+    }, {
+      sort: {
+        shopifyOrderNumber: 1
+      }
     })};
   },
   onBeforeAction: function () {
@@ -134,11 +184,10 @@ Router.route('dashboard/advanced-fulfillment/order/:_id', {
   template: 'orderDetails',
   controller: advancedFulfillmentController,
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
-    let orderId = this.params._id;
-    return ReactionCore.Collections.Orders.findOne({_id: orderId});
+    return ReactionCore.Collections.Orders.findOne(this.params._id);
   }
 });
 
@@ -197,8 +246,26 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
           $gte: startOfDay,
           $lte: endOfDay
         }
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
       })
     };
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
+  name: 'orders.printSelected',
+  controller: PrintController,
+  path: 'dashboard/advanced-fulfillment/orders/pdf/selected',
+  template: 'advancedFulfillmentOrdersPrint',
+  onBeforeAction() {
+    this.layout('print');
+    return this.next();
+  },
+  subscriptions: function () {
+    this.subscribe('selectedOrders', Session.get('selectedOrders')); // TODO: Optimize this subscription, migrate it to template subscription
   }
 });
 
@@ -207,13 +274,22 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
   template: 'fulfillmentOrders',
   controller: advancedFulfillmentController,
   waitOn: function () {
-    return this.subscribe('afOrders');
+    return this.subscribe('ordersByStatus', this.params.status);
   },
   data: function () {
     let status = this.params.status;
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': status
-    })};
+    return {
+      status: this.params.status,
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.workflow.status': status
+      }, {
+        sort: {
+          'advancedFulfillment.shipmentDate': 1,
+          'advancedFulfillment.localDelivery': 1,
+          'advancedFulfillment.rushDelivery': 1,
+          'shopifyOrderNumber': 1
+        }
+      })};
   },
   onBeforeAction: function () {
     let status = this.params.status;
@@ -255,7 +331,10 @@ Router.route('dashboard/advanced-fulfillment/returns', {
         ]
       }
     }, {
-      sort: {'advancedFulfillment.returnDate': 1}
+      sort: {
+        'advancedFulfillment.returnDate': 1,
+        'shopifyOrderNumber': 1
+      }
     })};
   }
 });
@@ -271,18 +350,23 @@ Router.route('dashboard/advanced-fulfillment/returns/:date', {
     let rawDate = this.params.date;
     let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
     let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': {
-        $in: [
-          'orderShipped',
-          'orderReturned'
-        ]
-      },
-      'advancedFulfillment.returnDate': {
-        $gte: new Date(dayStart),
-        $lte: new Date(dayEnd)
-      }
-    })};
+    return {
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.workflow.status': {
+          $in: [
+            'orderShipped',
+            'orderReturned'
+          ]
+        },
+        'advancedFulfillment.returnDate': {
+          $gte: new Date(dayStart),
+          $lte: new Date(dayEnd)
+        }
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      })};
   },
   onBeforeAction: function () {
     let date = this.params.date;
@@ -303,9 +387,16 @@ Router.route('dashboard/advanced-fulfillment/missing', {
     return this.subscribe('Orders');
   },
   data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.items.workflow.status': 'missing'})
-  };}
+    return {
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.items.workflow.status': 'missing'
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      })
+    };
+  }
 });
 
 Router.route('dashboard/advanced-fulfillment/damaged', {
@@ -316,17 +407,15 @@ Router.route('dashboard/advanced-fulfillment/damaged', {
     return this.subscribe('Orders');
   },
   data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.items.workflow.status': 'damaged'})
-  };}
-});
-
-Router.route('dashboard/advanced-fulfillment/information-missing', {
-  name: 'infoMissing',
-  controller: advancedFulfillmentController,
-  template: 'infoMissing',
-  waitOn: function () {
-    return this.subscribe('Orders');
+    return {
+      orders: ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.items.workflow.status': 'damaged'
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      })
+    };
   }
 });
 
@@ -335,7 +424,7 @@ Router.route('dashboard/advanced-fulfillment/search', {
   controller: advancedFulfillmentController,
   template: 'searchOrders',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('searchOrders');
   }
 });
 
@@ -350,24 +439,26 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber', {
   data: function () {
     let orderNumber = this.params.orderNumber;
     let order = ReactionCore.Collections.Orders.findOne({
-      $or: [
-        {_id: orderNumber},
-        {shopifyOrderNumber: parseInt(orderNumber)}
-      ]
+      $or: [{
+        _id: orderNumber
+      }, {
+        shopifyOrderNumber: parseInt(orderNumber, 10)
+      }]
     });
     return order;
   },
   onBeforeAction: function () {
     let orderNumber = this.params.orderNumber;
     let validOrder = ReactionCore.Collections.Orders.findOne({
-      $or: [
-        {_id: orderNumber},
-        {shopifyOrderNumber: parseInt(orderNumber)}
-      ]
+      $or: [{
+        _id: orderNumber
+      }, {
+        shopifyOrderNumber: parseInt(orderNumber, 10)
+      }]
     });
     if (validOrder) {
       this.next();
-    }  else {
+    } else {
       this.render('notFound');
     }
   }
@@ -404,5 +495,50 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber/:itemId',
     }  else {
       this.render('notFound');
     }
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/customer-service/impossible-dates', {
+  name: 'impossibleDates',
+  controller: advancedFulfillmentController,
+  template: 'impossibleDates',
+  waitOn: function () {
+    return this.subscribe('custServOrders');
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/customer-service/missing-rental-dates', {
+  name: 'missingRentalDates',
+  controller: advancedFulfillmentController,
+  template: 'missingRentalDates',
+  waitOn: function () {
+    return this.subscribe('custServOrders');
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/customer-service/missing-item-details', {
+  name: 'missingItemDetails',
+  controller: advancedFulfillmentController,
+  template: 'missingItemDetails',
+  waitOn: function () {
+    return this.subscribe('custServOrders');
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/customer-service/missing-bundle-colors', {
+  name: 'missingBundleColors',
+  controller: advancedFulfillmentController,
+  template: 'missingBundleColors',
+  waitOn: function () {
+    return this.subscribe('custServOrders');
+  }
+});
+
+Router.route('dashboard/advanced-fulfillment/customer-service/non-warehouse-orders', {
+  name: 'nonWarehouseOrders',
+  controller: advancedFulfillmentController,
+  template: 'nonWarehouseOrders',
+  waitOn: function () {
+    return this.subscribe('nonWarehouseOrders');
   }
 });

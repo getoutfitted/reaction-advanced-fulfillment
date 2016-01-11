@@ -1,3 +1,7 @@
+Template.afNavbar.onCreated(function () {
+  this.subscribe('searchOrders');
+});
+
 Template.afNavbar.onRendered(function () {
   $('.navbar-primary-tags').hide();
 });
@@ -11,6 +15,33 @@ Template.afNavbar.helpers({
   },
   yesterdaysDate: function () {
     return moment().subtract(1, 'days').format('MM-DD-YYYY');
+  },
+  missingItemsFromOrder: function () {
+    return ReactionCore.Collections.Orders.find({
+      itemMissingDetails: true
+    }).count();
+  },
+  impossibleDates: function () {
+    return ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.impossibleShipDate': true
+    }).count();
+  },
+  missingRentalDates: function () {
+    return ReactionCore.Collections.Orders.find({
+      infoMissing: true,
+      $or: [{
+        startTime: {$exists: false}
+      }, {
+        endTime: {$exists: false}
+      }, {
+        rentalDays: {$exists: false}
+      }]
+    }).count();
+  },
+  missingBundleInfo: function () {
+    return ReactionCore.Collections.Orders.find({
+      bundleMissingColor: true
+    }).count();
   }
 });
 

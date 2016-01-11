@@ -16,6 +16,251 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
   }
 ]);
 
+ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal = new SimpleSchema({
+  qty: {
+    type: Number,
+    optional: true,
+    defaultValue: 0
+  },
+  subtotal: {
+    type: Number,
+    optional: true,
+    defaultValue: 0
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentRushShippingPaid = new SimpleSchema({
+  qty: {
+    type: Number,
+    optional: true
+  },
+  subtotal: {
+    type: Number,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage = new SimpleSchema({
+  packages: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
+    optional: true
+  },
+  products: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageQtyAndSubtotal,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentAfterShipShippingHistory = new SimpleSchema({
+  city: {
+    type: String,
+    optional: true
+  },
+  state: {
+    type: String,
+    optional: true
+  },
+  message: {
+    type: String,
+    optional: true
+  },
+  status: {
+    type: String,
+    optional: true
+  },
+  checkPointTime: {
+    type: Date,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentAfterShip = new SimpleSchema({
+  currentStatus: {
+    type: String,
+    optional: true
+  },
+  currentMessage: {
+    type: String,
+    optional: true
+  },
+  trackingNumber: {
+    type: String,
+    optional: true
+  },
+  currentCity: {
+    type: String,
+    optional: true
+  },
+  currentState: {
+    type: String,
+    optional: true
+  },
+  history: {
+    type: [ReactionCore.Schemas.AdvancedFulfillmentAfterShipShippingHistory],
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentSkiPackage = new SimpleSchema({
+  _id: {
+    type: String,
+    optional: true
+  },
+  customerName: {
+    type: String,
+    optional: true
+  },
+  packageName: {
+    type: String,
+    optional: true
+  },
+  vendor: {
+    type: String,
+    optional: true
+  },
+  height: {
+    type: String,
+    optional: true
+  },
+  weight: {
+    type: String,
+    optional: true
+  },
+  gender: {
+    type: String,
+    optional: true
+  },
+  helmet: {
+    type: Boolean,
+    optional: true
+  },
+  age: {
+    type: Number,
+    optional: true
+  },
+  shoeSize: {
+    type: String,
+    optional: true
+  },
+  deliveryDateAndTime: {
+    type: Date,
+    optional: true
+  },
+  skiLevel: {
+    type: String,
+    optional: true
+  },
+  qty: {
+    type: Number,
+    optional: true
+  },
+  price: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  rentalLength: {
+    type: Number,
+    optional: true
+  },
+  variantTitle: {
+    type: String,
+    optional: true
+  },
+  confirmedWithMerchant: {
+    type: Boolean,
+    optional: true
+  },
+  contactedCustomer: {
+    type: Boolean,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentKayakRental = new SimpleSchema({
+  vendor: {
+    type: String,
+    optional: true
+  },
+  qty: {
+    type: Number,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentCancelInfo = new SimpleSchema({
+  canceledAt: {
+    type: Date,
+    optional: true
+  },
+  reason: {
+    type: String,
+    optional: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentPaymentInfo = new SimpleSchema({
+  totalPrice: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  totalTax: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  subtotalPrice: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  totalItemsPrice: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  totalDiscount: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  discountCodes: {
+    type: [Object],
+    optional: true,
+    blackbox: true
+  },
+  refunds: {
+    type: [Object],
+    optional: true,
+    blackbox: true
+  }
+});
+
+ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems = new SimpleSchema({
+  vendor: {
+    type: String,
+    optional: true
+  },
+  qty: {
+    type: Number,
+    optional: true
+  },
+  product: {
+    type: String,
+    optional: true
+  },
+  price: {
+    type: Number,
+    optional: true,
+    decimal: true
+  },
+  variantTitle: {
+    type: String,
+    optional: true
+  }
+});
+
 ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
   _id: {
     type: String,
@@ -136,6 +381,42 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   },
   impossibleShipDate: {
     type: Boolean,
+    optional: true
+  },
+  damageCoverage: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentDamageCoverage,
+    optional: true
+  },
+  skiPackages: {
+    type: [ReactionCore.Schemas.AdvancedFulfillmentSkiPackage],
+    optional: true
+  },
+  skiPackagesPurchased: {
+    type: Boolean,
+    optional: true
+  },
+  kayakRental: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentKayakRental,
+    optional: true
+  },
+  rushShippingPaid: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentRushShippingPaid,
+    optional: true
+  },
+  other: {
+    type: [ReactionCore.Schemas.AdvancedFulfillmentNonWinterItems],
+    optional: true
+  },
+  shippingHistory: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentAfterShip,
+    optional: true
+  },
+  paymentInformation: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentPaymentInfo,
+    optional: true
+  },
+  canceledInformation: {
+    type: ReactionCore.Schemas.AdvancedFulfillmentCancelInfo,
     optional: true
   }
 });

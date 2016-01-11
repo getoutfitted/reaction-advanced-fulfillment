@@ -106,5 +106,12 @@ Template.updateOrder.events({
     event.preventDefault();
     let addingItems = !Session.get('addItems') || false;
     Session.set('addItems', addingItems);
+  },
+  'click .update-rental-dates': function (event) {
+    event.preventDefault();
+    let orderId = this._id;
+    let startDate = new Date($('#' + orderId + ' [name="start"]').val());
+    let endDate = new Date($('#' + orderId + ' [name="end"]').val());
+    Meteor.call('advancedFulfillment/updateRentalDates', orderId, startDate, endDate);
   }
 });

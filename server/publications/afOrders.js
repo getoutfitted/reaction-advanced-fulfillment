@@ -123,3 +123,16 @@ Meteor.publish('nonWarehouseOrders', function () {
   }
   return this.ready();
 });
+
+Meteor.publish('custServOrders', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderShipping
+      }
+    });
+  }
+  return this.ready();
+});

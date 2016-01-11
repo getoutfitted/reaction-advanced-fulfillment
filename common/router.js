@@ -503,7 +503,7 @@ Router.route('dashboard/advanced-fulfillment/customer-service/impossible-dates',
   controller: advancedFulfillmentController,
   template: 'impossibleDates',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('custServOrders');
   }
 });
 
@@ -512,7 +512,7 @@ Router.route('dashboard/advanced-fulfillment/customer-service/missing-rental-dat
   controller: advancedFulfillmentController,
   template: 'missingRentalDates',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('custServOrders');
   }
 });
 
@@ -521,7 +521,7 @@ Router.route('dashboard/advanced-fulfillment/customer-service/missing-item-detai
   controller: advancedFulfillmentController,
   template: 'missingItemDetails',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('custServOrders');
   }
 });
 
@@ -530,7 +530,7 @@ Router.route('dashboard/advanced-fulfillment/customer-service/missing-bundle-col
   controller: advancedFulfillmentController,
   template: 'missingBundleColors',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('custServOrders');
   }
 });
 

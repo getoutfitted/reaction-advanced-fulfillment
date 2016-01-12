@@ -6,6 +6,16 @@ Template.updateOrder.onCreated(function () {
   this.subscribe('afProducts');
 });
 
+Template.updateOrder.onRendered(function () {
+  $('.picker .input-daterange').datepicker({
+    startDate: 'today',
+    todayBtn: 'linked',
+    clearBtn: true,
+    calendarWeeks: true,
+    autoclose: true,
+    todayHighlight: true
+  });
+});
 
 Template.updateOrder.helpers({
   afItems: function () {

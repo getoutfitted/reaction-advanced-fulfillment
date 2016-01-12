@@ -136,3 +136,16 @@ Meteor.publish('custServOrders', function () {
   }
   return this.ready();
 });
+
+Meteor.publish('afReturnOrders', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderReturning
+      }
+    });
+  }
+  return this.ready();
+});

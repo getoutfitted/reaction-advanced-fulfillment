@@ -170,6 +170,9 @@ Template.orderDetails.events({
     let currentStatus = this.advancedFulfillment.workflow.status;
     let orderId = this._id;
     let userId = Meteor.userId();
+    if (currentStatus === 'orderShipped') {
+      Meteor.call('advancedFulfillment/updateAllItemsToSpecificStatus', this, 'shipped');
+    }
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   },
   'blur .notes': function (event) {

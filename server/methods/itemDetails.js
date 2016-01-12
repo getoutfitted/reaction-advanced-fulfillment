@@ -78,5 +78,20 @@ Meteor.methods({
       }
     });
     return ReactionCore.Collections.Orders.findOne(orderId);
+  },
+  'advancedFulfillment/updateAllItemsToSpecificStatus': function (order, desiredItemStatus) {
+    check(order, Object);
+    check(desiredItemStatus, String);
+    let items = order.advancedFulfillment.items;
+    _.each(items, function (item) {
+      item.workflow.status = desiredItemStatus;
+    });
+    ReactionCore.Collections.Orders.update({
+      _id: order._id
+    }, {
+      $set: {
+        'advancedFulfillment.items': items
+      }
+    });
   }
 });

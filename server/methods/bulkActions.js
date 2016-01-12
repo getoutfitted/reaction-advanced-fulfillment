@@ -40,5 +40,18 @@ Meteor.methods({
         Meteor.call('advancedFulfillment/updateOrderWorkflow', order._id, Meteor.userId(), currentStatus);
       }
     });
+  },
+  'advancedFulfillment/returnSelectedOrders': function (orderIds) {
+    check(orderIds, [String]);
+    this.unblock();
+    _.each(orderIds, function (orderId) {
+      console.log('order-', orderId);
+      let order = ReactionCore.Collections.Orders.findOne(orderId);
+      let currentStatus = order.advancedFulfillment.workflow.status;
+      if (currentStatus === 'orderShipped') {
+        Meteor.call('advancedFulfillment/updateAllItemsToSpecificStatus', order, 'shipped');
+        Meteor.call('advancedFulfillment/updateOrderWorkflow', order._id, Meteor.userId(), currentStatus);
+      }
+    });
   }
 });

@@ -20,6 +20,19 @@ advancedFulfillmentController = ShopController.extend({
     }
   }
 });
+/*
+ * AF Print Controller
+ */
+
+let advancedFulfillmentPrintController = RouteController.extend({
+  onBeforeAction: function () {
+    if (!ReactionCore.hasPermission(['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'])) {
+      this.render("unauthorized");
+    } else {
+      this.next();
+    }
+  }
+});
 
 Router.route('dashboard/advanced-fulfillment', {
   name: 'dashboard/advanced-fulfillment',
@@ -212,7 +225,7 @@ Router.route('dashboard/advanced-fulfillment/order-queue', {
 
 Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
   name: 'advancedFulfillmentPDF',
-  controller: PrintController,
+  controller: advancedFulfillmentPrintController,
   path: 'dashboard/advanced-fulfillment/order/pdf/:_id',
   template: 'advancedFulfillmentPDF',
   onBeforeAction() {
@@ -233,7 +246,7 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
 
 Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
   name: 'orders.printAllForDate',
-  controller: PrintController,
+  controller: advancedFulfillmentPrintController,
   path: 'dashboard/advanced-fulfillment/orders/pdf/:date',
   template: 'advancedFulfillmentOrdersPrint',
   onBeforeAction() {
@@ -267,7 +280,7 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
 
 Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
   name: 'orders.printSelected',
-  controller: PrintController,
+  controller: advancedFulfillmentPrintController,
   path: 'dashboard/advanced-fulfillment/orders/pdf/selected',
   template: 'advancedFulfillmentOrdersPrint',
   onBeforeAction() {

@@ -1,12 +1,22 @@
-advancedFulfillmentController = ShopAdminController.extend({
+advancedFulfillmentController = ShopController.extend({
   onBeforeAction: function () {
-    let advancedFulfillment = ReactionCore.Collections.Packages.findOne({
+    const advancedFulfillment = ReactionCore.Collections.Packages.findOne({
       name: 'reaction-advanced-fulfillment'
     });
-    if (! advancedFulfillment.enabled) {
+    if (!advancedFulfillment.enabled) {
       this.render('notFound');
     } else {
-      this.next();
+      if (!ReactionCore.hasPermission(['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'])) {
+        this.render("layoutHeader", {
+          to: "layoutHeader"
+        });
+        this.render("layoutFooter", {
+          to: "layoutFooter"
+        });
+        this.render("unauthorized");
+      } else {
+        this.next();
+      }
     }
   }
 });

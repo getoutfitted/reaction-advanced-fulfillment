@@ -146,7 +146,7 @@ Meteor.methods({
     check(orderId, String);
     check(userId, String);
     check(status, String);
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
     let workflow = {
@@ -183,7 +183,7 @@ Meteor.methods({
     check(userId, String);
     check(status, String);
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
 
@@ -220,7 +220,7 @@ Meteor.methods({
     check(order, Object);
     check(userId, String);
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
 
@@ -252,7 +252,7 @@ Meteor.methods({
     check(orderId, String);
     check(orderNotes, String);
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
 
@@ -265,10 +265,10 @@ Meteor.methods({
     check(endDate, Date);
     check(userId, String);
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-    
+
     ReactionCore.Collections.Orders.update({
       'advancedFulfillment.shipmentDate': {
         $gte: startDate,
@@ -294,7 +294,7 @@ Meteor.methods({
     check(orderId, String);
     check(userId, String);
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
 
@@ -318,7 +318,7 @@ Meteor.methods({
     check(startDate, Date);
     check(endDate, Date);
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
 
@@ -364,7 +364,7 @@ Meteor.methods({
     check(productId, String);
     check(variantId, String);
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
 
@@ -413,7 +413,7 @@ Meteor.methods({
     check(variantId, String);
     // XXX: Way too many params, lets use an options object.
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
 
@@ -486,7 +486,7 @@ Meteor.methods({
     check(variantId, String);
     // XXX: Too many params - use options object.
 
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
 

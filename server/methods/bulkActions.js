@@ -1,7 +1,7 @@
 Meteor.methods({
   'advancedFulfillment/shipSelectedOrders': function (orderIds) {
     check(orderIds, [String]);
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
     this.unblock();
@@ -15,7 +15,7 @@ Meteor.methods({
   },
   'advancedFulfillment/unshipSelectedOrders': function (orderIds) {
     check(orderIds, [String]);
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
     this.unblock();
@@ -29,7 +29,7 @@ Meteor.methods({
   },
   'advancedFulfillment/printSelectedOrders': function (orderIds) {
     check(orderIds, [String]);
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
     this.unblock();

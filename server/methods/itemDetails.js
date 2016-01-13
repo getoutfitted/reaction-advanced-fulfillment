@@ -3,7 +3,7 @@ Meteor.methods({
     check(orderId, String);
     check(itemId, String);
     check(itemStatus, String);
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
     let workflow = {
@@ -25,7 +25,7 @@ Meteor.methods({
   'advancedFulfillment/updateAllItems': function (order, currentItemStatus) {
     check(order, Object);
     check(currentItemStatus, String);
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
     let items = order.advancedFulfillment.items;
@@ -54,7 +54,7 @@ Meteor.methods({
     check(itemId, String);
     check(userId, String);
     check(issue, String);
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
     let historyEvent = {
@@ -78,7 +78,7 @@ Meteor.methods({
     check(orderId, String);
     check(itemId, String);
     check(issue, String);
-    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
     ReactionCore.Collections.Orders.update({

@@ -528,5 +528,32 @@ Meteor.methods({
         'advancedFulfillment.items': newAfItem
       }
     });
+  },
+  'advancedFulfillment/bypassWorkflowAndComplete': function (orderId, userId) {
+    check(orderId, String);
+    check(userId, String);
+    let history = [
+      {
+        event: 'bypassedWorkFlowToComplete',
+        userId: userId,
+        updatedAt: new Date()
+      }, {
+        event: 'orderCompleted',
+        userId: userId,
+        updatedAt: new Date()
+      }
+    ];
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderCompleted'
+      },
+      $addToSet: {
+        history: {
+          $each: history
+        }
+      }
+    });
   }
 });

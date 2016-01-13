@@ -6,7 +6,7 @@ Meteor.methods({
       throw new Meteor.Error(403, 'Access Denied');
     }
     let history = {
-      event: 'orderCanceled',
+      event: 'orderCancel;ed',
       userId: userId,
       updatedAt: new Date()
     };
@@ -17,7 +17,7 @@ Meteor.methods({
         history: history
       },
       $set: {
-        'advancedFulfillment.workflow.status': 'orderCanceled',
+        'advancedFulfillment.workflow.status': 'orderCancelled',
         'advancedFulfillment.impossibleShipDate': false
       }
     });

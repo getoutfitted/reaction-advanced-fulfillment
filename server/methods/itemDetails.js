@@ -3,6 +3,9 @@ Meteor.methods({
     check(orderId, String);
     check(itemId, String);
     check(itemStatus, String);
+    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     let workflow = {
       'In Stock': 'picked',
       'picked': 'packed',
@@ -18,9 +21,13 @@ Meteor.methods({
       $addToSet: {'advancedFulfillment.items.$.workflow.workflow': itemStatus }
     });
   },
+
   'advancedFulfillment/updateAllItems': function (order, currentItemStatus) {
     check(order, Object);
     check(currentItemStatus, String);
+    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     let items = order.advancedFulfillment.items;
     let allItems = _.every(items, function (item) {
       return item.workflow.status === currentItemStatus;
@@ -41,11 +48,15 @@ Meteor.methods({
       }
     });
   },
+
   'advancedFulfillment/itemIssue': function (orderId, itemId, userId, issue) {
     check(orderId, String);
     check(itemId, String);
     check(userId, String);
     check(issue, String);
+    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     let historyEvent = {
       event: issue + 'Item',
       userId: userId,
@@ -62,10 +73,14 @@ Meteor.methods({
       }
     });
   },
+
   'advancedFulfillment/itemResolved': function (orderId, itemId, issue) {
     check(orderId, String);
     check(itemId, String);
     check(issue, String);
+    if (!ReactionCore.hasPermission(advancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     ReactionCore.Collections.Orders.update({
       '_id': orderId,
       'advancedFulfillment.items._id': itemId

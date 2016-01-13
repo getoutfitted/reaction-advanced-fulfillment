@@ -24,9 +24,9 @@ Template.returnOrders.events({
   },
   'change #bulkActions': function (event) {
     if (event.currentTarget.value === 'return') {
-      debugger;
       Meteor.call('advancedFulfillment/returnSelectedOrders', Session.get('returnOrders'));
     } else if (event.currentTarget.value === 'complete') {
+      Meteor.call('advancedFulfillment/completeSelectedOrders', Session.get('returnOrders'));
     }
     Session.set('returnOrders', []);
   }

@@ -50,6 +50,8 @@ Package.onUse(function (api) {
     'client/templates/settings/settings.js',
     'client/templates/fulfillmentOrders/fulfillmentOrders.html',
     'client/templates/fulfillmentOrders/fulfillmentOrders.js',
+    'client/templates/fulfillmentOrders/returnOrders.html',
+    'client/templates/fulfillmentOrders/returnOrders.js',
     'client/templates/dashboard/dashboard.html',
     'client/templates/dashboard/dashboard.js',
     'client/templates/orderDetails/orderDetails.html',

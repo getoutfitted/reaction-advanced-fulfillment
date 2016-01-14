@@ -19,3 +19,13 @@ Template.registerHelper('pastDate', (date) => {
   check(date, Date);
   return new Date() > moment(date).startOf('day').add(16, 'hours');
 });
+
+Template.registerHelper('hasCustomerServiceIssue', (order) => {
+  let anyIssues = [
+    order.infoMissing,
+    order.itemMissingDetails,
+    order.bundleMissingColor,
+    order.advancedFulfillment.impossibleShipDate
+  ];
+  return _.some(anyIssues);
+});

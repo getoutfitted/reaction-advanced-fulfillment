@@ -6,6 +6,10 @@ function getIndexBy(array, name, value) {
   }
 }
 
+function labelMaker(word, bootStrapColor = 'primary') {
+  return '<span class="label label-' + bootStrapColor + '">' + word + '</span> ';
+}
+
 Template.orderDetails.helpers({
   currentStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
@@ -150,6 +154,31 @@ Template.orderDetails.helpers({
   },
   hasShippingInfo: function () {
     return this.advancedFulfillment.shippingHistory && this.advancedFulfillment.workflow.status === 'orderShipped';
+  },
+  hasCustomerServiceIssue: function () {
+    let anyIssues = [
+      this.infoMissing,
+      this.itemMissingDetails,
+      this.bundleMissingColor,
+      this.advancedFulfillment.impossibleShipDate
+    ];
+    return _.some(anyIssues);
+  },
+  typeofIssue: function () {
+    let issues = '';
+    if (this.infoMissing) {
+      issues += labelMaker('Missing Rental Dates');
+    }
+    if (this.itemMissingDetails) {
+      issues += labelMaker('Items Missing Color and Size');
+    }
+    if (this.bundleMissingColor) {
+      issues += labelMaker('Bundle Packages Were Assigned Default Color');
+    }
+    if (this.bundleMissingColor) {
+      issues += labelMaker('Arrive By Date is Impossible to Fulfill');
+    }
+    return '<h4>' + issues + '</h4>';
   }
 });
 

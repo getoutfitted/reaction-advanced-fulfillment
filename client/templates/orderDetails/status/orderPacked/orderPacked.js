@@ -27,7 +27,6 @@ Template.orderPacked.helpers({
 
 Template.orderPacked.events({
   'click .local-delivery': function (event) {
-    event.preventDefault();
     let order = this;
     let currentItemStatus = 'packed';
     let status = this.advancedFulfillment.workflow.status;

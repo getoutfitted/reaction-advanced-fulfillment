@@ -1,5 +1,5 @@
 Template.afNavbar.onCreated(function () {
-  this.subscribe('searchOrders');
+  // this.subscribe('searchOrders');
 });
 
 Template.afNavbar.onRendered(function () {
@@ -42,6 +42,9 @@ Template.afNavbar.helpers({
     return ReactionCore.Collections.Orders.find({
       bundleMissingColor: true
     }).count();
+  },
+  getOrders: function () {
+    return OrderSearch.getData();
   }
 });
 
@@ -49,15 +52,24 @@ Template.afNavbar.events({
   'click #afSearchButton': function (event) {
     event.preventDefault();
     let searchValue = $('#afSearchInput').val();
-    let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue, 10)}]});
-    if (order) {
-      let orderId = order._id;
-      Router.go('orderDetails', {_id: orderId});
+    let order = null;
+    OrderSearch.search(searchValue);
+    // let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue, 10)}]});
+    if (OrderSearch.getStatus() === 'loaded') {
+      order = OrderSearch.getData()[0];
+      Router.go('orderDetails', {_id: order._id});
     } else {
-      Alerts.removeSeen();
-      Alerts.add(searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
-        autoHide: true
-      });
+      setTimeout(function () {
+        order = OrderSearch.getData()[0];
+        if (order) {
+          Router.go('orderDetails', {_id: order._id});
+        } else {
+          Alerts.removeSeen();
+          Alerts.add(searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
+            autoHide: true
+          });
+        }
+      }, 500);
     }
   },
   'click #afShipButton': function (event) {

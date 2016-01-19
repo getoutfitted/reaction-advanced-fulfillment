@@ -12,6 +12,7 @@ Template.orderPacked.helpers({
     afShipping.city = shippingInfo.city;
     afShipping.state = shippingInfo.region;
     afShipping.zipcode = shippingInfo.postal;
+    afShipping.phone = shippingInfo.phone;
     return afShipping;
   },
   localDelivery: function () {

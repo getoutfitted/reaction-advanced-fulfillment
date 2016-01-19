@@ -33,6 +33,7 @@ Package.onUse(function (api) {
   api.addFiles('lib/fedex.js',  'server');
   api.addFiles('lib/advancedFulfillment.js');
 
+  api.addAssets('public/images/go-logo-359.png', 'client');
   api.addFiles([
     'server/registry.js',
     'server/advancedFulfillment.js', // Static vars for server.
@@ -62,6 +63,8 @@ Package.onUse(function (api) {
     'client/templates/pdf/advancedFulfillment.js',
     'client/templates/pdf/ordersPrinting.html',
     'client/templates/pdf/ordersPrinting.js',
+    'client/templates/pdf/localDeliveryLabel.html',
+    'client/templates/pdf/localDeliveryLabel.js',
     'client/templates/navbar/afNavbar.html',
     'client/templates/navbar/afNavbar.js',
     'client/templates/missingDamaged/missingDamaged.html',

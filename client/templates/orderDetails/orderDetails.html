@@ -26,6 +26,21 @@
         <h1>Status: {{humanStatus}}</h1>
       </div>
     </div>
+    {{#if hasCustomerServiceIssue}}
+      <div class='row'>
+        <div class='col-sm-7 col-md-4 text-center'>
+          <h1><span class="label label-danger">Customer Service Action Required</span></h1>
+        </div>
+        <div class='visible-lg-* visible-md-* hidden-sm hidden-xs col-sm-5 col-md-8'>
+          <br>
+          {{{typeofIssue}}}
+        </div>
+        <div class='visible-xs-* visible-sm-* hidden-md hidden-lg text-center col-sm-5 col-md-8'>
+          <br>
+          {{{typeofIssue}}}
+        </div>
+      </div>
+    {{/if}}
     <table class="table text-center" style="font-size: 16px; margin-top: 15px;">
       <thead class="text-center">
         <th class="text-center"><i class='fa fa-truck fa-2x'></i></th>

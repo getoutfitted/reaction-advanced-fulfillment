@@ -1,6 +1,8 @@
 Template.nonWarehouseOrders.helpers({
   nonWarehouseOrders: function () {
-    return ReactionCore.Collections.Orders.find({}, {
+    return ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.workflow.status': 'nonWarehouseOrder'
+    }, {
       sort: {
         shopifyOrderNumber: 1
       }

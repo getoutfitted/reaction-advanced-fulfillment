@@ -244,6 +244,28 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
   }
 });
 
+
+Router.route('dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id', {
+  name: 'localDeliveryLabelPDF',
+  controller: advancedFulfillmentPrintController,
+  path: 'dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id',
+  template: 'localDeliveryLabelPDF',
+  onBeforeAction() {
+    this.layout('print');
+    return this.next();
+  },
+  subscriptions: function () {
+    this.subscribe('Orders');
+  },
+  data: function () {
+    if (this.ready()) {
+      return ReactionCore.Collections.Orders.findOne({
+        _id: this.params._id
+      });
+    }
+  }
+});
+
 Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
   name: 'orders.printAllForDate',
   controller: advancedFulfillmentPrintController,

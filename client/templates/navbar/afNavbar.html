@@ -13,9 +13,9 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
         <ul class="nav navbar-nav navbar-right">
-          <form class="navbar-form navbar-left" role="search">
+          <form class="navbar-form navbar-left navbar-search-form" role="search">
             <div class="form-group">
-              <input type="number" class="form-control" id='afSearchInput' placeholder="Search by Order Number/Id">
+              <input type="number" class="form-control" id='afSearchInput' name="orderNumber" placeholder="Search by Order Number/Id">
             </div>
             <button type="submit" id='afSearchButton' class="btn btn-default">Submit</button>
           </form>
@@ -122,13 +122,10 @@
     <div class="row">
       <form class="subnav-search-form" role="search">
         <div class="form-group">
-          <input type="text" class="form-control input-lg" id='subnav-order-search-input' name="orderNumber" placeholder="Search by Order Number/Id">
+          <input type="number" class="form-control input-lg" id='subnav-order-search-input' name="orderNumber" placeholder="Search by Order Number/Id">
         </div>
         <button type="submit" id='subnav-order-search-button' class="btn btn-primary btn-block btn-lg">Submit</button>
       </form>
     </div>
   </div>
-</template>
-
-<template name="orderSearchBox">
 </template>

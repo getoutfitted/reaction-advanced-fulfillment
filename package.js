@@ -17,12 +17,13 @@ Package.onUse(function (api) {
   api.use('less');
   api.use('http');
   api.use('underscore');
+  api.use('standard-minifiers');
   api.use('reactioncommerce:core@0.9.5');
   api.use('reactioncommerce:reaction-accounts@1.5.2');
   api.use('iron:router@1.0.12');
   api.use('momentjs:moment@2.10.6');
   api.use('momentjs:twix@0.7.2');
-  api.use('standard-minifiers');
+  api.use('meteorhacks:search-source');
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
@@ -37,6 +38,7 @@ Package.onUse(function (api) {
   api.addFiles([
     'server/registry.js',
     'server/advancedFulfillment.js', // Static vars for server.
+    'server/search.js',
     'server/hooks/after_copyCartToOrder.js',
     'server/methods/orderDetail.js',
     'server/methods/itemDetails.js',
@@ -46,6 +48,12 @@ Package.onUse(function (api) {
   ], 'server');
 
   api.addFiles([
+    'common/router.js',
+    'common/collections.js'
+  ], ['client', 'server']);
+
+  api.addFiles([
+    'client/search.js',
     'client/templates/helpers.js',
     'client/templates/settings/settings.html',
     'client/templates/settings/settings.js',
@@ -112,11 +120,6 @@ Package.onUse(function (api) {
     'client/templates/deliveryLabels/deliveryLabels.html',
     'client/templates/deliveryLabels/deliveryLabels.js'
   ], 'client');
-
-  api.addFiles([
-    'common/router.js',
-    'common/collections.js'
-  ], ['client', 'server']);
 });
 
 

@@ -117,8 +117,6 @@ Package.onUse(function (api) {
     'client/templates/deliveryLabels/deliveryLabels.html',
     'client/templates/deliveryLabels/deliveryLabels.js'
   ], 'client');
-  
-  api.export('OrderSearch', 'client');
 });
 
 

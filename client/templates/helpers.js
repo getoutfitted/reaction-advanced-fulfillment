@@ -15,6 +15,10 @@ Template.registerHelper('formattedDate', (date) => {
   return moment(date).calendar(null, AdvancedFulfillment.shippingCalendarReference);
 });
 
+Template.registerHelper('formatInputDate', (date) => {
+  return moment(date).format('MM/DD/YYYY');
+});
+
 Template.registerHelper('pastDate', (date) => {
   check(date, Date);
   return new Date() > moment(date).startOf('day').add(16, 'hours');

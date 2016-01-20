@@ -233,7 +233,7 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('Orders');
+    this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
     if (this.ready()) {
@@ -255,7 +255,7 @@ Router.route('dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('Orders');
+    this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
     if (this.ready()) {

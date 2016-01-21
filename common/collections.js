@@ -418,6 +418,10 @@ ReactionCore.Schemas.AdvancedFulfillmentObject = new SimpleSchema({
   canceledInformation: {
     type: ReactionCore.Schemas.AdvancedFulfillmentCancelInfo,
     optional: true
+  },
+  'delivered': {
+    type: Boolean,
+    optional: true
   }
 });
 

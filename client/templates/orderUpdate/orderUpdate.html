@@ -67,6 +67,39 @@
     </div>
     <hr>
     <div class='container'>
+      <div class="row">
+        <div class='col-xs-6 col-sm-4 text-center'>
+          <form class="updateShippingAddress" id="updateShippingAddressForm">
+            <div class="form-group row">
+              <div class="col-xs-12">
+                <label for="shippingName">Ship To
+                  <input type="text" class="form-control" id="shippingName" placeholder="shippingName" value={{shippingTo}}>
+                </label>
+              </div>
+              <div class="col-xs-12">
+                <label for="shippingName">Shipping Address Line 1
+                  <input type="text" class="form-control" id="shippingName" placeholder="shippingName" value={{shippingAddress1}}>
+                </label>
+              </div>
+              <div class="col-xs-12">
+                <label for="shippingName">Shipping Address Line 2
+                  <input type="text" class="form-control" id="shippingName" placeholder="shippingName" value={{shippingAddress2}}>
+                </label>
+              </div>
+              <p><strong>Update Shipping Address:</strong></p>
+              <p>{{shippingTo}}</p>
+              <p>{{shippingAddress1}}</p>
+              <p>{{shippingAddress2}}</p>
+              <p>{{city}} {{state}}, {{zipcode}}</p>
+            </div>
+          </form>
+        </div>
+        <div class='col-xs-6 col-sm-4 text-center'>
+          <p><strong>Contact:</strong></p>
+          <p>Email: {{contactInfo}}</p>
+          <p>Phone: {{phoneNumber}}</p>
+        </div>
+      </div>
       <div class='row text-center'>
         <div class="col-md-8 hidden-xs hidden-sm">
           <h3>Change Order Dates</h3>

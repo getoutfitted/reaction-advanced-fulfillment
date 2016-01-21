@@ -143,6 +143,26 @@ Meteor.publish('custServOrders', function () {
   return this.ready();
 });
 
+Meteor.publish('ordersShippingOnDate', function (date) {
+  const shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+    const startOfDay = moment(date, 'MM-DD-YYYY').startOf('day').toDate();
+    const endOfDay = moment(date, 'MM-DD-YYYY').endOf('day').toDate();
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderActive
+      },
+      'advancedFulfillment.shipmentDate': {
+        $gte: startOfDay,
+        $lte: endOfDay
+      }
+    });
+  }
+
+  return this.ready();
+});
+
 Meteor.publish('afReturnOrders', function () {
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {

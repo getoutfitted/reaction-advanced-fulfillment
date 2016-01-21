@@ -555,27 +555,5 @@ Meteor.methods({
         }
       }
     });
-  },
-  'advancedFulfillment/localShippingIniated': function (shopifyOrderId, userId) {
-    check(shopifyOrderId, Number);
-    check(userId, String);
-    let history = {
-      event: 'orderShipped',
-      userId: userId,
-      updatedAt: new Date()
-    };
-
-    ReactionCore.Collections.Orders.update({
-      shopifyOrderNumber: shopifyOrderId
-    }, {
-      $set: {
-        'advancedFulfillment.workflow.status': 'orderShipped',
-        'advancedFulfillment.delivered': true
-      },
-      $addToSet: {
-        'history': history,
-        'advancedFulfillment.workflow.workflow': 'orderReadyToShip'
-      }
-    });
   }
 });

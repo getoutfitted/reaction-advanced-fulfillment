@@ -1,7 +1,7 @@
 Meteor.publish('afOrders', function () {
   shopId = ReactionCore.getShopId();
 
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner'], ReactionCore.getShopId())) {
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       shopId: shopId
     }, {
@@ -33,13 +33,16 @@ Meteor.publish('afOrders', function () {
 });
 
 Meteor.publish('afProducts', function () {
-  return ReactionCore.Collections.Products.find({});
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Products.find({});
+  }
+  return this.ready();
 });
 
 Meteor.publish('advancedFulfillmentOrder', function (orderId) {
   check(orderId, String);
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       _id: orderId,
       shopId: shopId
@@ -50,7 +53,7 @@ Meteor.publish('advancedFulfillmentOrder', function (orderId) {
 
 Meteor.publish('searchOrders', function () {
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
@@ -68,7 +71,7 @@ Meteor.publish('searchOrders', function () {
 
 Meteor.publish('shippingOrders', function () {
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       'shopId': shopId,
       'items': {$ne: []},
@@ -80,12 +83,13 @@ Meteor.publish('shippingOrders', function () {
       fields: AdvancedFulfillment.fields.ordersList
     });
   }
+  return this.ready();
 });
 
 Meteor.publish('ordersByStatus', function (status) {
   check(status, String);
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': status
@@ -93,12 +97,13 @@ Meteor.publish('ordersByStatus', function (status) {
       fields: AdvancedFulfillment.fields.ordersList
     });
   }
+  return this.ready();
 });
 
 Meteor.publish('selectedOrders', function (orderIds) {
   check(orderIds, [String]);
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       _id: {
         $in: orderIds
@@ -111,11 +116,12 @@ Meteor.publish('selectedOrders', function (orderIds) {
       }
     });
   }
+  return this.ready();
 });
 
 Meteor.publish('nonWarehouseOrders', function () {
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': 'nonWarehouseOrder'
@@ -126,11 +132,43 @@ Meteor.publish('nonWarehouseOrders', function () {
 
 Meteor.publish('custServOrders', function () {
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderShipping
+      }
+    });
+  }
+  return this.ready();
+});
+
+Meteor.publish('afReturnOrders', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderReturning
+      }
+    }, {
+      fields: {
+        'endTime': 1,
+        'advancedFulfillment.returnDate': 1,
+        'advancedFulfillment.workflow.status': 1,
+        'advancedFulfillment.items._id': 1,
+        'advancedFulfillment.items.workflow': 1,
+        'advancedFulfillment.shipReturnBy': 1,
+        'shopifyOrderNumber': 1,
+        'history': 1,
+        'shipping.address.region': 1,
+        'shipping.address.city': 1,
+        'shipping.address.fullName': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'advancedFulfillment.kayakRental.vendor': 1,
+        'advancedFulfillment.kayakRental.qty': 1,
+        'advancedFulfillment.rushShippingPaid': 1
       }
     });
   }

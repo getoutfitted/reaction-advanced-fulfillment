@@ -2,8 +2,11 @@ Meteor.methods({
   'advancedFulfillment/cancelOrder': function (orderId, userId) {
     check(orderId, String);
     check(userId, String);
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     let history = {
-      event: 'orderCanceled',
+      event: 'orderCancel;ed',
       userId: userId,
       updatedAt: new Date()
     };
@@ -14,7 +17,7 @@ Meteor.methods({
         history: history
       },
       $set: {
-        'advancedFulfillment.workflow.status': 'orderCanceled',
+        'advancedFulfillment.workflow.status': 'orderCancelled',
         'advancedFulfillment.impossibleShipDate': false
       }
     });
@@ -22,6 +25,9 @@ Meteor.methods({
   'advancedFulfillment/bundleColorConfirmation': function (orderId, userId) {
     check(orderId, String);
     check(userId, String);
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     let history = {
       event: 'bundleColorConfirmed',
       userId: userId,
@@ -45,6 +51,9 @@ Meteor.methods({
     check(age, Number);
     check(shoeSize, String);
     check(level, String);
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     ReactionCore.Collections.Orders.update({
       '_id': orderId,
       'advancedFulfillment.skiPackages._id': skiId
@@ -60,6 +69,9 @@ Meteor.methods({
   'advancedFulfillment/nonWarehouseOrder': function (orderId, userId) {
     check(orderId, String);
     check(userId, String);
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     let history = {
       event: 'nonWarehouseOrder',
       userId: userId,

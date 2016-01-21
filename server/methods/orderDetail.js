@@ -146,6 +146,9 @@ Meteor.methods({
     check(orderId, String);
     check(userId, String);
     check(status, String);
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
     let workflow = {
       orderCreated: 'orderPrinted',
       orderPrinted: 'orderPicking',
@@ -174,10 +177,16 @@ Meteor.methods({
       }
     });
   },
+
   'advancedFulfillment/reverseOrderWorkflow': function (orderId, userId, status) {
     check(orderId, String);
     check(userId, String);
     check(status, String);
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     let reverseWorkflow = {
       orderPrinted: 'orderCreated',
       orderPicking: 'orderPrinted',
@@ -206,9 +215,15 @@ Meteor.methods({
       }
     });
   },
+
   'advancedFulfillment/orderCompletionVerifier': function (order, userId) {
     check(order, Object);
     check(userId, String);
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     let afItems = order.advancedFulfillment.items;
     let allItemsReturned = _.every(afItems, function (item) {
       return item.workflow.status === 'returned';
@@ -236,6 +251,11 @@ Meteor.methods({
   'advancedFulfillment/updateOrderNotes': function (orderId, orderNotes) {
     check(orderId, String);
     check(orderNotes, String);
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {orderNotes: orderNotes}
     });
@@ -244,6 +264,11 @@ Meteor.methods({
     check(startDate, Date);
     check(endDate, Date);
     check(userId, String);
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     ReactionCore.Collections.Orders.update({
       'advancedFulfillment.shipmentDate': {
         $gte: startDate,
@@ -264,9 +289,15 @@ Meteor.methods({
       multi: true
     });
   },
+
   'advancedFulfillment/printInvoice': function (orderId, userId) {
     check(orderId, String);
     check(userId, String);
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     ReactionCore.Collections.Orders.update({
       _id: orderId
     }, {
@@ -286,6 +317,11 @@ Meteor.methods({
     check(orderId, String);
     check(startDate, Date);
     check(endDate, Date);
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     let order = ReactionCore.Collections.Orders.findOne(orderId);
     let impossibleShipDate = order.advancedFulfillment.impossibleShipDate;
     if (order.advancedFulfillment.impossibleShipDate) {
@@ -321,11 +357,17 @@ Meteor.methods({
       }
     });
   },
+
   'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId) {
     check(order, Object);
     check(itemId, String);
     check(productId, String);
     check(variantId, String);
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     let product = Products.findOne(productId);
     let variants = product.variants;
     let variant = _.findWhere(variants, {_id: variantId});
@@ -360,6 +402,7 @@ Meteor.methods({
       }
     });
   },
+
   'advancedFulfillment/itemExchange': function (order, oldItemId, type, gender, title, color, variantId) {
     check(order, Object);
     check(oldItemId, String);
@@ -368,6 +411,12 @@ Meteor.methods({
     check(title, String);
     check(color, String);
     check(variantId, String);
+    // XXX: Way too many params, lets use an options object.
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     let product = Products.findOne({
       productType: type,
       gender: gender,
@@ -427,6 +476,7 @@ Meteor.methods({
       }
     });
   },
+
   'advancedFulfillment/addItem': function (order, type, gender, title, color, variantId) {
     check(order, Object);
     check(type, String);
@@ -434,6 +484,12 @@ Meteor.methods({
     check(title, String);
     check(color, String);
     check(variantId, String);
+    // XXX: Too many params - use options object.
+
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+
     let product = Products.findOne({
       productType: type,
       gender: gender,
@@ -470,6 +526,33 @@ Meteor.methods({
       $addToSet: {
         'items': newItem,
         'advancedFulfillment.items': newAfItem
+      }
+    });
+  },
+  'advancedFulfillment/bypassWorkflowAndComplete': function (orderId, userId) {
+    check(orderId, String);
+    check(userId, String);
+    let history = [
+      {
+        event: 'bypassedWorkFlowToComplete',
+        userId: userId,
+        updatedAt: new Date()
+      }, {
+        event: 'orderCompleted',
+        userId: userId,
+        updatedAt: new Date()
+      }
+    ];
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: {
+        'advancedFulfillment.workflow.status': 'orderCompleted'
+      },
+      $addToSet: {
+        history: {
+          $each: history
+        }
       }
     });
   }

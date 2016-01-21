@@ -1,7 +1,7 @@
 Package.describe({
   summary: 'Advanced fulfillment tracking for orders through inbound, picking, packing, returns and inventory',
   name: 'getoutfitted:reaction-advanced-fulfillment',
-  version: '0.4.1',
+  version: '0.5.0',
   git: 'https://github.com/getoutfitted/reaction-advanced-fulfillment'
 });
 
@@ -17,12 +17,13 @@ Package.onUse(function (api) {
   api.use('less');
   api.use('http');
   api.use('underscore');
+  api.use('standard-minifiers');
   api.use('reactioncommerce:core@0.9.5');
   api.use('reactioncommerce:reaction-accounts@1.5.2');
   api.use('iron:router@1.0.12');
   api.use('momentjs:moment@2.10.6');
   api.use('momentjs:twix@0.7.2');
-  api.use('standard-minifiers');
+  api.use('meteorhacks:search-source');
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
@@ -33,8 +34,11 @@ Package.onUse(function (api) {
   api.addFiles('lib/fedex.js',  'server');
   api.addFiles('lib/advancedFulfillment.js');
 
+  api.addAssets('public/images/go-logo-1000.png', 'client');
   api.addFiles([
     'server/registry.js',
+    'server/advancedFulfillment.js', // Static vars for server.
+    'server/search.js',
     'server/hooks/after_copyCartToOrder.js',
     'server/methods/orderDetail.js',
     'server/methods/itemDetails.js',
@@ -44,11 +48,19 @@ Package.onUse(function (api) {
   ], 'server');
 
   api.addFiles([
+    'common/router.js',
+    'common/collections.js'
+  ], ['client', 'server']);
+
+  api.addFiles([
+    'client/search.js',
     'client/templates/helpers.js',
     'client/templates/settings/settings.html',
     'client/templates/settings/settings.js',
     'client/templates/fulfillmentOrders/fulfillmentOrders.html',
     'client/templates/fulfillmentOrders/fulfillmentOrders.js',
+    'client/templates/fulfillmentOrders/returnOrders.html',
+    'client/templates/fulfillmentOrders/returnOrders.js',
     'client/templates/dashboard/dashboard.html',
     'client/templates/dashboard/dashboard.js',
     'client/templates/orderDetails/orderDetails.html',
@@ -59,6 +71,8 @@ Package.onUse(function (api) {
     'client/templates/pdf/advancedFulfillment.js',
     'client/templates/pdf/ordersPrinting.html',
     'client/templates/pdf/ordersPrinting.js',
+    'client/templates/pdf/localDeliveryLabel.html',
+    'client/templates/pdf/localDeliveryLabel.js',
     'client/templates/navbar/afNavbar.html',
     'client/templates/navbar/afNavbar.js',
     'client/templates/missingDamaged/missingDamaged.html',
@@ -67,7 +81,6 @@ Package.onUse(function (api) {
     'client/templates/orderUpdate/orderUpdate.js',
     'client/templates/search/searchOrders.js',
     'client/templates/search/searchOrders.html',
-    'client/templates/orderUpdate/orderUpdate.css',
     'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.html',
     'client/templates/orderUpdate/orderUpdateItem/updateOrderItem.js',
     'client/templates/print/printInvoiceButton.html',
@@ -107,11 +120,6 @@ Package.onUse(function (api) {
     'client/templates/deliveryLabels/deliveryLabels.html',
     'client/templates/deliveryLabels/deliveryLabels.js'
   ], 'client');
-
-  api.addFiles([
-    'common/router.js',
-    'common/collections.js'
-  ], ['client', 'server']);
 });
 
 

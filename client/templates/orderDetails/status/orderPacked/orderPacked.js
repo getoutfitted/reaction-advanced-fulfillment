@@ -12,6 +12,7 @@ Template.orderPacked.helpers({
     afShipping.city = shippingInfo.city;
     afShipping.state = shippingInfo.region;
     afShipping.zipcode = shippingInfo.postal;
+    afShipping.phone = shippingInfo.phone;
     return afShipping;
   },
   localDelivery: function () {
@@ -26,7 +27,6 @@ Template.orderPacked.helpers({
 
 Template.orderPacked.events({
   'click .local-delivery': function (event) {
-    event.preventDefault();
     let order = this;
     let currentItemStatus = 'packed';
     let status = this.advancedFulfillment.workflow.status;

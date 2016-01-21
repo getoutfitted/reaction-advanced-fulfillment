@@ -26,7 +26,7 @@ Template.productSelector.onRendered(function () {
 
 Template.productSelector.helpers({
   addItem: function () {
-    let orderId = Router.current().params.orderNumber;
+    let orderId = Router.current().params.orderId;
     let itemId = Router.current().params.itemId;
     if (orderId && itemId) {
       return false;
@@ -189,7 +189,7 @@ Template.productSelector.events({
     Session.set('productTitle-' + this._id, undefined);
     Session.set('productVariant-' + this._id, undefined);
     Session.set('productType-' + this._id, undefined);
-    Router.go('updateOrder', {orderNumber: order._id});
+    Router.go('updateOrder', {_id: order._id});
   },
   'click .add-item': function (event) {
     event.preventDefault();

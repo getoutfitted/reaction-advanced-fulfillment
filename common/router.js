@@ -1,10 +1,33 @@
-advancedFulfillmentController = ShopAdminController.extend({
+advancedFulfillmentController = ShopController.extend({
   onBeforeAction: function () {
-    let advancedFulfillment = ReactionCore.Collections.Packages.findOne({
+    const advancedFulfillment = ReactionCore.Collections.Packages.findOne({
       name: 'reaction-advanced-fulfillment'
     });
-    if (! advancedFulfillment.enabled) {
+    if (!advancedFulfillment.enabled) {
       this.render('notFound');
+    } else {
+      if (!ReactionCore.hasPermission(['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'])) {
+        this.render("layoutHeader", {
+          to: "layoutHeader"
+        });
+        this.render("layoutFooter", {
+          to: "layoutFooter"
+        });
+        this.render("unauthorized");
+      } else {
+        this.next();
+      }
+    }
+  }
+});
+/*
+ * AF Print Controller
+ */
+
+let advancedFulfillmentPrintController = RouteController.extend({
+  onBeforeAction: function () {
+    if (!ReactionCore.hasPermission(['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'])) {
+      this.render("unauthorized");
     } else {
       this.next();
     }
@@ -202,7 +225,7 @@ Router.route('dashboard/advanced-fulfillment/order-queue', {
 
 Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
   name: 'advancedFulfillmentPDF',
-  controller: PrintController,
+  controller: advancedFulfillmentPrintController,
   path: 'dashboard/advanced-fulfillment/order/pdf/:_id',
   template: 'advancedFulfillmentPDF',
   onBeforeAction() {
@@ -210,7 +233,29 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('Orders');
+    this.subscribe('advancedFulfillmentOrder', this.params._id);
+  },
+  data: function () {
+    if (this.ready()) {
+      return ReactionCore.Collections.Orders.findOne({
+        _id: this.params._id
+      });
+    }
+  }
+});
+
+
+Router.route('dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id', {
+  name: 'localDeliveryLabelPDF',
+  controller: advancedFulfillmentPrintController,
+  path: 'dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id',
+  template: 'localDeliveryLabelPDF',
+  onBeforeAction() {
+    this.layout('print');
+    return this.next();
+  },
+  subscriptions: function () {
+    this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
     if (this.ready()) {
@@ -223,7 +268,7 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
 
 Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
   name: 'orders.printAllForDate',
-  controller: PrintController,
+  controller: advancedFulfillmentPrintController,
   path: 'dashboard/advanced-fulfillment/orders/pdf/:date',
   template: 'advancedFulfillmentOrdersPrint',
   onBeforeAction() {
@@ -257,7 +302,7 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
 
 Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
   name: 'orders.printSelected',
-  controller: PrintController,
+  controller: advancedFulfillmentPrintController,
   path: 'dashboard/advanced-fulfillment/orders/pdf/selected',
   template: 'advancedFulfillmentOrdersPrint',
   onBeforeAction() {
@@ -317,10 +362,10 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
 
 Router.route('dashboard/advanced-fulfillment/returns', {
   name: 'returns',
-  template: 'fulfillmentOrders',
+  template: 'returnOrders',
   controller: advancedFulfillmentController,
   waitOn: function () {
-    return this.subscribe('afOrders');
+    return this.subscribe('afReturnOrders');
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
@@ -428,34 +473,19 @@ Router.route('dashboard/advanced-fulfillment/search', {
   }
 });
 
-Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber', {
+Router.route('dashboard/advanced-fulfillment/update-order/:_id', {
   name: 'updateOrder',
   controller: advancedFulfillmentController,
   template: 'updateOrder',
   waitOn: function () {
     this.subscribe('afProducts');
-    return this.subscribe('Orders');
+    return this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
-    let orderNumber = this.params.orderNumber;
-    let order = ReactionCore.Collections.Orders.findOne({
-      $or: [{
-        _id: orderNumber
-      }, {
-        shopifyOrderNumber: parseInt(orderNumber, 10)
-      }]
-    });
-    return order;
+    return ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
   },
   onBeforeAction: function () {
-    let orderNumber = this.params.orderNumber;
-    let validOrder = ReactionCore.Collections.Orders.findOne({
-      $or: [{
-        _id: orderNumber
-      }, {
-        shopifyOrderNumber: parseInt(orderNumber, 10)
-      }]
-    });
+    let validOrder = ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
     if (validOrder) {
       this.next();
     } else {
@@ -464,32 +494,19 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber', {
   }
 });
 
-Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber/:itemId', {
+Router.route('dashboard/advanced-fulfillment/update-order/:orderId/:itemId', {
   name: 'updateOrderItem',
   controller: advancedFulfillmentController,
   template: 'updateOrderItem',
   waitOn: function () {
     this.subscribe('afProducts');
-    return this.subscribe('Orders');
+    return this.subscribe('advancedFulfillmentOrder', this.params.orderId);
   },
   data: function () {
-    let orderNumber = this.params.orderNumber;
-    let order = ReactionCore.Collections.Orders.findOne({
-      $or: [
-        {_id: orderNumber},
-        {shopifyOrderNumber: parseInt(orderNumber)}
-      ]
-    });
-    return order;
+    return ReactionCore.Collections.Orders.findOne({ _id: this.params.orderId});
   },
   onBeforeAction: function () {
-    let orderNumber = this.params.orderNumber;
-    let validOrder = ReactionCore.Collections.Orders.findOne({
-      $or: [
-        {_id: orderNumber},
-        {shopifyOrderNumber: parseInt(orderNumber)}
-      ]
-    });
+    let validOrder = ReactionCore.Collections.Orders.findOne({ _id: this.params.orderId});
     if (validOrder) {
       this.next();
     }  else {

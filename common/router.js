@@ -266,17 +266,17 @@ Router.route('dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id
   }
 });
 
-Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
+Router.route('dashboard/advanced-fulfillment/orders/pdf/date/:date', {
   name: 'orders.printAllForDate',
   controller: advancedFulfillmentPrintController,
-  path: 'dashboard/advanced-fulfillment/orders/pdf/:date',
+  path: 'dashboard/advanced-fulfillment/orders/pdf/date/:date',
   template: 'advancedFulfillmentOrdersPrint',
   onBeforeAction() {
     this.layout('print');
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('Orders');
+    this.subscribe('ordersShippingOnDate', this.params.date);
   },
   data: function () {
     let day = this.params.date;

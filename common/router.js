@@ -473,34 +473,19 @@ Router.route('dashboard/advanced-fulfillment/search', {
   }
 });
 
-Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber', {
+Router.route('dashboard/advanced-fulfillment/update-order/:_id', {
   name: 'updateOrder',
   controller: advancedFulfillmentController,
   template: 'updateOrder',
   waitOn: function () {
     this.subscribe('afProducts');
-    return this.subscribe('Orders');
+    return this.subscribe('advancedFulfillmentOrder', this.params._id);
   },
   data: function () {
-    let orderNumber = this.params.orderNumber;
-    let order = ReactionCore.Collections.Orders.findOne({
-      $or: [{
-        _id: orderNumber
-      }, {
-        shopifyOrderNumber: parseInt(orderNumber, 10)
-      }]
-    });
-    return order;
+    return ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
   },
   onBeforeAction: function () {
-    let orderNumber = this.params.orderNumber;
-    let validOrder = ReactionCore.Collections.Orders.findOne({
-      $or: [{
-        _id: orderNumber
-      }, {
-        shopifyOrderNumber: parseInt(orderNumber, 10)
-      }]
-    });
+    let validOrder = ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
     if (validOrder) {
       this.next();
     } else {
@@ -509,32 +494,19 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber', {
   }
 });
 
-Router.route('dashboard/advanced-fulfillment/update-order/:orderNumber/:itemId', {
+Router.route('dashboard/advanced-fulfillment/update-order/:orderId/:itemId', {
   name: 'updateOrderItem',
   controller: advancedFulfillmentController,
   template: 'updateOrderItem',
   waitOn: function () {
     this.subscribe('afProducts');
-    return this.subscribe('Orders');
+    return this.subscribe('advancedFulfillmentOrder', this.params.orderId);
   },
   data: function () {
-    let orderNumber = this.params.orderNumber;
-    let order = ReactionCore.Collections.Orders.findOne({
-      $or: [
-        {_id: orderNumber},
-        {shopifyOrderNumber: parseInt(orderNumber)}
-      ]
-    });
-    return order;
+    return ReactionCore.Collections.Orders.findOne({ _id: this.params.orderId});
   },
   onBeforeAction: function () {
-    let orderNumber = this.params.orderNumber;
-    let validOrder = ReactionCore.Collections.Orders.findOne({
-      $or: [
-        {_id: orderNumber},
-        {shopifyOrderNumber: parseInt(orderNumber)}
-      ]
-    });
+    let validOrder = ReactionCore.Collections.Orders.findOne({ _id: this.params.orderId});
     if (validOrder) {
       this.next();
     }  else {

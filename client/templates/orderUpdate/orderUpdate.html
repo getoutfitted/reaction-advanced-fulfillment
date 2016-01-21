@@ -25,7 +25,7 @@
             {{#each item in advancedFulfillment.items}}
               {{#if colorAndSize item}}
                 <tr>
-                  <td><a class='btn btn-sm btn-warning' href="{{pathFor 'updateOrderItem' orderNumber=this._id itemId=item._id}}">Edit this Item</a></td>
+                  <td><a class='btn btn-sm btn-warning' href="{{pathFor 'updateOrderItem' orderId=this._id itemId=item._id}}">Edit this Item</a></td>
                   <td>{{item.itemDescription}}</td>
                   <td>{{color item}}</td>
                   <td>{{size item}}</td>
@@ -33,7 +33,7 @@
                 </tr>
               {{else}}
                 <tr class='danger'>
-                  <td><a class='btn btn-sm btn-danger' href="{{pathFor 'updateOrderItem' orderNumber=this._id itemId=item._id}}">Edit this Item</a></td>
+                  <td><a class='btn btn-sm btn-danger' href="{{pathFor 'updateOrderItem' orderId=this._id itemId=item._id}}">Edit this Item</a></td>
                   <td>{{item.itemDescription}}</td>
                   <td>
                     <select id='color-selector-{{item._id}}' data-id='{{item._id}}' class='form-control color-selector'>

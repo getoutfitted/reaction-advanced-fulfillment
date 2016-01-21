@@ -130,6 +130,20 @@ Meteor.publish('nonWarehouseOrders', function () {
   return this.ready();
 });
 
+Meteor.publish('userOrderQueue', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderInQueue
+      },
+      'history.userId': this.userId
+    });
+  }
+  return this.ready();
+});
+
 Meteor.publish('custServOrders', function () {
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
@@ -138,6 +152,28 @@ Meteor.publish('custServOrders', function () {
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderShipping
       }
+    });
+  }
+  return this.ready();
+});
+
+Meteor.publish('ordersWithMissingItems', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.items.workflow.status': 'missing'
+    });
+  }
+  return this.ready();
+});
+
+Meteor.publish('ordersWithDamagedItems', function () {
+  shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.items.workflow.status': 'damaged'
     });
   }
   return this.ready();

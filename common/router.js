@@ -219,7 +219,7 @@ Router.route('dashboard/advanced-fulfillment/order-queue', {
   template: 'orderQueue',
   controller: advancedFulfillmentController,
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('userOrderQueue');
   }
 });
 
@@ -429,7 +429,7 @@ Router.route('dashboard/advanced-fulfillment/missing', {
   controller: advancedFulfillmentController,
   template: 'missingDamaged',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('ordersWithMissingItems');
   },
   data: function () {
     return {
@@ -449,7 +449,7 @@ Router.route('dashboard/advanced-fulfillment/damaged', {
   controller: advancedFulfillmentController,
   template: 'missingDamaged',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('ordersWithDamagedItems');
   },
   data: function () {
     return {

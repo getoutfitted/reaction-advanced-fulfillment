@@ -310,7 +310,7 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('selectedOrders', Session.get('selectedOrders')); // TODO: Optimize this subscription, migrate it to template subscription
+    this.subscribe('selectedOrders', localStorage.getItem('selectedOrdersToPrint')); // TODO: Optimize this subscription, migrate it to template subscription
   }
 });
 

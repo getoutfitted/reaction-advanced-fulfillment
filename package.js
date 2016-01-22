@@ -34,7 +34,6 @@ Package.onUse(function (api) {
   api.addFiles('lib/fedex.js',  'server');
   api.addFiles('lib/advancedFulfillment.js');
 
-  api.addAssets('public/images/go-logo-1000.png', 'client');
   api.addFiles([
     'server/registry.js',
     'server/advancedFulfillment.js', // Static vars for server.
@@ -120,6 +119,11 @@ Package.onUse(function (api) {
     'client/templates/deliveryLabels/deliveryLabels.html',
     'client/templates/deliveryLabels/deliveryLabels.js'
   ], 'client');
+  
+  
+  // Public assets go at the bottom, should load last.
+  api.addAssets('public/images/go-logo-1000.png', 'client');
+  api.addAssets('public/images/logo-horizontal.png', 'client');
 });
 
 

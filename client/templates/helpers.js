@@ -30,7 +30,7 @@ Template.registerHelper('hasCustomerServiceIssue', (order) => {
     order.itemMissingDetails,
     order.bundleMissingColor,
     order.advancedFulfillment.impossibleShipDate,
-    order.items.length === 0
+    order.advancedFulfillment.items.length === 0
   ];
   return _.some(anyIssues);
 });

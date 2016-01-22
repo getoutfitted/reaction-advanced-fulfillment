@@ -44,7 +44,6 @@ Router.route('dashboard/advanced-fulfillment', {
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
-      'items': {$ne: []},
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderActive
       },
@@ -219,7 +218,7 @@ Router.route('dashboard/advanced-fulfillment/order-queue', {
   template: 'orderQueue',
   controller: advancedFulfillmentController,
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('userOrderQueue');
   }
 });
 
@@ -266,17 +265,17 @@ Router.route('dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id
   }
 });
 
-Router.route('dashboard/advanced-fulfillment/orders/pdf/:date', {
+Router.route('dashboard/advanced-fulfillment/orders/pdf/date/:date', {
   name: 'orders.printAllForDate',
   controller: advancedFulfillmentPrintController,
-  path: 'dashboard/advanced-fulfillment/orders/pdf/:date',
+  path: 'dashboard/advanced-fulfillment/orders/pdf/date/:date',
   template: 'advancedFulfillmentOrdersPrint',
   onBeforeAction() {
     this.layout('print');
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('Orders');
+    this.subscribe('ordersShippingOnDate', this.params.date);
   },
   data: function () {
     let day = this.params.date;
@@ -310,7 +309,7 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
     return this.next();
   },
   subscriptions: function () {
-    this.subscribe('selectedOrders', Session.get('selectedOrders')); // TODO: Optimize this subscription, migrate it to template subscription
+    this.subscribe('selectedOrders', JSON.parse(localStorage.getItem('selectedOrdersToPrint'))); // TODO: Optimize this subscription, migrate it to template subscription
   }
 });
 
@@ -429,7 +428,7 @@ Router.route('dashboard/advanced-fulfillment/missing', {
   controller: advancedFulfillmentController,
   template: 'missingDamaged',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('ordersWithMissingItems');
   },
   data: function () {
     return {
@@ -449,7 +448,7 @@ Router.route('dashboard/advanced-fulfillment/damaged', {
   controller: advancedFulfillmentController,
   template: 'missingDamaged',
   waitOn: function () {
-    return this.subscribe('Orders');
+    return this.subscribe('ordersWithDamagedItems');
   },
   data: function () {
     return {

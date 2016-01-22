@@ -1,7 +1,7 @@
 Package.describe({
   summary: 'Advanced fulfillment tracking for orders through inbound, picking, packing, returns and inventory',
   name: 'getoutfitted:reaction-advanced-fulfillment',
-  version: '0.5.1',
+  version: '0.5.2',
   git: 'https://github.com/getoutfitted/reaction-advanced-fulfillment'
 });
 

@@ -19,6 +19,14 @@ Template.registerHelper('formatInputDate', (date) => {
   return moment(date).format('MM/DD/YYYY');
 });
 
+Template.registerHelper('formattedRange', (start, end) => {
+  return moment(start).twix(end, {allDay: true}).format({
+    monthFormat: 'MMMM',
+    dayFormat: 'Do'
+  });
+});
+
+
 Template.registerHelper('pastDate', (date) => {
   check(date, Date);
   return new Date() > moment(date).startOf('day').add(16, 'hours');

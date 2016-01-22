@@ -110,7 +110,6 @@ Meteor.publish('selectedOrders', function (orderIds) {
       }
     }, {
       fields: {
-        'items': 0,
         'advancedFulfillment.paymentInformation.refunds': 0,
         'advancedFulfillment.paymentInformation.transactions': 0
       }

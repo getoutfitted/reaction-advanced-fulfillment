@@ -44,7 +44,6 @@ Router.route('dashboard/advanced-fulfillment', {
   },
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
-      'items': {$ne: []},
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderActive
       },

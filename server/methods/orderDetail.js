@@ -514,7 +514,11 @@ Meteor.methods({
       price: variant.price,
       sku: variant.sku,
       location: variant.location,
-      itemDescription: product.gender + ' - ' + product.vendor + ' - ' + product.title
+      itemDescription: product.gender + ' - ' + product.vendor + ' - ' + product.title,
+      workflow: {
+        status: 'In Stock',
+        workflow: ['added']
+      }
     };
     let orderNotes = order.notes + '\n New Item was added to Order:' + newAfItem.itemDescription + ' - ' + newItem.variants.size + ' - ' + newItem.variants.color;
     ReactionCore.Collections.Orders.update({

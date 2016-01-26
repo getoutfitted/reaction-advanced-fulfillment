@@ -24,7 +24,9 @@ Template.updateOrder.helpers({
   colorOptions: function (item) {
     let productId = item.productId;
     let product = ReactionCore.Collections.Products.findOne(productId);
-    return product.colors;
+    if (product) {
+      return product.colors;
+    }
   },
   sizeOptions: function (item) {
     let productId = item.productId;
@@ -110,7 +112,8 @@ Template.updateOrder.events({
     let productId = event.target.dataset.productId;
     let newVariantId = Session.get('sizeSelectorFor-' + itemId);
     let order = this;
-    Meteor.call('advancedFulfillment/updateItemsColorAndSize', order, itemId, productId, newVariantId);
+    let user = Meteor.user();
+    Meteor.call('advancedFulfillment/updateItemsColorAndSize', order, itemId, productId, newVariantId, user);
   },
   'click .add-new-item': function (event) {
     event.preventDefault();

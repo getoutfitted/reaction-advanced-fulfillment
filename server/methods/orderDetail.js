@@ -155,6 +155,13 @@ function userNameDeterminer(user) {
   return user.emails[0].address;
 }
 
+function anyOrderNotes(orderNotes) {
+  if (!orderNotes) {
+    return '';
+  }
+  return orderNotes;
+}
+
 
 Meteor.methods({
   'advancedFulfillment/updateOrderWorkflow': function (orderId, userId, status) {
@@ -378,24 +385,28 @@ Meteor.methods({
     });
   },
 
-  'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId) {
+  'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId, userObj) {
     check(order, Object);
     check(itemId, String);
     check(productId, String);
     check(variantId, String);
+    check(userObj, Object);
 
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-
+    let user = userNameDeterminer(userObj);
     let product = Products.findOne(productId);
     let variants = product.variants;
     let variant = _.findWhere(variants, {_id: variantId});
     let orderItems = order.items;
-    let orderNotes = order.orderNotes;
+    let orderNotes = anyOrderNotes(order.orderNotes);
 
-    orderNotes = orderNotes + ' \n Item #' + itemId + ' with SKU#' + variant.sku +
-     ' was updated with to have: color:' + variant.color + ' and size: ' + variant.size;
+    orderNotes = orderNotes + '<p>Item Details Added ' + product.gender + '-'
+     + product.vendor + '-' + product.title
+     + ' was updated with: color:' + variant.color + ' size: ' + variant.size
+     + noteFormatedUser(user) + '</p>';
+
     _.each(orderItems, function (item) {
       if (item._id === itemId) {
         item.variants = variant;
@@ -419,6 +430,13 @@ Meteor.methods({
         'advancedFulfillment.items': afItems,
         'orderNotes': orderNotes,
         'itemMissingDetails': !allItemsUpdated
+      },
+      $addToSet: {
+        history: {
+          event: 'itemDetailsAdded',
+          userId: userObj._id,
+          updatedAt: new Date()
+        }
       }
     });
   },

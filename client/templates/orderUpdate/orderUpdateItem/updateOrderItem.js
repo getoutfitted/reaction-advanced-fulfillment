@@ -176,6 +176,7 @@ Template.productSelector.events({
   'click .replace-item': function (event) {
     event.preventDefault();
     let order = this;
+    let user = Meteor.user();
     let oldItemId = Router.current().params.itemId;
     let type = Session.get('productType-' + this._id);
     let gender = Session.get('productGender-' + this._id);
@@ -183,7 +184,7 @@ Template.productSelector.events({
     let color = Session.get('productColor-' + this._id);
     let variantId = Session.get('productVariant-' + this._id);
 
-    Meteor.call('advancedFulfillment/itemExchange', order, oldItemId, type, gender, title, color, variantId);
+    Meteor.call('advancedFulfillment/itemExchange', order, oldItemId, type, gender, title, color, variantId, user);
     Session.set('productColor-' + this._id, undefined);
     Session.set('productGender-' + this._id, undefined);
     Session.set('productTitle-' + this._id, undefined);
@@ -194,12 +195,13 @@ Template.productSelector.events({
   'click .add-item': function (event) {
     event.preventDefault();
     let order = this;
+    let user = Meteor.user();
     let type = Session.get('productType-' + this._id);
     let gender = Session.get('productGender-' + this._id);
     let title = Session.get('productTitle-' + this._id);
     let color = Session.get('productColor-' + this._id);
     let variantId = Session.get('productVariant-' + this._id);
-    Meteor.call('advancedFulfillment/addItem', order, type, gender, title, color, variantId);
+    Meteor.call('advancedFulfillment/addItem', order, type, gender, title, color, variantId, user);
     Session.set('productColor-' + this._id, undefined);
     Session.set('productGender-' + this._id, undefined);
     Session.set('productTitle-' + this._id, undefined);

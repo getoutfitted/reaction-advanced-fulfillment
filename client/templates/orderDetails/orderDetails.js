@@ -207,8 +207,15 @@ Template.orderDetails.events({
   'blur .notes': function (event) {
     event.preventDefault();
     let notes = event.target.value;
-    let orderId = this._id;
-    Meteor.call('advancedFulfillment/updateOrderNotes', orderId, notes);
+    let order = this;
+    let user = Meteor.user();
+    if (user) {
+      user = user.username;
+    } else {
+      user = user.emails[0].address;
+    }
+    Meteor.call('advancedFulfillment/updateOrderNotes', order, notes, user);
+    event.currentTarget.value = '';
   },
   'click .print-invoice': function () {
     let orderId = event.target.dataset.orderId;

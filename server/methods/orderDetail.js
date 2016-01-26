@@ -340,22 +340,23 @@ Meteor.methods({
       }
     });
   },
-  'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate) {
+  'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate, userObj) {
     check(orderId, String);
     check(startDate, Date);
     check(endDate, Date);
+    check(userObj, Object);
 
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-
+    let user = userNameDeterminer(userObj);
     let order = ReactionCore.Collections.Orders.findOne(orderId);
     let impossibleShipDate = order.advancedFulfillment.impossibleShipDate;
     if (order.advancedFulfillment.impossibleShipDate) {
       impossibleShipDate = false;
     }
-    let infoMissing = order.advancedFulfillment.infoMissing;
-    if (order.advancedFulfillment.infoMissing) {
+    let infoMissing = order.infoMissing;
+    if (order.infoMissing) {
       infoMissing = false;
     }
     let fedexTransitTime = getFedexTransitTime(order.shipping[0]);
@@ -369,6 +370,12 @@ Meteor.methods({
     let arriveBy = moment(startDate).subtract(1, 'days').toDate();
     let returnBy = moment(endDate).add(1, 'days').toDate();
     let orderCreated = {status: 'orderCreated'};
+
+    let orderNotes = anyOrderNotes(order.orderNotes);
+    orderNotes = orderNotes + '<p> Rental Dates updated to: '
+    + moment(startDate).format('MM/D/YY') + '-'
+    + moment(endDate).format('MM/D/YY')
+    + noteFormatedUser(user) + '</p>';
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {
         'startTime': startDate,
@@ -380,7 +387,15 @@ Meteor.methods({
         'advancedFulfillment.workflow': orderCreated,
         'advancedFulfillment.arriveBy': arriveBy,
         'advancedFulfillment.shipReturnBy': returnBy,
-        'advancedFulfillment.impossibleShipDate': impossibleShipDate
+        'advancedFulfillment.impossibleShipDate': impossibleShipDate,
+        'orderNotes': orderNotes
+      },
+      $addToSet: {
+        history: {
+          event: 'updatedRentalDates',
+          userId: userObj._id,
+          updatedAt: new Date()
+        }
       }
     });
   },

@@ -125,7 +125,8 @@ Template.updateOrder.events({
     let orderId = this._id;
     let startDate = new Date($('#' + orderId + ' [name="start"]').val());
     let endDate = new Date($('#' + orderId + ' [name="end"]').val());
-    Meteor.call('advancedFulfillment/updateRentalDates', orderId, startDate, endDate);
+    let user = Meteor.user();
+    Meteor.call('advancedFulfillment/updateRentalDates', orderId, startDate, endDate, user);
     Alerts.removeSeen();
     Alerts.add('Rental Dates updated', 'success', {
       autoHide: true

@@ -1,7 +1,4 @@
 function shipmentDateChecker(date, isLocalDelivery, transitTime) {
-  console.log('Date', date);
-  console.log('Local?', isLocalDelivery);
-  console.log('transitTime', transitTime);
   if (isLocalDelivery) {
     return date;
   }
@@ -88,8 +85,7 @@ function rushRequired(arriveBy, transitTime, isLocal) {
   return moment(possibleArrival).diff(moment(arriveBy)) > 0;
 }
 
-function determineLocalDelivery(order) {
-  let zip = order.shipping_address.zip;
+function isLocalDelivery(postal) {
   let localZips = [
     '80424',
     '80435',
@@ -100,7 +96,7 @@ function determineLocalDelivery(order) {
     '81620',
     '81657'
   ];
-  return _.contains(localZips, zip);
+  return _.contains(localZips, postal);
 }
 
 function getFedexTransitTime(address) {
@@ -145,7 +141,6 @@ function getFedexTransitTime(address) {
     'imperial': true
   });
 
-  // console.log('addresss', address);
   let shipment = {
     ReturnTransitAndCommit: true,
     CarrierCodes: ['FDXE', 'FDXG'],
@@ -220,7 +215,6 @@ function getFedexTransitTime(address) {
     return false;
   }
   let groundRate = rates.RateReplyDetails[0];
-  console.log(groundRate.TransitTime);
   return fedexTimeTable[groundRate.TransitTime];
 }
 
@@ -424,8 +418,6 @@ Meteor.methods({
     if (order.advancedFulfillment.infoMissing) {
       infoMissing = false;
     }
-// Should fedexTransitTime be 0 if local?
-    console.log(order.shipping[0]);
     let fedexTransitTime = getFedexTransitTime(order.shipping[0].address);
     let bufferObject = buffer();
     let shippingBuffer = fedexTransitTime || bufferObject.shipping;
@@ -457,6 +449,53 @@ Meteor.methods({
         'advancedFulfillment.impossibleShipDate': impossibleShipDate
       }
     });
+  },
+
+  'advancedFulfillment/updateShippingAddress': function (orderId, address) {
+    check(orderId, String);
+    check(address, Object);
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+    const order = ReactionCore.Collections.Orders.findOne(orderId);
+    const localDelivery = isLocalDelivery(address.postal);
+    const startDate = order.startTime;
+    const endDate = order.endTime;
+    let fedexTransitTime = getFedexTransitTime(address);
+    // Should abstract this section \/
+    let bufferObject = buffer();
+    let shippingBuffer = fedexTransitTime || bufferObject.shipping;
+    let returnBuffer = fedexTransitTime || bufferObject.returning;
+    let returnDate = returnDateChecker(moment(endDate).add(returnBuffer, 'days').toDate(), localDelivery);
+    let arrivalDate = arrivalDateChecker(moment(startDate).subtract(1, 'days').toDate(), localDelivery);
+    let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery, shippingBuffer);
+    let returnBy = moment(endDate).add(1, 'days').toDate();
+
+    let rushOrder = rushRequired(arrivalDate, fedexTransitTime, localDelivery);
+    if (rushOrder && !localDelivery) {
+      shipmentDate = rushShipmentChecker(moment().startOf('day'));
+    }
+    try {
+      ReactionCore.Collections.Orders.update({_id: orderId}, {
+        $set: {
+          'advancedFulfillment.shipmentDate': shipmentDate,
+          'advancedFulfillment.returnDate': returnDate,
+          'advancedFulfillment.arriveBy': arrivalDate,
+          'advancedFulfillment.shipReturnBy': returnBy,
+          'shipping.0.address': address
+        },
+        $addToSet: {
+          history: {
+            event: 'orderShippingAddressUpdated',
+            userId: Meteor.userId(),
+            updatedAt: new Date()
+          }
+        }
+      });
+      ReactionCore.Log.info('Successfully updated shipping address for order: ' + order.shopifyOrderNumber);
+    } catch (e) {
+      ReactionCore.Log.error('Error updating shipping address for order: ' + order.shopifyOrderNumber, e);
+    }
   },
 
   'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId) {

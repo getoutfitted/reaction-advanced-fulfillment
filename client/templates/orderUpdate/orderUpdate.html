@@ -68,36 +68,45 @@
     <hr>
     <div class='container'>
       <div class="row">
-        <div class='col-xs-6 col-sm-4 text-center'>
+        <div class='col-xs-6 col-md-4 text-center'>
           <form class="updateShippingAddress" id="updateShippingAddressForm">
+            <p><strong>Update Shipping Address:</strong></p>
             <div class="form-group row">
               <div class="col-xs-12">
-                <label for="shippingName">Ship To
-                  <input type="text" class="form-control" id="shippingName" placeholder="shippingName" value={{shippingTo}}>
-                </label>
+                <input type="text" class="form-control" name="shippingName" id="shippingName" placeholder="shippingName" value={{address "fullName"}}>
               </div>
               <div class="col-xs-12">
-                <label for="shippingName">Shipping Address Line 1
-                  <input type="text" class="form-control" id="shippingName" placeholder="shippingName" value={{shippingAddress1}}>
-                </label>
+                <input type="text" class="form-control" name="shippingAddress1" id="shippingAddress1" placeholder="Address1" value={{address "address1"}}>
               </div>
               <div class="col-xs-12">
-                <label for="shippingName">Shipping Address Line 2
-                  <input type="text" class="form-control" id="shippingName" placeholder="shippingName" value={{shippingAddress2}}>
-                </label>
+                <input type="text" class="form-control" name="shippingAddress2" id="shippingAddress2" placeholder="Address 2" value={{address "address2"}}>
               </div>
-              <p><strong>Update Shipping Address:</strong></p>
-              <p>{{shippingTo}}</p>
-              <p>{{shippingAddress1}}</p>
-              <p>{{shippingAddress2}}</p>
-              <p>{{city}} {{state}}, {{zipcode}}</p>
+              <div class="col-xs-4">
+                <input type="text" class="form-control" name="shippingCity" id="shippingCity" placeholder="City" value={{address "city"}}>
+              </div>
+              <div class="col-xs-4">
+                <input type="text" maxlength="2" class="form-control" name="shippingRegion" id="shippingRegion" placeholder="State" value={{address "region"}}>
+              </div>
+              <div class="col-xs-4">
+                <input type="text" class="form-control" name="shippingPostal" id="shippingPostal" placeholder="Postal Code" value={{address "postal"}}>
+              </div>
             </div>
+            <button type="submit" class="btn btn-success btn-block">Update Shipping Address</button>
           </form>
         </div>
-        <div class='col-xs-6 col-sm-4 text-center'>
-          <p><strong>Contact:</strong></p>
-          <p>Email: {{contactInfo}}</p>
-          <p>Phone: {{phoneNumber}}</p>
+        <div class='col-xs-6 col-md-4 col-md-offset-1 text-center'>
+          <form class="updateContactInformation" id="updateContactInformationForm">
+            <div class="form-group row">
+              <p><strong>Contact:</strong></p>
+              <div class="col-xs-12">
+                <input type="text" class="form-control" name="contactPhone" id="contactPhone" placeholder="Phone Number" value={{address "phone"}}>
+              </div>
+              <div class="col-xs-12">
+                <input type="text" class="form-control" name="contactEmail" id="contactEmail" placeholder="Email Address" value={{email}}>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Update Contact Info</button>
+          </form>
         </div>
       </div>
       <div class='row text-center'>

@@ -498,6 +498,34 @@ Meteor.methods({
     }
   },
 
+  'advancedFulfillment/updateContactInformation': function (orderId, phone, email) {
+    check(orderId, String);
+    check(phone, String);
+    check(email, String);
+    if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
+      throw new Meteor.Error(403, 'Access Denied');
+    }
+    const order = ReactionCore.Collections.Orders.findOne(orderId);
+    try {
+      ReactionCore.Collections.Orders.update({_id: orderId}, {
+        $set: {
+          'email': email,
+          'shipping.0.address.phone': phone
+        },
+        $addToSet: {
+          history: {
+            event: 'orderContactInfoUpdated',
+            userId: Meteor.userId(),
+            updatedAt: new Date()
+          }
+        }
+      });
+      ReactionCore.Log.info('Successfully updated contact information for order: ' + order.shopifyOrderNumber);
+    } catch (e) {
+      ReactionCore.Log.error('Error updating contact information for order: ' + order.shopifyOrderNumber, e);
+    }
+  },
+
   'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId) {
     check(order, Object);
     check(itemId, String);

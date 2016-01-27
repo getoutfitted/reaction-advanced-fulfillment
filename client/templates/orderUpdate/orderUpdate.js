@@ -150,5 +150,19 @@ Template.updateOrder.events({
       Alerts.removeSeen();
       Alerts.add('All fields required except Address 2', 'danger');
     }
+  },
+  'submit #updateContactInformationForm': function (event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const email = form.contactEmail.value;
+    const phone = form.contactPhone.value;
+    if (email && phone) {
+      Meteor.call('advancedFulfillment/updateContactInformation', this._id, phone, email);
+      Alerts.removeSeen();
+      Alerts.add('Contact Information Updated', 'success', {autoHide: true});
+    } else {
+      Alerts.removeSeen();
+      Alerts.add('Phone and Email are both required', 'danger');
+    }
   }
 });

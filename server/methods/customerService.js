@@ -44,7 +44,7 @@ Meteor.methods({
       }
     });
     let orderNotes = anyOrderNotes(order.orderNotes);
-    orderNotes = 'Order Cancelled.' + noteFormattedUser(userName);
+    orderNotes = orderNotes + '<p><strong>Order Cancelled</strong>' + noteFormattedUser(userName) + '</p>';
 
     ReactionCore.Collections.Orders.update({
       _id: orderId

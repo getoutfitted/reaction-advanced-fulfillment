@@ -7,6 +7,8 @@ Template.updateOrder.onCreated(function () {
 });
 
 Template.updateOrder.onRendered(function () {
+  debugger;
+  Session.setDefault('cancel-')
   $('.picker .input-daterange').datepicker({
     startDate: 'today',
     todayBtn: 'linked',

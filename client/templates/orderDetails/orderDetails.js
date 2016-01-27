@@ -204,11 +204,29 @@ Template.orderDetails.events({
     }
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
   },
-  'blur .notes': function (event) {
+  'submit .add-notes': function (event) {
     event.preventDefault();
-    let notes = event.target.value;
-    let orderId = this._id;
-    Meteor.call('advancedFulfillment/updateOrderNotes', orderId, notes);
+    let notes = event.currentTarget.notes.value;
+    if (notes) {
+      let order = this;
+      let user = Meteor.user();
+      if (user) {
+        user = user.username;
+      } else {
+        user = user.emails[0].address;
+      }
+      Meteor.call('advancedFulfillment/updateOrderNotes', order, notes, user);
+      Alerts.removeSeen();
+      Alerts.add('Order Note Added', 'success', {
+        autoHide: true
+      });
+      event.currentTarget.notes.value = '';
+    } else {
+      Alerts.removeSeen();
+      Alerts.add('Order Notes Cannot Be Blank', 'danger', {
+        autoHide: true
+      });
+    }
   },
   'click .print-invoice': function () {
     let orderId = event.target.dataset.orderId;

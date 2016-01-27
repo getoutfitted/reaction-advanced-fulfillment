@@ -141,6 +141,28 @@ function buffer() {
   return {shipping: 0, returning: 0};
 }
 
+function noteFormatedUser(user) {
+  check(user, String);
+  let date = moment().format('MM/DD/YY h:mma');
+  return  '| <em>' + user + '-' + date + '</em>';
+}
+
+function userNameDeterminer(user) {
+  check(user, Object);
+  if (user.username) {
+    return user.username;
+  }
+  return user.emails[0].address;
+}
+
+function anyOrderNotes(orderNotes) {
+  if (!orderNotes) {
+    return '';
+  }
+  return orderNotes;
+}
+
+
 Meteor.methods({
   'advancedFulfillment/updateOrderWorkflow': function (orderId, userId, status) {
     check(orderId, String);
@@ -248,16 +270,21 @@ Meteor.methods({
       }
     });
   },
-  'advancedFulfillment/updateOrderNotes': function (orderId, orderNotes) {
-    check(orderId, String);
+  'advancedFulfillment/updateOrderNotes': function (order, orderNotes, user) {
+    check(order, Object);
     check(orderNotes, String);
+    check(user, String);
 
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-
-    ReactionCore.Collections.Orders.update({_id: orderId}, {
-      $set: {orderNotes: orderNotes}
+    if (!order.orderNotes) {
+      order.orderNotes = '';
+    }
+    let userInfo = noteFormatedUser(user);
+    let notes = order.orderNotes + '<p>' + orderNotes + userInfo + '</p>';
+    ReactionCore.Collections.Orders.update({_id: order._id}, {
+      $set: {orderNotes: notes}
     });
   },
   'advancedFulfillment/printInvoices': function (startDate, endDate, userId) {
@@ -313,22 +340,23 @@ Meteor.methods({
       }
     });
   },
-  'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate) {
+  'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate, userObj) {
     check(orderId, String);
     check(startDate, Date);
     check(endDate, Date);
+    check(userObj, Object);
 
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-
+    let user = userNameDeterminer(userObj);
     let order = ReactionCore.Collections.Orders.findOne(orderId);
     let impossibleShipDate = order.advancedFulfillment.impossibleShipDate;
     if (order.advancedFulfillment.impossibleShipDate) {
       impossibleShipDate = false;
     }
-    let infoMissing = order.advancedFulfillment.infoMissing;
-    if (order.advancedFulfillment.infoMissing) {
+    let infoMissing = order.infoMissing;
+    if (order.infoMissing) {
       infoMissing = false;
     }
     let fedexTransitTime = getFedexTransitTime(order.shipping[0]);
@@ -342,6 +370,12 @@ Meteor.methods({
     let arriveBy = moment(startDate).subtract(1, 'days').toDate();
     let returnBy = moment(endDate).add(1, 'days').toDate();
     let orderCreated = {status: 'orderCreated'};
+
+    let orderNotes = anyOrderNotes(order.orderNotes);
+    orderNotes = orderNotes + '<p> Rental Dates updated to: '
+    + moment(startDate).format('MM/D/YY') + '-'
+    + moment(endDate).format('MM/D/YY')
+    + noteFormatedUser(user) + '</p>';
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {
         'startTime': startDate,
@@ -353,29 +387,41 @@ Meteor.methods({
         'advancedFulfillment.workflow': orderCreated,
         'advancedFulfillment.arriveBy': arriveBy,
         'advancedFulfillment.shipReturnBy': returnBy,
-        'advancedFulfillment.impossibleShipDate': impossibleShipDate
+        'advancedFulfillment.impossibleShipDate': impossibleShipDate,
+        'orderNotes': orderNotes
+      },
+      $addToSet: {
+        history: {
+          event: 'updatedRentalDates',
+          userId: userObj._id,
+          updatedAt: new Date()
+        }
       }
     });
   },
 
-  'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId) {
+  'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId, userObj) {
     check(order, Object);
     check(itemId, String);
     check(productId, String);
     check(variantId, String);
+    check(userObj, Object);
 
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-
+    let user = userNameDeterminer(userObj);
     let product = Products.findOne(productId);
     let variants = product.variants;
     let variant = _.findWhere(variants, {_id: variantId});
     let orderItems = order.items;
-    let orderNotes = order.orderNotes;
+    let orderNotes = anyOrderNotes(order.orderNotes);
 
-    orderNotes = orderNotes + ' \n Item #' + itemId + ' with SKU#' + variant.sku +
-     ' was updated with to have: color:' + variant.color + ' and size: ' + variant.size;
+    orderNotes = orderNotes + '<p>Item Details Added ' + product.gender + '-'
+     + product.vendor + '-' + product.title
+     + ' was updated with: color:' + variant.color + ' size: ' + variant.size
+     + noteFormatedUser(user) + '</p>';
+
     _.each(orderItems, function (item) {
       if (item._id === itemId) {
         item.variants = variant;
@@ -399,11 +445,18 @@ Meteor.methods({
         'advancedFulfillment.items': afItems,
         'orderNotes': orderNotes,
         'itemMissingDetails': !allItemsUpdated
+      },
+      $addToSet: {
+        history: {
+          event: 'itemDetailsAdded',
+          userId: userObj._id,
+          updatedAt: new Date()
+        }
       }
     });
   },
 
-  'advancedFulfillment/itemExchange': function (order, oldItemId, type, gender, title, color, variantId) {
+  'advancedFulfillment/itemExchange': function (order, oldItemId, type, gender, title, color, variantId, userObj) {
     check(order, Object);
     check(oldItemId, String);
     check(type, String);
@@ -411,12 +464,13 @@ Meteor.methods({
     check(title, String);
     check(color, String);
     check(variantId, String);
+    check(userObj, Object);
     // XXX: Way too many params, lets use an options object.
 
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-
+    let user = userNameDeterminer(userObj);
     let product = Products.findOne({
       productType: type,
       gender: gender,
@@ -464,7 +518,17 @@ Meteor.methods({
     let allItemsUpdated = _.every(updatedAfItems, function (item) {
       return item.variantId;
     });
-    let orderNotes = order.notes + '\nItem # ' + oldAfItem._id + ' - ' + oldAfItem.itemDescription + ' - ' + oldItem.variants.size + ' - ' + oldItem.variants.color + ' was replaced with: \n' + newAfItem.itemDescription + ' - ' + newItem.variants.size + ' - ' + newItem.variants.color;
+    if (!order.orderNotes) {
+      order.orderNotes = '';
+    }
+    let orderNotes = order.orderNotes + '<p>Item Replacement: '
+      + oldAfItem.itemDescription + '-'
+      + oldItem.variants.size + '- '
+      + oldItem.variants.color
+      + ' with: ' + newAfItem.itemDescription
+      + '-' + newItem.variants.size + '-' + newItem.variants.color
+      + noteFormatedUser(user)
+      + '</p>';
     ReactionCore.Collections.Orders.update({
       _id: order._id
     }, {
@@ -473,23 +537,31 @@ Meteor.methods({
         'advancedFulfillment.items': updatedAfItems,
         'orderNotes': orderNotes,
         'itemMissingDetails': !allItemsUpdated
+      },
+      $addToSet: {
+        history: {
+          event: 'itemExchange',
+          userId: userObj._id,
+          updatedAt: new Date
+        }
       }
     });
   },
 
-  'advancedFulfillment/addItem': function (order, type, gender, title, color, variantId) {
+  'advancedFulfillment/addItem': function (order, type, gender, title, color, variantId, userObj) {
     check(order, Object);
     check(type, String);
     check(gender, String);
     check(title, String);
     check(color, String);
     check(variantId, String);
+    check(userObj, Object);
     // XXX: Too many params - use options object.
 
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-
+    let user = userNameDeterminer(userObj);
     let product = Products.findOne({
       productType: type,
       gender: gender,
@@ -520,7 +592,14 @@ Meteor.methods({
         workflow: ['added']
       }
     };
-    let orderNotes = order.notes + '\n New Item was added to Order:' + newAfItem.itemDescription + ' - ' + newItem.variants.size + ' - ' + newItem.variants.color;
+    if (!order.orderNotes) {
+      order.orderNotes = '';
+    }
+    let orderNotes = order.orderNotes + '<p>Item Added: '
+      + newAfItem.itemDescription + ' - ' + newItem.variants.size
+      + ' - ' + newItem.variants.color
+      + noteFormatedUser(user)
+      + '</p>';
     ReactionCore.Collections.Orders.update({
       _id: order._id
     }, {
@@ -529,7 +608,12 @@ Meteor.methods({
       },
       $addToSet: {
         'items': newItem,
-        'advancedFulfillment.items': newAfItem
+        'advancedFulfillment.items': newAfItem,
+        'history': {
+          event: 'itemAdded',
+          userId: userObj._id,
+          updatedAt: new Date()
+        }
       }
     });
   },

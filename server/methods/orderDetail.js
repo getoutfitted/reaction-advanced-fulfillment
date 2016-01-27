@@ -1,3 +1,54 @@
+function shipmentDateChecker(date, isLocalDelivery, transitTime) {
+  console.log('Date', date);
+  console.log('Local?', isLocalDelivery);
+  console.log('transitTime', transitTime);
+  if (isLocalDelivery) {
+    return date;
+  }
+
+  let numberOfWeekendDays = 0;
+  const shipDate = moment(date);
+  const arrivalDate = moment(shipDate).add(transitTime, 'days');
+  let additionalDays = 0;
+  let daysToAdd = 0;
+
+  if (moment(arrivalDate).isoWeekday() === 7) {
+    shipDate.subtract(2, 'days');
+    additionalDays += 2;
+    arrivalDate.subtract(2, 'days');
+  } else if (moment(arrivalDate).isoWeekday() === 6) {
+    shipDate.subtract(1, 'days');
+    additionalDays += 1;
+    arrivalDate.subtract(1, 'days');
+  }
+
+  if (moment(shipDate).isoWeekday() === 7) {
+    shipDate.subtract(2, 'days');
+    additionalDays += 2;
+  } else if (moment(shipDate).isoWeekday() === 6) {
+    shipDate.subtract(1, 'days');
+    additionalDays += 1;
+  }
+
+  const shipmentRange = shipDate.twix(arrivalDate, {allDay: true});
+  let iter = shipmentRange.iterate('days');
+  //
+  while (iter.hasNext()) {
+    let isoWeekday = iter.next().isoWeekday();
+    if (isoWeekday === 7 || isoWeekday === 6) {
+      numberOfWeekendDays += 1;
+    }
+  }
+
+  daysToAdd = numberOfWeekendDays - additionalDays;
+  if (daysToAdd <= 0) {
+    daysToAdd = 0;
+  }
+
+  return shipDate.subtract(daysToAdd, 'days').toDate();
+  // return moment(date).subtract(numberOfWeekendDays, 'days').toDate();
+}
+
 function arrivalDateChecker(date, isLocalDelivery) {
   if (isLocalDelivery) {
     return date;
@@ -6,6 +57,16 @@ function arrivalDateChecker(date, isLocalDelivery) {
     return moment(date).subtract(2, 'days').toDate();
   } else if (moment(date).isoWeekday() === 6) {
     return moment(date).subtract(1, 'days').toDate();
+  }
+  return date;
+}
+
+function returnDateChecker(date, isLocalDelivery) {
+  if (isLocalDelivery) {
+    return date;
+  }
+  if (moment(date).isoWeekday() === 7) {
+    return moment(date).add(1, 'days').toDate();
   }
   return date;
 }
@@ -52,7 +113,7 @@ function getFedexTransitTime(address) {
     return false;
   }
 
-  fedexTimeTable = {
+  let fedexTimeTable = {
     'ONE_DAY': 1,
     'TWO_DAYS': 2,
     'THREE_DAYS': 3,
@@ -84,6 +145,7 @@ function getFedexTransitTime(address) {
     'imperial': true
   });
 
+  // console.log('addresss', address);
   let shipment = {
     ReturnTransitAndCommit: true,
     CarrierCodes: ['FDXE', 'FDXG'],
@@ -109,9 +171,9 @@ function getFedexTransitTime(address) {
       },
       Recipient: {
         Contact: {
-          PersonName: 'Receiver Person',
-          CompanyName: 'Hotel',
-          PhoneNumber: '5555555555'
+          PersonName: address.fullName,
+          CompanyName: 'Place',
+          PhoneNumber: address.phone
         },
         Address: {
           StreetLines: [
@@ -158,6 +220,7 @@ function getFedexTransitTime(address) {
     return false;
   }
   let groundRate = rates.RateReplyDetails[0];
+  console.log(groundRate.TransitTime);
   return fedexTimeTable[groundRate.TransitTime];
 }
 
@@ -362,15 +425,16 @@ Meteor.methods({
       infoMissing = false;
     }
 // Should fedexTransitTime be 0 if local?
-    let fedexTransitTime = getFedexTransitTime(order.shipping[0]);
+    console.log(order.shipping[0]);
+    let fedexTransitTime = getFedexTransitTime(order.shipping[0].address);
     let bufferObject = buffer();
     let shippingBuffer = fedexTransitTime || bufferObject.shipping;
-    let returnBuffer = fedexTransitTime ? fedexTimeTable[fedexTransitTime] : bufferObject.returning;
+    let returnBuffer = fedexTransitTime || bufferObject.returning;
 
     let rentalLength = moment(endDate).diff(moment(startDate), 'days');
     let returnDate = returnDateChecker(moment(endDate).add(returnBuffer, 'days').toDate(), localDelivery);
     let arrivalDate = arrivalDateChecker(moment(startDate).subtract(1, 'days').toDate(), localDelivery);
-    let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery);
+    let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery, shippingBuffer);
     let returnBy = moment(endDate).add(1, 'days').toDate();
     let orderCreated = {status: 'orderCreated'};
 

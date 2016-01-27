@@ -225,7 +225,7 @@ function buffer() {
   return {shipping: 0, returning: 0};
 }
 
-function noteFormatedUser(user) {
+function noteFormattedUser(user) {
   check(user, String);
   let date = moment().format('MM/DD/YY h:mma');
   return  '| <em>' + user + '-' + date + '</em>';
@@ -365,7 +365,7 @@ Meteor.methods({
     if (!order.orderNotes) {
       order.orderNotes = '';
     }
-    let userInfo = noteFormatedUser(user);
+    let userInfo = noteFormattedUser(user);
     let notes = order.orderNotes + '<p>' + orderNotes + userInfo + '</p>';
     ReactionCore.Collections.Orders.update({_id: order._id}, {
       $set: {orderNotes: notes}
@@ -461,11 +461,15 @@ Meteor.methods({
     if (rushOrder && !localDelivery) {
       shipmentDate = rushShipmentChecker(moment().startOf('day'));
     }
+    if (localDelivery) {
+      shipmentDate = arrivalDate; // Remove transit day from local deliveries
+    }
+
     let orderNotes = anyOrderNotes(order.orderNotes);
     orderNotes = orderNotes + '<p> Rental Dates updated to: '
     + moment(startDate).format('MM/D/YY') + '-'
     + moment(endDate).format('MM/D/YY')
-    + noteFormatedUser(user) + '</p>';
+    + noteFormattedUser(user) + '</p>';
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {
         'startTime': startDate,
@@ -496,7 +500,10 @@ Meteor.methods({
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
+    const user = Meteor.user();
+    const userName = user.username || user.emails[0].address;
     const order = ReactionCore.Collections.Orders.findOne(orderId);
+    const prevAddress = order.shipping[0].address;
     const localDelivery = isLocalDelivery(address.postal);
     const startDate = order.startTime;
     const endDate = order.endTime;
@@ -508,20 +515,40 @@ Meteor.methods({
     let returnDate = returnDateChecker(moment(endDate).add(returnBuffer, 'days').toDate(), localDelivery);
     let arrivalDate = arrivalDateChecker(moment(startDate).subtract(1, 'days').toDate(), localDelivery);
     let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery, shippingBuffer);
+    if (localDelivery) {
+      shipmentDate = arrivalDate; // Remove transit day from local deliveries
+    }
     let returnBy = moment(endDate).add(1, 'days').toDate();
 
     let rushOrder = rushRequired(arrivalDate, fedexTransitTime, localDelivery);
     if (rushOrder && !localDelivery) {
       shipmentDate = rushShipmentChecker(moment().startOf('day'));
     }
+
+    let orderNotes = anyOrderNotes(order.orderNotes);
+    // Build updated orderNotes
+    orderNotes = orderNotes + '<br /><p> Shipping Address updated from: <br />'
+    + prevAddress.fullName + '<br />'
+    + prevAddress.address1 + '<br />';
+
+    orderNotes = prevAddress.address2 ? orderNotes + prevAddress.address2 + '<br />' : orderNotes;
+
+    orderNotes = orderNotes + prevAddress.city + ' '
+    + prevAddress.region + ', ' + prevAddress.postal
+    + noteFormattedUser(userName) + '</p>';
+
     try {
       ReactionCore.Collections.Orders.update({_id: orderId}, {
         $set: {
+          'advancedFulfillment.localDelivery': localDelivery,
+          // This line adds a day to transit time because we estimate from first ski day during import.
+          'advancedFulfillment.transitTime': localDelivery ? fedexTransitTime : fedexTransitTime + 1,
           'advancedFulfillment.shipmentDate': shipmentDate,
           'advancedFulfillment.returnDate': returnDate,
           'advancedFulfillment.arriveBy': arrivalDate,
           'advancedFulfillment.shipReturnBy': returnBy,
-          'shipping.0.address': address
+          'shipping.0.address': address,
+          'orderNotes': orderNotes
         },
         $addToSet: {
           history: {
@@ -585,7 +612,7 @@ Meteor.methods({
     orderNotes = orderNotes + '<p>Item Details Added ' + product.gender + '-'
      + product.vendor + '-' + product.title
      + ' was updated with: color:' + variant.color + ' size: ' + variant.size
-     + noteFormatedUser(user) + '</p>';
+     + noteFormattedUser(user) + '</p>';
 
     _.each(orderItems, function (item) {
       if (item._id === itemId) {
@@ -692,7 +719,7 @@ Meteor.methods({
       + oldItem.variants.color
       + ' with: ' + newAfItem.itemDescription
       + '-' + newItem.variants.size + '-' + newItem.variants.color
-      + noteFormatedUser(user)
+      + noteFormattedUser(user)
       + '</p>';
     ReactionCore.Collections.Orders.update({
       _id: order._id
@@ -763,7 +790,7 @@ Meteor.methods({
     let orderNotes = order.orderNotes + '<p>Item Added: '
       + newAfItem.itemDescription + ' - ' + newItem.variants.size
       + ' - ' + newItem.variants.color
-      + noteFormatedUser(user)
+      + noteFormattedUser(user)
       + '</p>';
     ReactionCore.Collections.Orders.update({
       _id: order._id

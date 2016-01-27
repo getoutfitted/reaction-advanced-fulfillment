@@ -1,3 +1,24 @@
+function noteFormattedUser(user) {
+  check(user, String);
+  let date = moment().format('MM/DD/YY h:mma');
+  return  '| <em>' + user + '-' + date + '</em>';
+}
+
+function userNameDeterminer(user) {
+  check(user, Object);
+  if (user.username) {
+    return user.username;
+  }
+  return user.emails[0].address;
+}
+
+function anyOrderNotes(orderNotes) {
+  if (!orderNotes) {
+    return '';
+  }
+  return orderNotes;
+}
+
 Meteor.methods({
   'advancedFulfillment/cancelOrder': function (orderId, userId) {
     check(orderId, String);
@@ -5,11 +26,26 @@ Meteor.methods({
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
-    let history = {
-      event: 'orderCancel;ed',
+    const history = {
+      event: 'orderCancelled',
       userId: userId,
       updatedAt: new Date()
     };
+    const userObj = Meteor.users.findOne(userId);
+    let userName = 'Guest';
+    if (userObj) {
+      userName = userNameDeterminer(userObj);
+    }
+    let order = ReactionCore.Collections.Orders.findOne({
+      _id: orderId
+    }, {
+      fields: {
+        orderNotes: 1
+      }
+    });
+    let orderNotes = anyOrderNotes(order.orderNotes);
+    orderNotes = 'Order Cancelled.' + noteFormattedUser(userName);
+
     ReactionCore.Collections.Orders.update({
       _id: orderId
     }, {
@@ -18,7 +54,8 @@ Meteor.methods({
       },
       $set: {
         'advancedFulfillment.workflow.status': 'orderCancelled',
-        'advancedFulfillment.impossibleShipDate': false
+        'advancedFulfillment.impossibleShipDate': false,
+        'orderNotes': orderNotes
       }
     });
   },

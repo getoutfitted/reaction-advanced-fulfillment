@@ -136,7 +136,18 @@
       </div>
       <div class='row text-center'>
         <hr>
-        <a  class='btn btn-danger ' href='#'>Cancel Order # {{shopifyOrderNumber}}</a>
+        <a  class='btn btn-danger confirm-to-cancel' href='#'>Cancel Order # {{shopifyOrderNumber}}</a>
+        {{#if cancelOrder}}
+          <div class='row well'>
+            <div>
+              <p>I <strong>{{userName}}</strong>, certifiy that order # {{shopifyOrderNumber}} should be cancelled. By canecelling this order, the order will not be viewed by anyone else and will not be fulfilled to the customer. I have also updated this order in Shopify to reflect the cancelled state.</p>
+
+            </div>
+            <div>
+              <p><a class='btn btn-danger cancel-order'>I {{userName}}, confirm the cancelling of order # {{shopifyOrderNumber}}</a></p>
+            </div>
+          </div>
+      {{/if}}
       </div>
     </div>
   </div>

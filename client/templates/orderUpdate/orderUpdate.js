@@ -7,8 +7,8 @@ Template.updateOrder.onCreated(function () {
 });
 
 Template.updateOrder.onRendered(function () {
-  debugger;
-  Session.setDefault('cancel-')
+  const orderId = Router.current().params._id;
+  Session.setDefault('cancel-order-' + orderId, false);
   $('.picker .input-daterange').datepicker({
     startDate: 'today',
     todayBtn: 'linked',
@@ -93,6 +93,14 @@ Template.updateOrder.helpers({
   },
   address: function (param) {
     return this.shipping[0].address[param];
+  },
+  cancelOrder: function () {
+    const orderId = this._id;
+    return Session.get('cancel-order-' + orderId);
+  },
+  userName: function () {
+    let userName = Meteor.user().username || Meteor.user().emails[0].address || 'Guest';
+    return userName;
   }
 });
 
@@ -169,5 +177,20 @@ Template.updateOrder.events({
       Alerts.removeSeen();
       Alerts.add('Phone and Email are both required', 'danger');
     }
+  },
+  'click .confirm-to-cancel': function (event) {
+    event.preventDefault();
+    const orderId = this._id;
+    Session.set('cancel-order-' + orderId, !Session.get('cancel-order-' + orderId));
+  },
+  'click .cancel-order': function (event) {
+    event.preventDefault();
+    const orderId = this._id;
+    Meteor.call('advancedFulfillment/cancelOrder', orderId, Meteor.userId());
+    Alerts.removeSeen();
+    Alerts.add('Order #' + this.shopifyOrderNumber + ' has been cancelled', 'info', {
+      autoHide: true
+    });
+    Session.set('cancel-order-' + orderId, !Session.get('cancel-order-' + orderId));
   }
 });

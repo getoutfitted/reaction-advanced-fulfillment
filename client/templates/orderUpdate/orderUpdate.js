@@ -32,7 +32,7 @@ Template.updateOrder.helpers({
     let productId = item.productId;
     let product = ReactionCore.Collections.Products.findOne(productId);
     let selectedColor = Session.get('colorSelectorFor-' + item._id);
-    let variantsWithSelectedColor = _.where(product.variants, {color: selectedColor})
+    let variantsWithSelectedColor = _.where(product.variants, {color: selectedColor});
     return _.map(variantsWithSelectedColor, function (variant) {
       return {
         size: variant.size,
@@ -88,6 +88,9 @@ Template.updateOrder.helpers({
   addingItems: function () {
     let addingItems = Session.get('addItems');
     return addingItems || false;
+  },
+  address: function (param) {
+    return this.shipping[0].address[param];
   }
 });
 
@@ -131,5 +134,38 @@ Template.updateOrder.events({
     Alerts.add('Rental Dates updated', 'success', {
       autoHide: true
     });
+  },
+  'submit #updateShippingAddressForm': function (event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    let address = this.shipping[0].address;
+    address.fullName = form.shippingName.value;
+    address.address1 = form.shippingAddress1.value;
+    address.address2 = form.shippingAddress2.value;
+    address.city = form.shippingCity.value;
+    address.postal = form.shippingPostal.value;
+    address.region = form.shippingRegion.value;
+    if (address.fullName && address.address1 && address.city && address.postal && address.region) {
+      Meteor.call('advancedFulfillment/updateShippingAddress', this._id, address);
+      Alerts.removeSeen();
+      Alerts.add('Shipping Address Updated', 'success', {autoHide: true});
+    } else {
+      Alerts.removeSeen();
+      Alerts.add('All fields required except Address 2', 'danger');
+    }
+  },
+  'submit #updateContactInformationForm': function (event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const email = form.contactEmail.value;
+    const phone = form.contactPhone.value;
+    if (email && phone) {
+      Meteor.call('advancedFulfillment/updateContactInformation', this._id, phone, email);
+      Alerts.removeSeen();
+      Alerts.add('Contact Information Updated', 'success', {autoHide: true});
+    } else {
+      Alerts.removeSeen();
+      Alerts.add('Phone and Email are both required', 'danger');
+    }
   }
 });

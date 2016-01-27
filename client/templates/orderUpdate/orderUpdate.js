@@ -24,13 +24,15 @@ Template.updateOrder.helpers({
   colorOptions: function (item) {
     let productId = item.productId;
     let product = ReactionCore.Collections.Products.findOne(productId);
-    return product.colors;
+    if (product) {
+      return product.colors;
+    }
   },
   sizeOptions: function (item) {
     let productId = item.productId;
     let product = ReactionCore.Collections.Products.findOne(productId);
     let selectedColor = Session.get('colorSelectorFor-' + item._id);
-    let variantsWithSelectedColor = _.where(product.variants, {color: selectedColor})
+    let variantsWithSelectedColor = _.where(product.variants, {color: selectedColor});
     return _.map(variantsWithSelectedColor, function (variant) {
       return {
         size: variant.size,
@@ -89,8 +91,7 @@ Template.updateOrder.helpers({
   },
   address: function (param) {
     return this.shipping[0].address[param];
-  },
-  
+  }
 });
 
 
@@ -114,7 +115,8 @@ Template.updateOrder.events({
     let productId = event.target.dataset.productId;
     let newVariantId = Session.get('sizeSelectorFor-' + itemId);
     let order = this;
-    Meteor.call('advancedFulfillment/updateItemsColorAndSize', order, itemId, productId, newVariantId);
+    let user = Meteor.user();
+    Meteor.call('advancedFulfillment/updateItemsColorAndSize', order, itemId, productId, newVariantId, user);
   },
   'click .add-new-item': function (event) {
     event.preventDefault();
@@ -126,7 +128,8 @@ Template.updateOrder.events({
     let orderId = this._id;
     let startDate = new Date($('#' + orderId + ' [name="start"]').val());
     let endDate = new Date($('#' + orderId + ' [name="end"]').val());
-    Meteor.call('advancedFulfillment/updateRentalDates', orderId, startDate, endDate);
+    let user = Meteor.user();
+    Meteor.call('advancedFulfillment/updateRentalDates', orderId, startDate, endDate, user);
     Alerts.removeSeen();
     Alerts.add('Rental Dates updated', 'success', {
       autoHide: true

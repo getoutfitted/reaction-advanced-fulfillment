@@ -43,7 +43,6 @@ function shipmentDateChecker(date, isLocalDelivery, transitTime) {
   }
 
   return shipDate.subtract(daysToAdd, 'days').toDate();
-  // return moment(date).subtract(numberOfWeekendDays, 'days').toDate();
 }
 
 function arrivalDateChecker(date, isLocalDelivery) {

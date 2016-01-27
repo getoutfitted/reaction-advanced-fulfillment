@@ -1,4 +1,7 @@
-function shipmentChecker(date) {
+function arrivalDateChecker(date, isLocalDelivery) {
+  if (isLocalDelivery) {
+    return date;
+  }
   if (moment(date).isoWeekday() === 7) {
     return moment(date).subtract(2, 'days').toDate();
   } else if (moment(date).isoWeekday() === 6) {
@@ -7,11 +10,36 @@ function shipmentChecker(date) {
   return date;
 }
 
-function returnChecker(date) {
+function rushShipmentChecker(date) {
   if (moment(date).isoWeekday() === 7) {
     return moment(date).add(1, 'days').toDate();
+  } else if (moment(date).isoWeekday() === 6) {
+    return moment(date).add(2, 'days').toDate();
   }
   return date;
+}
+
+function rushRequired(arriveBy, transitTime, isLocal) {
+  if (isLocal) {
+    return false;
+  }
+  const possibleArrival = moment().startOf('day').add(transitTime, 'days'); // shipDate as start of day
+  return moment(possibleArrival).diff(moment(arriveBy)) > 0;
+}
+
+function determineLocalDelivery(order) {
+  let zip = order.shipping_address.zip;
+  let localZips = [
+    '80424',
+    '80435',
+    '80443',
+    '80497',
+    '80498',
+    '81657',
+    '81620',
+    '81657'
+  ];
+  return _.contains(localZips, zip);
 }
 
 function getFedexTransitTime(address) {
@@ -313,6 +341,7 @@ Meteor.methods({
       }
     });
   },
+
   'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate) {
     check(orderId, String);
     check(startDate, Date);
@@ -322,36 +351,44 @@ Meteor.methods({
       throw new Meteor.Error(403, 'Access Denied');
     }
 
-    let order = ReactionCore.Collections.Orders.findOne(orderId);
+    const order = ReactionCore.Collections.Orders.findOne(orderId);
+    const localDelivery = order.advancedFulfillment.localDelivery;
     let impossibleShipDate = order.advancedFulfillment.impossibleShipDate;
     if (order.advancedFulfillment.impossibleShipDate) {
-      impossibleShipDate = false;
+      impossibleShipDate = false; // Resetting impossibleShipDate here, but could probably just set it
     }
     let infoMissing = order.advancedFulfillment.infoMissing;
     if (order.advancedFulfillment.infoMissing) {
       infoMissing = false;
     }
+// Should fedexTransitTime be 0 if local?
     let fedexTransitTime = getFedexTransitTime(order.shipping[0]);
     let bufferObject = buffer();
-    let shippingBuffer = bufferObject.shipping;
+    let shippingBuffer = fedexTransitTime || bufferObject.shipping;
     let returnBuffer = fedexTransitTime ? fedexTimeTable[fedexTransitTime] : bufferObject.returning;
 
     let rentalLength = moment(endDate).diff(moment(startDate), 'days');
-    let shipmentDate = moment(startDate).subtract(shippingBuffer, 'days').toDate();
-    let returnDate = moment(endDate).add(returnBuffer, 'days').toDate();
-    let arriveBy = moment(startDate).subtract(1, 'days').toDate();
+    let returnDate = returnDateChecker(moment(endDate).add(returnBuffer, 'days').toDate(), localDelivery);
+    let arrivalDate = arrivalDateChecker(moment(startDate).subtract(1, 'days').toDate(), localDelivery);
+    let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery);
     let returnBy = moment(endDate).add(1, 'days').toDate();
     let orderCreated = {status: 'orderCreated'};
+
+    let rushOrder = rushRequired(arrivalDate, fedexTransitTime, localDelivery);
+    if (rushOrder && !localDelivery) {
+      shipmentDate = rushShipmentChecker(moment().startOf('day'));
+    }
+
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {
         'startTime': startDate,
         'endTime': endDate,
         'rentalDays': rentalLength,
         'infoMissing': infoMissing,
-        'advancedFulfillment.shipmentDate': shipmentChecker(shipmentDate),
-        'advancedFulfillment.returnDate': returnChecker(returnDate),
+        'advancedFulfillment.shipmentDate': shipmentDate,
+        'advancedFulfillment.returnDate': returnDate,
         'advancedFulfillment.workflow': orderCreated,
-        'advancedFulfillment.arriveBy': arriveBy,
+        'advancedFulfillment.arriveBy': arrivalDate,
         'advancedFulfillment.shipReturnBy': returnBy,
         'advancedFulfillment.impossibleShipDate': impossibleShipDate
       }

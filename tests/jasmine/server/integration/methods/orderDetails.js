@@ -19,6 +19,8 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       let updatedOrder = ReactionCore.Collections.Orders.findOne(Order._id);
       expect(updatedOrder.advancedFulfillment.workflow.status).toEqual('orderPrinted');
       expect(updatedOrder.history.length).toBe(1);
+      expect(updatedOrder.history).toContain(jasmine.objectContaining({event: 'orderPrinted'}));
+
     });
     it('should update through the entire workflow', function () {
       let Order = Factory.create('importedShopifyOrder');
@@ -91,6 +93,42 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.history.length).toBe(2);
     });
   });
+  describe('advancedFulfillment/orderCompletionVerifier', function () {
+    beforeEach(function () {
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should update order to incomplete if not items returned', function () {
+      let Order = Factory.create('importedShopifyOrder', {
+        'advancedFulfillment.workflow.status': 'orderReturned'
+      });
+      let userId = Random.id();
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      expect(Order.advancedFulfillment.workflow.status).toEqual('orderReturned');
+      expect(Order.advancedFulfillment.items.length).toBeGreaterThan(0);
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      Meteor.call('advancedFulfillment/orderCompletionVerifier', Order, userId);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderIncomplete');
+      expect(Order.history).toContain(jasmine.objectContaining({event: 'orderIncomplete'}));
+    });
+    it('should update order to complete if all items returned', function () {
+      let Order = Factory.create('importedShopifyOrder', {
+        'advancedFulfillment.workflow.status': 'orderReturned'
+      });
+      let userId = Random.id();
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      expect(Order.advancedFulfillment.workflow.status).toEqual('orderReturned');
+      expect(Order.advancedFulfillment.items.length).toBeGreaterThan(0);
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      spyOn(_, 'every').and.returnValue(true);
+      Meteor.call('advancedFulfillment/orderCompletionVerifier', Order, userId);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderCompleted');
+      expect(Order.history).toContain(jasmine.objectContaining({event: 'orderCompleted'}));
+    });
+
+  });
+
 });
 
 // describe('getoutfitted:reaction-advanced-fulfillment methods', function () {

@@ -7,7 +7,51 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
-
+    it('should update the order workflow from created to printed', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      let userId = Random.id();
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      expect(Order.advancedFulfillment.workflow.status).toEqual('orderCreated');
+      expect(Order.history.length).toBe(0);
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, userId, Order.advancedFulfillment.workflow.status);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      let updatedOrder = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(updatedOrder.advancedFulfillment.workflow.status).toEqual('orderPrinted');
+      expect(updatedOrder.history.length).toBe(1);
+    });
+    it('should update through the entire workflow', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      let userId = Random.id();
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      expect(Order.advancedFulfillment.workflow.status).toEqual('orderCreated');
+      expect(Order.history.length).toBe(0);
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, userId, Order.advancedFulfillment.workflow.status);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.workflow.status).toEqual('orderPrinted');
+      expect(Order.history.length).toBe(1);
+      Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, userId, Order.advancedFulfillment.workflow.status);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.workflow.status).toEqual('orderPicking');
+      expect(Order.history.length).toBe(2);
+      Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, userId, Order.advancedFulfillment.workflow.status);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.workflow.status).toEqual('orderPicked');
+      expect(Order.history.length).toBe(3);
+    });
+    it('should throw an error if incorrect permissions', function() {
+      let Order = Factory.create('importedShopifyOrder');
+      let userId = Random.id();
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      expect(Order.advancedFulfillment.workflow.status).toEqual('orderCreated');
+      expect(Order.history.length).toBe(0);
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(false);
+      expect(function () {
+        return Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, userId, Order.advancedFulfillment.workflow.status);
+      }).toThrowError('Access Denied [403]');
+    });
   });
 });
 

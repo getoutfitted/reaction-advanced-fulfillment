@@ -1,6 +1,15 @@
-// beforeAll(function () {
-//   VelocityHelpers.exportGlobals();
-// });
+beforeAll(function () {
+  VelocityHelpers.exportGlobals();
+});
+
+describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', function () {
+  describe('advancedFulfillment/updateOrderWorkflow', function () {
+    beforeEach(function () {
+      return ReactionCore.Collections.Orders.remove({});
+    });
+
+  });
+});
 
 // describe('getoutfitted:reaction-advanced-fulfillment methods', function () {
 //   describe('advancedFulfillment/updateOrderWorkflow', function () {

@@ -8,23 +8,22 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       return ReactionCore.Collections.Orders.remove({});
     });
     it('should update the order workflow from created to printed', function () {
-      let Order = Factory.create('importedShopifyOrder');
-      let userId = Random.id();
+      const Order = Factory.create('importedShopifyOrder');
+      const userId = Random.id();
       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
       expect(Order.advancedFulfillment.workflow.status).toEqual('orderCreated');
       expect(Order.history.length).toBe(0);
       spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
       Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, userId, Order.advancedFulfillment.workflow.status);
       expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
-      let updatedOrder = ReactionCore.Collections.Orders.findOne(Order._id);
+      const updatedOrder = ReactionCore.Collections.Orders.findOne(Order._id);
       expect(updatedOrder.advancedFulfillment.workflow.status).toEqual('orderPrinted');
       expect(updatedOrder.history.length).toBe(1);
       expect(updatedOrder.history).toContain(jasmine.objectContaining({event: 'orderPrinted'}));
-
     });
     it('should update through the entire workflow', function () {
       let Order = Factory.create('importedShopifyOrder');
-      let userId = Random.id();
+      const userId = Random.id();
       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
       expect(Order.advancedFulfillment.workflow.status).toEqual('orderCreated');
       expect(Order.history.length).toBe(0);
@@ -45,7 +44,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
     });
     it('should throw an error if incorrect permissions', function () {
       let Order = Factory.create('importedShopifyOrder');
-      let userId = Random.id();
+      const userId = Random.id();
       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
       expect(Order.advancedFulfillment.workflow.status).toEqual('orderCreated');
       expect(Order.history.length).toBe(0);
@@ -63,7 +62,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderPicking'
       });
-      let userId = Random.id();
+      const userId = Random.id();
       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
       expect(Order.advancedFulfillment.workflow.status).toEqual('orderPicking');
       expect(Order.history.length).toBe(0);
@@ -78,7 +77,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderPicking'
       });
-      let userId = Random.id();
+      const userId = Random.id();
       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
       expect(Order.advancedFulfillment.workflow.status).toEqual('orderPicking');
       expect(Order.history.length).toBe(0);
@@ -101,8 +100,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderReturned'
       });
-      let userId = Random.id();
-      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      const userId = Random.id();
       expect(Order.advancedFulfillment.workflow.status).toEqual('orderReturned');
       expect(Order.advancedFulfillment.items.length).toBeGreaterThan(0);
       spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
@@ -115,8 +113,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderReturned'
       });
-      let userId = Random.id();
-      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      const userId = Random.id();
       expect(Order.advancedFulfillment.workflow.status).toEqual('orderReturned');
       expect(Order.advancedFulfillment.items.length).toBeGreaterThan(0);
       spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
@@ -126,9 +123,85 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.advancedFulfillment.workflow.status).toBe('orderCompleted');
       expect(Order.history).toContain(jasmine.objectContaining({event: 'orderCompleted'}));
     });
-
   });
+  describe('advancedFulfillment/updateOrderNotes', function () {
+    beforeEach(function () {
+      Meteor.users.remove({});
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should create a new note with user info', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      expect(Order.orderNotes).not.toBeDefined();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      const notes = 'Here are my test notes';
+      Meteor.call('advancedFulfillment/updateOrderNotes', Order, notes, user.username);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.orderNotes).toMatch(notes);
+      expect(Order.orderNotes).toMatch(user.username);
+    });
+    it('should add to an orderNote when called multiple times', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      const altUser = Factory.create('afUser');
+      expect(Order.orderNotes).not.toBeDefined();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      const notes = 'Here are my test notes';
+      Meteor.call('advancedFulfillment/updateOrderNotes', Order, notes, user.username);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.orderNotes).toMatch(notes);
+      expect(Order.orderNotes).toMatch(user.username);
+      const altNotes = 'The altuser said this!';
+      Meteor.call('advancedFulfillment/updateOrderNotes', Order, altNotes, altUser.username);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.orderNotes).toMatch(notes);
+      expect(Order.orderNotes).toMatch(user.username);
+      expect(Order.orderNotes).toMatch(altNotes);
+      expect(Order.orderNotes).toMatch(altUser.username);
+    });
+  });
+  describe('advancedFulfillment/printInvoice', function () {
+    beforeEach(function () {
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should update order to printed', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const userId = Random.id();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderCreated');
+      expect(Order.history.length).toBe(0);
+      Meteor.call('advancedFulfillment/printInvoice', Order._id, userId);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderPrinted');
+      expect(Order.history).toContain(jasmine.objectContaining({event: 'orderPrinted'}));
+      expect(Order.history.length).toBe(1);
+    });
+  });
+  describe('advancedFulfillment/updateRentalDates', function () {
+    beforeEach(function () {
+      Meteor.users.remove({});
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should update the rental dates', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      const newStart = moment().add(9, 'day').toDate();
+      const endDate = moment().add(13, 'day').toDate();
+      let sameStart = moment(Order.startTime).isSame(newStart, 'day');
+      let sameEnd = moment(Order.endTime).isSame(endDate, 'day');
+      expect(sameStart).not.toEqual(true);
+      expect(sameEnd).not.toEqual(true);
+      // spyOn(ReactionCore.Collections.Packages, 'findOne').and.returnValue()
+      Meteor.call('advancedFulfillment/updateRentalDates', Order._id, newStart, endDate, user);
 
+
+      // expect(Order.endTime).toBe(moment().add(8, 'day').toDate());
+    });
+  });
 });
 
 // describe('getoutfitted:reaction-advanced-fulfillment methods', function () {

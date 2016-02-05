@@ -1,8 +1,9 @@
+const ShopId = 'test-shop-id';
 function items(number) {
   return  _.times(number, function () {
     return {
       _id: Random.id(),
-      shopId: Random.id(),
+      shopId: ShopId,
       productId: Random.id(),
       quantity: _.random(1, 3),
       variants: {
@@ -62,6 +63,33 @@ function createItems() {
 }
 
 let newItems = createItems();
+
+Factory.define('afUser', Meteor.users,
+  Factory.extend('user', {
+    roles: {
+      [ShopId]: [
+        'owner',
+        'admin',
+        'guest',
+        'reaction-advanced-fulfillment',
+        'dashboard/advanced-fulfillment'
+      ]
+    },
+    services: {
+      password: {
+        bcrypt: Random.id(29)
+      },
+      resume: {
+        loginTokens: [
+          {
+            when: moment().add(_.random(0, 31), 'days').add(_.random(0, 24),
+              'hours').toDate()
+          }
+        ]
+      }
+    }
+  })
+);
 
 Factory.define('importedShopifyOrder', Orders,
   Factory.extend('orderForAF', {
@@ -195,12 +223,12 @@ function shippedItemsList(number) {
   });
 }
 
-function shipmentDate() {
-  return moment().add(_.random(0, 3), 'days')._d;
-}
-function returnDate() {
-  return moment().add(_.random(4, 6), 'days')._d;
-}
+// function shipmentDate() {
+//   return moment().add(_.random(0, 3), 'days')._d;
+// }
+// function returnDate() {
+//   return moment().add(_.random(4, 6), 'days')._d;
+// }
 
 
 // Factory.define('newOrder', ReactionCore.Collections.Orders,

@@ -27,7 +27,7 @@ Package.onUse(function (api) {
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  api.use('getoutfitted:reaction-rental-products@0.1.2');
+  api.use('getoutfitted:reaction-rental-products@0.2.0');
   // api.use('reactioncommerce:reaction-factories');
   api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
 
@@ -119,8 +119,8 @@ Package.onUse(function (api) {
     'client/templates/deliveryLabels/deliveryLabels.html',
     'client/templates/deliveryLabels/deliveryLabels.js'
   ], 'client');
-  
-  
+
+
   // Public assets go at the bottom, should load last.
   api.addAssets('public/images/go-logo-1000.png', 'client');
   api.addAssets('public/images/logo-horizontal.png', 'client');
@@ -139,10 +139,10 @@ Package.onTest(function (api) {
   api.use('reactioncommerce:core@0.11.0');
   api.use('getoutfitted:reaction-advanced-fulfillment');
 
-  api.addFiles([
-    'common/factories/orders.js',
-    'common/factories/ordersWithAF.js'
-  ], 'server');
+  // api.addFiles([
+  //   'common/factories/orders.js',
+  //   'common/factories/ordersWithAF.js'
+  // ], 'server');
   api.addFiles('tests/jasmine/server/integration/methods.js', 'server');
   api.addFiles('tests/jasmine/server/integration/hooks.js', 'server');
 });

@@ -184,7 +184,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
-    it('should update the rental dates', function () {
+    it('should throw a warning if no fedex api info', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
@@ -195,12 +195,76 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       let sameEnd = moment(Order.endTime).isSame(endDate, 'day');
       expect(sameStart).not.toEqual(true);
       expect(sameEnd).not.toEqual(true);
-      // spyOn(ReactionCore.Collections.Packages, 'findOne').and.returnValue()
+      spyOn(ReactionCore.Log, 'warn').and.callThrough();
       Meteor.call('advancedFulfillment/updateRentalDates', Order._id, newStart, endDate, user);
-
-
-      // expect(Order.endTime).toBe(moment().add(8, 'day').toDate());
+      expect(ReactionCore.Log.warn).toHaveBeenCalled();
     });
+    it('should update the rental start and end dates', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      const newStart = moment().add(9, 'day').toDate();
+      const endDate = moment().add(13, 'day').toDate();
+      let sameStart = moment(Order.startTime).isSame(newStart, 'day');
+      let sameEnd = moment(Order.endTime).isSame(endDate, 'day');
+      expect(sameStart).not.toEqual(true);
+      expect(sameEnd).not.toEqual(true);
+      spyOn(AdvancedFulfillment.FedExApi, 'getFedexTransitTime').and.returnValue(4);
+      Meteor.call('advancedFulfillment/updateRentalDates', Order._id, newStart, endDate, user);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      sameStart = moment(Order.startTime).isSame(newStart, 'day');
+      sameEnd = moment(Order.endTime).isSame(endDate, 'day');
+      expect(sameStart).toBe(true);
+      expect(sameEnd).toBe(true);
+    });
+    it('should update the arrival and return date', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      const newStart = moment().add(9, 'day').toDate();
+      const endDate = moment().add(13, 'day').toDate();
+      let setArrivalDate = moment().add(3, 'day').toDate();
+      let setReturnDate = moment().add(9, 'day').toDate();
+      let verifyArriveDate = moment(Order.advancedFulfillment.arriveBy).isSame(setArrivalDate, 'day');
+      let verifyShipByDate = moment(Order.advancedFulfillment.shipReturnBy).isSame(setReturnDate, 'day');
+      expect(verifyArriveDate).toBe(true);
+      expect(verifyShipByDate).toBe(true);
+      spyOn(AdvancedFulfillment.FedExApi, 'getFedexTransitTime').and.returnValue(4);
+      Meteor.call('advancedFulfillment/updateRentalDates', Order._id, newStart, endDate, user);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      let newArrivalDate = moment(newStart).subtract(1, 'day').toDate();
+      let newShipByDate = moment(endDate).add(1, 'day').toDate();
+
+      let arriveByResult = moment(Order.advancedFulfillment.arriveBy).isSame(newArrivalDate, 'day');
+      expect(arriveByResult).toBe(true);
+      let shipByResult = moment(Order.advancedFulfillment.shipReturnBy).isSame(newShipByDate, 'day');
+      expect(shipByResult).toBe(true);
+
+      // sameStart = moment(Order.advancedFulfillment.arriveBy).isSame(newStart, 'day');
+      // sameEnd = moment(Order.endTime).isSame(endDate, 'day');
+      // expect(sameStart).toBe(true);
+      // expect(sameEnd).toBe(true);
+    });
+  });
+  describe('advancedFulfillment/updateShippingAddress', function () {
+
+  });
+  describe('advancedFulfillment/updateContactInformation', function () {
+
+  });
+  describe('advancedFulfillment/updateItemsColorAndSize', function () {
+
+  });
+  describe('advancedFulfillment/itemExchange', function () {
+
+  });
+  describe('advancedFulfillment/addItem', function () {
+
+  });
+  describe('advancedFulfillment/bypassWorkflowAndComplete', function () {
+
   });
 });
 

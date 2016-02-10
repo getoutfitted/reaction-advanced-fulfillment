@@ -2,7 +2,7 @@ beforeAll(function () {
   VelocityHelpers.exportGlobals();
 });
 
-describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', function () {
+fdescribe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', function () {
   describe('advancedFulfillment/updateOrderWorkflow', function () {
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
@@ -252,194 +252,241 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
 
   });
   describe('advancedFulfillment/updateContactInformation', function () {
-
+    beforeEach(function () {
+      Meteor.users.remove({});
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should update phone and email', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(Meteor, 'userId').and.returnValue(user._id);
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let phone = '1234567';
+      let email = 'test@getoutfitted.com';
+      Meteor.call('advancedFulfillment/updateContactInformation', Order._id, phone, email);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.email).toBe('test@getoutfitted.com');
+      expect(Order.shipping[0].address.phone).toBe('1234567');
+    });
+    it('should log success when successful', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(Meteor, 'userId').and.returnValue(user._id);
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      spyOn(ReactionCore.Log, 'info').and.callThrough();
+      let phone = '1234567';
+      let email = 'test@getoutfitted.com';
+      Meteor.call('advancedFulfillment/updateContactInformation', Order._id, phone, email);
+      expect(ReactionCore.Log.info).toHaveBeenCalled();
+    });
+    it('should add a history object when updated', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(Meteor, 'userId').and.returnValue(user._id);
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      expect(Order.history.length).toBe(0);
+      let phone = '1234567';
+      let email = 'test@getoutfitted.com';
+      Meteor.call('advancedFulfillment/updateContactInformation', Order._id, phone, email);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.history.length).toBe(1);
+      expect(Order.history).toContain(jasmine.objectContaining({event: 'orderContactInfoUpdated'}));
+      expect(Order.history).toContain(jasmine.objectContaining({userId: user._id}));
+    });
+    it('should throw an error when no phone number', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(Meteor, 'userId').and.returnValue(user._id);
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let phone = '1234567';
+      let email;
+      expect(function () {
+        return Meteor.call('advancedFulfillment/updateContactInformation', Order._id, phone, email);
+      }).toThrow();
+    });
+    it('should throw an error when no email', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(Meteor, 'userId').and.returnValue(user._id);
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let phone;
+      let email = 'test@getoutfitted.com';
+      expect(function () {
+        return Meteor.call('advancedFulfillment/updateContactInformation', Order._id, phone, email);
+      }).toThrow();
+    });
   });
   describe('advancedFulfillment/updateItemsColorAndSize', function () {
-
+    beforeEach(function () {
+      Meteor.users.remove({});
+      ReactionCore.Collections.Products.remove({});
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should update an items location and sku', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let itemId = Order.advancedFulfillment.items[0]._id;
+      let variantId = product.variants[1]._id;
+      expect(Order.advancedFulfillment.items[0].sku).toBe('SG001');
+      Meteor.call('advancedFulfillment/updateItemsColorAndSize', Order, itemId, product._id, variantId, user);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.items[0].sku).toBe('MB005');
+      expect(Order.advancedFulfillment.items[0].location).toBe('A3');
+    });
+    it('should update items color and size', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let itemId = Order.advancedFulfillment.items[0]._id;
+      let variantId = product.variants[1]._id;
+      expect(Order.items[0].variants.color).toBe('Black');
+      expect(Order.items[0].variants.size).toBe('One Size');
+      Meteor.call('advancedFulfillment/updateItemsColorAndSize', Order, itemId, product._id, variantId, user);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.items[0].variantId).toBe(variantId);
+      expect(Order.items[0].variants.color).toBe('Grayeen');
+      expect(Order.items[0].variants.size).toBe('Small');
+    });
+    it('should update order notes', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let itemId = Order.advancedFulfillment.items[0]._id;
+      let variant = product.variants[1];
+      let variantId = variant._id;
+      expect(Order.orderNotes).toBe(undefined);
+      Meteor.call('advancedFulfillment/updateItemsColorAndSize', Order, itemId, product._id, variantId, user);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.orderNotes).toMatch(product.title);
+      expect(Order.orderNotes).toMatch(variant.color);
+      expect(Order.orderNotes).toMatch(variant.size);
+      expect(Order.orderNotes).toMatch(user.username);
+    });
+    it('should reset the flag if all items have variants', function () {
+      let Order = Factory.create('importedShopifyOrder', {
+        itemMissingDetails: true
+      });
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let itemId = Order.advancedFulfillment.items[0]._id;
+      let variant = product.variants[1];
+      let variantId = variant._id;
+      expect(Order.itemMissingDetails).toBe(true);
+      Meteor.call('advancedFulfillment/updateItemsColorAndSize', Order, itemId, product._id, variantId, user);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.itemMissingDetails).toBe(false);
+    });
   });
   describe('advancedFulfillment/itemExchange', function () {
-
+    beforeEach(function () {
+      Meteor.users.remove({});
+      ReactionCore.Collections.Products.remove({});
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should exchange items', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let item = Order.advancedFulfillment.items[0];
+      expect(item.itemDescription).toBe('Mens - Smith - Vice');
+      let variant = product.variants[1];
+      Meteor.call('advancedFulfillment/itemExchange', Order, item._id, product.productType, product.gender, product.title, variant.color, variant._id, user);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.items[0].itemDescription).toBe('Mens - Burton - Cargo Pant');
+      expect(Order.advancedFulfillment.items[0].variantId).toBe(variant._id);
+    });
+    it('should add ordernotes to order', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let item = Order.advancedFulfillment.items[0];
+      expect(Order.orderNotes).toBe();
+      let variant = product.variants[1];
+      Meteor.call('advancedFulfillment/itemExchange', Order, item._id, product.productType, product.gender, product.title, variant.color, variant._id, user);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.orderNotes).toMatch('Mens - Burton - Cargo Pant');
+      expect(Order.orderNotes).toMatch(user.username);
+      expect(Order.orderNotes).toMatch('Small');
+      expect(Order.orderNotes).toMatch('Grayeen');
+    });
+    it('should reset the flag if item was missing details', function () {
+      let Order = Factory.create('importedShopifyOrder', {
+        itemMissingDetails: true
+      });
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let item = Order.advancedFulfillment.items[0];
+      expect(Order.itemMissingDetails).toBe(true);
+      let variant = product.variants[1];
+      Meteor.call('advancedFulfillment/itemExchange', Order, item._id, product.productType, product.gender, product.title, variant.color, variant._id, user);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.itemMissingDetails).toBe(false);
+    });
+    it('should add a history object when item exchanged', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let item = Order.advancedFulfillment.items[0];
+      expect(Order.history.length).toBe(0);
+      let variant = product.variants[1];
+      Meteor.call('advancedFulfillment/itemExchange', Order, item._id, product.productType, product.gender, product.title, variant.color, variant._id, user);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.history.length).toBe(1);
+      expect(Order.history).toContain(jasmine.objectContaining({event: 'itemExchange'}));
+    });
   });
   describe('advancedFulfillment/addItem', function () {
-
+    beforeEach(function () {
+      Meteor.users.remove({});
+      ReactionCore.Collections.Products.remove({});
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should add an item to items and AF items', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      let product = Factory.create('afProduct');
+      let variant = product.variants[1];
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      let afItemCount = Order.advancedFulfillment.items.length;
+      let itemCount = Order.items.length;
+      expect(Order.advancedFulfillment.items.length).toBe(afItemCount);
+      expect(Order.items.length).toBe(itemCount);
+      expect(Order.advancedFulfillment.items[afItemCount]).toBe(undefined);
+      Meteor.call('advancedFulfillment/addItem', Order, product.productType, product.gender, product.title, variant.color, variant._id, user);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.items.length).toBe(afItemCount + 1);
+      expect(Order.items.length).toBe(itemCount + 1);
+      expect(Order.advancedFulfillment.items[afItemCount]).not.toBe(undefined);
+      expect(Order.advancedFulfillment.items[afItemCount].itemDescription).toBe('Mens - Burton - Cargo Pant');
+    });
   });
   describe('advancedFulfillment/bypassWorkflowAndComplete', function () {
 
   });
 });
 
-// describe('getoutfitted:reaction-advanced-fulfillment methods', function () {
-//   describe('advancedFulfillment/updateOrderWorkflow', function () {
-//     beforeEach(function () {
-//       return ReactionCore.Collections.Orders.remove({});
-//     });
-//     it('should initially have a new workflow status', function () {
-//       let Order = Factory.create('orderForAF');
-//       expect(Order.advancedFulfillment).toBeDefined();
-//       expect(Order.advancedFulfillment.workflow.status).toEqual('new');
-//     });
-//     it('should not have any history events', function () {
-//       let Order = Factory.create('orderForAF');
-//       expect(Order.history.length).toEqual(0);
-//     });
-//     it('should update Order after being called', function () {
-//       let Order = Factory.create('orderForAF');
-//       let User = Factory.create('user');
-//       spyOn(ReactionCore.Collections.Orders, 'update');
-//       Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, 'orderCreated');
-//       expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
-//     });
-//     it('should update create a history object on order with correct event and userID', function () {
-//       let Order = Factory.create('orderForAF');
-//       let User = Factory.create('user');
-//       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
-//       expect(Order.history.length).toEqual(0);
-//       Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, 'orderCreated');
-//       let thisOrder = ReactionCore.Collections.Orders.findOne(Order._id);
-//       expect(thisOrder.history.length).toEqual(1);
-//       expect(thisOrder.history[0].event).toEqual('orderPicking');
-//       expect(thisOrder.history[0].userId).toEqual(User._id);
-//     });
-//     it('should update the advancedFulfillment workflow', function () {
-//       let Order = Factory.create('orderForAF');
-//       let User = Factory.create('user');
-//       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
-//       Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, 'orderCreated');
-//       let thisOrder = ReactionCore.Collections.Orders.findOne(Order._id).advancedFulfillment;
-//       expect(thisOrder.workflow.status).toEqual('orderPicking');
-//       expect(thisOrder.workflow.workflow.length).toEqual(1);
-//       expect(thisOrder.workflow.workflow).toContain('orderCreated');
-//     });
-//     it('should throw an error if not passed a valid orderid', function () {
-//       let User = Factory.create('user');
-//       let Order = Factory.create('orderForAF');
-//       spyOn(ReactionCore.Collections.Orders, 'update');
-//       expect(function () {
-//         return Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, 'orderCreated');
-//       }).not.toThrow();
-//       expect(function () {
-//         return Meteor.call('advancedFulfillment/updateOrderWorkflow', 1234, User._id, 'orderCreated');
-//       }).toThrow();
-//     });
-//     it('should throw an error if not passed a valid userid', function () {
-//       let User = Factory.create('user');
-//       let Order = Factory.create('orderForAF');
-//       spyOn(ReactionCore.Collections.Orders, 'update');
-//       expect(function () {
-//         return Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, 'orderCreated');
-//       }).not.toThrow();
-//       expect(function () {
-//         return Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, true, 'orderCreated');
-//       }).toThrow();
-//     });
-//     it('should throw an error if not passed a valid status', function () {
-//       let User = Factory.create('user');
-//       let Order = Factory.create('orderForAF');
-//       spyOn(ReactionCore.Collections.Orders, 'update');
-//       expect(function () {
-//         return Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, 'orderCreated');
-//       }).not.toThrow();
-//       expect(function () {
-//         return Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, true);
-//       }).toThrow();
-//     });
-//     it('should be able to be called multiple times and update the history and work flow', function () {
-//       let User = Factory.create('user');
-//       let Order = Factory.create('orderForAF');
-//       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
-//       Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, 'orderCreated');
-//       let thisOrder = ReactionCore.Collections.Orders.findOne(Order._id);
-//       Meteor.call('advancedFulfillment/updateOrderWorkflow', Order._id, User._id, thisOrder.advancedFulfillment.workflow.status);
-//       thisOrder = ReactionCore.Collections.Orders.findOne(Order._id);
-//       expect(thisOrder.history.length).toBe(2);
-//       expect(thisOrder.advancedFulfillment.workflow.workflow.length).toBe(2);
-//       expect(thisOrder.advancedFulfillment.workflow.status).toBe('orderPacking');
-//     });
-//   });
-//   describe('advancedFulfillment/updateItemWorkflow', function () {
-//     beforeEach(function () {
-//       return ReactionCore.Collections.Orders.remove({});
-//     });
-//     it('should update the order when it is called', function () {
-//       let OrderWithItems = Factory.create('newOrder');
-//       let itemId = OrderWithItems.advancedFulfillment.items[0]._id;
-//       let itemStatus = OrderWithItems.advancedFulfillment.workflow.status;
-//       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
-//       Meteor.call('advancedFulfillment/updateItemWorkflow', OrderWithItems._id, itemId, itemStatus);
-//       expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
-//     });
-//     it('should update the items workflow when called', function () {
-//       let User = Factory.create('user');
-//       let OrderWithItems = Factory.create('newOrder', {
-//         'advancedFulfillment.workflow.status': 'orderPicking',
-//         'history': [{
-//           event: 'orderCreated',
-//           userId: User._id,
-//           updatedAt: new Date()
-//         }, {
-//           event: 'orderPicking',
-//           userId: User._id,
-//           updatedAt: new Date()
-//         }]
-//       });
-//       let items = OrderWithItems.advancedFulfillment.items;
-//       let itemId = OrderWithItems.advancedFulfillment.items[0]._id;
-//       let thisItem = _.findWhere(items, {_id: itemId});
-//       expect(thisItem.workflow.status).toBe('In Stock');
-//       let itemStatus = OrderWithItems.advancedFulfillment.items[0].workflow.status;
-//       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
-//       Meteor.call('advancedFulfillment/updateItemWorkflow', OrderWithItems._id, itemId, itemStatus);
-//       let thisOrder = ReactionCore.Collections.Orders.findOne(OrderWithItems._id);
-//       let thisitems = thisOrder.advancedFulfillment.items;
-//       let thisitemId = thisOrder.advancedFulfillment.items[0]._id;
-//       let thisItem2 = _.findWhere(thisitems, {_id: thisitemId});
-//       expect(thisItem2.workflow.status).toBe('picked');
-//     });
-//   });
-//   describe('advancedFulfillment/updateAllItemsToShipped', function () {
-//     beforeEach(function () {
-//       return ReactionCore.Collections.Orders.remove({});
-//     });
-//     it('should update each of the items to shipped', function () {
-//       let FulfilledOrder = Factory.create('fulfilledOrder');
-//       let initialItems = FulfilledOrder.advancedFulfillment.items;
-//       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
-//       let allPacked = _.every(initialItems, function (item) {
-//         return item.workflow.status === 'packed';
-//       });
-//       expect(allPacked).toBe(true);
-//       Meteor.call('advancedFulfillment/updateAllItemsToShipped', FulfilledOrder);
-//       let updatedItems = ReactionCore.Collections.Orders.findOne(FulfilledOrder._id).advancedFulfillment.items;
-//       let allShipped = _.every(updatedItems, function (item) {
-//         return item.workflow.status === 'shipped';
-//       });
-//       expect(allShipped).toBe(true);
-//       expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
-//     });
-//     it('should throw an error if order status is not orderfulfilled', function () {
-//       let newOrder = Factory.create('orderSKU');
-//       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
-//       let initialStatus = newOrder.advancedFulfillment.workflow.status;
-//       expect(initialStatus).toBe('orderCreated');
-//       expect(function () {
-//         Meteor.call('advancedFulfillment/updateAllItemsToShipped', newOrder);
-//       }).toThrow();
-//       expect(ReactionCore.Collections.Orders.update).not.toHaveBeenCalled();
-//     });
-//     it('should throw an error if all items are not packed', function () {
-//       let newOrder = Factory.create('orderSKU', {
-//         'advancedFulfillment.workflow.status': 'orderFulfilled'
-//       });
-//       spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
-//       let initialItems = newOrder.advancedFulfillment.items;
-//       let allNew = _.every(initialItems, function (item) {
-//         return item.workflow.status === 'In Stock';
-//       });
-//       expect(allNew).toBe(true);
-//       expect(function () {
-//         Meteor.call('advancedFulfillment/updateAllItemsToShipped', newOrder);
-//       }).toThrow();
-//       expect(ReactionCore.Collections.Orders.update).not.toHaveBeenCalled();
-//     });
-//   });
-// });

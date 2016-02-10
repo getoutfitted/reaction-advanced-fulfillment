@@ -93,6 +93,7 @@ Factory.define('afUser', Meteor.users,
 
 Factory.define('importedShopifyOrder', Orders,
   Factory.extend('orderForAF', {
+    shopifyOrderNumber: 1234,
     infoMissing: false,
     itemMissingDetails: false,
     bundleMissingColor: false,

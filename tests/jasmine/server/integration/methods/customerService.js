@@ -2,7 +2,7 @@ beforeAll(function () {
   VelocityHelpers.exportGlobals();
 });
 
-fdescribe('getoutfitted:reaction-advanced-fulfillment customerService methods', function () {
+describe('getoutfitted:reaction-advanced-fulfillment customerService methods', function () {
   describe('advancedFulfillment/cancelOrder', function () {
     beforeEach(function () {
       Meteor.users.remove({});
@@ -140,6 +140,29 @@ fdescribe('getoutfitted:reaction-advanced-fulfillment customerService methods', 
       expect(Order.history.length).toBe(1);
       expect(Order.history).toContain(jasmine.objectContaining({event: 'updatedSkiInfoFromCustomer'}));
       expect(Order.history).toContain(jasmine.objectContaining({userId: user._id}));
+    });
+  });
+  describe('advancedFulfillment/nonWarehouseOrder', function () {
+    beforeEach(function () {
+      Meteor.users.remove({});
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should update order status to nonWarehouseOrder', function () {
+      let Order = Factory.create('importedShopifyOrder');
+      const user = Factory.create('user');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderCreated');
+      expect(Order.history.length).toBe(0);
+      Meteor.call('advancedFulfillment/nonWarehouseOrder', Order._id, user._id);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      expect(Order.advancedFulfillment.workflow.status).toBe('nonWarehouseOrder');
+      expect(Order.history.length).toBe(1);
+      expect(Order.history).toContain(jasmine.objectContaining({
+        event: 'nonWarehouseOrder',
+        userId: user._id
+      }));
     });
   });
 });

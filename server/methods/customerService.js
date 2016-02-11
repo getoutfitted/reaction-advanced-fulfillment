@@ -92,6 +92,11 @@ Meteor.methods({
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
+    let history = {
+      event: 'updatedSkiInfoFromCustomer',
+      userId: userId,
+      updatedAt: new Date()
+    };
     ReactionCore.Collections.Orders.update({
       '_id': orderId,
       'advancedFulfillment.skiPackages._id': skiId
@@ -101,6 +106,9 @@ Meteor.methods({
         'advancedFulfillment.skiPackages.$.shoeSize': shoeSize,
         'advancedFulfillment.skiPackages.$.skiLevel': level,
         'advancedFulfillment.skiPackages.$.contactedCustomer': true
+      },
+      $addToSet: {
+        history: history
       }
     });
   },

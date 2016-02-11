@@ -151,5 +151,6 @@ Package.onTest(function (api) {
   ], 'server');
   api.addFiles('tests/jasmine/server/integration/methods/orderDetails.js', 'server');
   api.addFiles('tests/jasmine/server/integration/methods/itemDetails.js', 'server');
+  api.addFiles('tests/jasmine/server/integration/methods/customerService.js', 'server');
   api.addFiles('tests/jasmine/server/integration/hooks.js', 'server');
 });

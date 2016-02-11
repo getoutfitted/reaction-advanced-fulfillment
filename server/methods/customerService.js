@@ -32,6 +32,7 @@ Meteor.methods({
       updatedAt: new Date()
     };
     const userObj = Meteor.users.findOne(userId);
+    // TODO: XXX: We shouldn'get get this clause because permission but should we throw an an error here instead
     let userName = 'Guest';
     if (userObj) {
       userName = userNameDeterminer(userObj);

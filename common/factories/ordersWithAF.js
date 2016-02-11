@@ -57,7 +57,7 @@ function importedAFItems(items) {
 
 function createItems() {
   let allItems = {};
-  allItems.items = items(_.random(1, 3));
+  allItems.items = items(_.random(2, 4));
   allItems.afItems = importedAFItems(allItems.items);
   return allItems;
 }

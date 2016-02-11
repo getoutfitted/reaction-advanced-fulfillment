@@ -2,7 +2,7 @@ beforeAll(function () {
   VelocityHelpers.exportGlobals();
 });
 
-fdescribe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', function () {
+describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', function () {
   describe('advancedFulfillment/updateOrderWorkflow', function () {
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});

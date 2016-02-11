@@ -150,5 +150,6 @@ Package.onTest(function (api) {
     'common/factories/ordersWithAF.js'
   ], 'server');
   api.addFiles('tests/jasmine/server/integration/methods/orderDetails.js', 'server');
+  api.addFiles('tests/jasmine/server/integration/methods/itemDetails.js', 'server');
   api.addFiles('tests/jasmine/server/integration/hooks.js', 'server');
 });

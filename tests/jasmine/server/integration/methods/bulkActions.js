@@ -2,7 +2,7 @@ beforeAll(function () {
   VelocityHelpers.exportGlobals();
 });
 
-fdescribe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', function () {
+describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', function () {
   describe('advancedFulfillment/shipSelectedOrders', function () {
     beforeEach(function () {
       Meteor.users.remove({});
@@ -178,7 +178,95 @@ fdescribe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', func
     });
   });
   describe('advancedFulfillment/returnSelectedOrders', function () {
-
+    beforeEach(function () {
+      Meteor.users.remove({});
+      return ReactionCore.Collections.Orders.remove({});
+    });
+    it('should updated shipped orders to returned', function () {
+      let Order = Factory.create('importedShopifyOrder', {
+        'advancedFulfillment.workflow.status': 'orderShipped'
+      });
+      let Order2 = Factory.create('importedShopifyOrder', {
+        'advancedFulfillment.workflow.status': 'orderShipped'
+      });
+      const user = Factory.create('user');
+      spyOn(ReactionCore.Collections.Orders, 'update').and.callThrough();
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      spyOn(Meteor, 'userId').and.returnValue(user._id);
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderShipped');
+      expect(Order2.advancedFulfillment.workflow.status).toBe('orderShipped');
+      Meteor.call('advancedFulfillment/returnSelectedOrders', [Order._id, Order2._id]);
+      expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
+      expect(ReactionCore.Collections.Orders.update.calls.count()).toBe(4);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      Order2 = ReactionCore.Collections.Orders.findOne(Order2._id);
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderReturned');
+      expect(Order2.advancedFulfillment.workflow.status).toBe('orderReturned');
+    });
+    it('should update all items to shipped', function () {
+      let Order = Factory.create('importedShopifyOrder', {
+        'advancedFulfillment.workflow.status': 'orderShipped'
+      });
+      let Order2 = Factory.create('importedShopifyOrder', {
+        'advancedFulfillment.workflow.status': 'orderShipped'
+      });
+      const user = Factory.create('user');
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      spyOn(Meteor, 'userId').and.returnValue(user._id);
+      let orderItems = _.every(Order.advancedFulfillment.items, function (item) {
+        return item.workflow.status === 'In Stock';
+      });
+      let order2Items = _.every(Order2.advancedFulfillment.items, function (item) {
+        return item.workflow.status === 'In Stock';
+      });
+      expect(orderItems).toBe(true);
+      expect(order2Items).toBe(true);
+      Meteor.call('advancedFulfillment/returnSelectedOrders', [Order._id, Order2._id]);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      Order2 = ReactionCore.Collections.Orders.findOne(Order2._id);
+      orderItems = _.every(Order.advancedFulfillment.items, function (item) {
+        return item.workflow.status === 'shipped';
+      });
+      order2Items = _.every(Order2.advancedFulfillment.items, function (item) {
+        return item.workflow.status === 'shipped';
+      });
+      expect(orderItems).toBe(true);
+      expect(order2Items).toBe(true);
+    });
+    it('should not update an order that isnt shipped', function () {
+      let Order = Factory.create('importedShopifyOrder', {
+        'advancedFulfillment.workflow.status': 'orderShipped'
+      });
+      let Order2 = Factory.create('importedShopifyOrder', {
+        'advancedFulfillment.workflow.status': 'orderPacked'
+      });
+      const user = Factory.create('user');
+      spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
+      spyOn(Meteor, 'userId').and.returnValue(user._id);
+      let orderItems = _.every(Order.advancedFulfillment.items, function (item) {
+        return item.workflow.status === 'In Stock';
+      });
+      let order2Items = _.every(Order2.advancedFulfillment.items, function (item) {
+        return item.workflow.status === 'In Stock';
+      });
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderShipped');
+      expect(Order2.advancedFulfillment.workflow.status).toBe('orderPacked');
+      expect(orderItems).toBe(true);
+      expect(order2Items).toBe(true);
+      Meteor.call('advancedFulfillment/returnSelectedOrders', [Order._id, Order2._id]);
+      Order = ReactionCore.Collections.Orders.findOne(Order._id);
+      Order2 = ReactionCore.Collections.Orders.findOne(Order2._id);
+      orderItems = _.every(Order.advancedFulfillment.items, function (item) {
+        return item.workflow.status === 'shipped';
+      });
+      order2Items = _.every(Order2.advancedFulfillment.items, function (item) {
+        return item.workflow.status === 'shipped';
+      });
+      expect(Order.advancedFulfillment.workflow.status).toBe('orderReturned');
+      expect(Order2.advancedFulfillment.workflow.status).toBe('orderPacked');
+      expect(orderItems).toBe(true);
+      expect(order2Items).toBe(false);
+    });
   });
   describe('advancedFulfillment/completeSelectedOrders', function () {
     beforeEach(function () {
@@ -216,7 +304,7 @@ fdescribe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', func
       expect(Order3.history.length).toBe(2);
       expect(Order3.history).toContain(jasmine.objectContaining({event: 'orderCompleted'}));
     });
-    xit('should not update orders not in ordershipped or orderreturned', function () {
+    it('should not update orders not in orderShipped or orderReturned', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderShipped'
       });
@@ -231,15 +319,15 @@ fdescribe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', func
       expect(Order2.advancedFulfillment.workflow.status).toBe('orderReturned');
       expect(Order3.advancedFulfillment.workflow.status).toBe('orderCreated');
       let orderIds = [Order._id, Order2._id, Order3._id];
-      Meteor.call('advancedFulfillment/shipSelectedOrders', orderIds);
+      Meteor.call('advancedFulfillment/completeSelectedOrders', orderIds);
       Order = ReactionCore.Collections.Orders.findOne(Order._id);
       expect(Order.advancedFulfillment.workflow.status).toBe('orderCompleted');
       expect(Order.history.length).toBe(2);
-      expect(Order.history).toContain(jasmine.objectContaining({event: 'orderShipped'}));
+      expect(Order.history).toContain(jasmine.objectContaining({event: 'orderCompleted'}));
       Order2 = ReactionCore.Collections.Orders.findOne(Order2._id);
       expect(Order2.advancedFulfillment.workflow.status).toBe('orderCompleted');
       expect(Order2.history.length).toBe(2);
-      expect(Order2.history).toContain(jasmine.objectContaining({event: 'orderShipped'}));
+      expect(Order2.history).toContain(jasmine.objectContaining({event: 'orderCompleted'}));
       Order3 = ReactionCore.Collections.Orders.findOne(Order3._id);
       expect(Order3.advancedFulfillment.workflow.status).toBe('orderCreated');
       expect(Order3.history.length).toBe(0);

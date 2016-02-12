@@ -18,7 +18,7 @@ Package.onUse(function (api) {
   api.use('http');
   api.use('underscore');
   api.use('standard-minifiers');
-  api.use('reactioncommerce:core@0.11.0');
+  api.use('reactioncommerce:core@0.11.1');
   api.use('reactioncommerce:reaction-accounts@1.6.2');
   api.use('iron:router@1.0.12');
   api.use('momentjs:moment@2.10.6');
@@ -28,7 +28,6 @@ Package.onUse(function (api) {
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
   api.use('getoutfitted:reaction-rental-products@0.2.0');
-  // api.use('reactioncommerce:reaction-factories');
   api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
 
   api.addFiles('lib/fedex.js',  'server');
@@ -136,13 +135,9 @@ Package.onTest(function (api) {
   api.use('velocity:helpers');
   api.use('reactioncommerce:reaction-factories');
 
-  api.use('reactioncommerce:core@0.11.0');
+  api.use('reactioncommerce:core@0.11.1');
   api.use('getoutfitted:reaction-advanced-fulfillment');
 
-  // api.addFiles([
-  //   'common/factories/orders.js',
-  //   'common/factories/ordersWithAF.js'
-  // ], 'server');
   api.addFiles('tests/jasmine/server/integration/methods.js', 'server');
   api.addFiles('tests/jasmine/server/integration/hooks.js', 'server');
 });

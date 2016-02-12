@@ -4,8 +4,8 @@ function shipmentDateChecker(date, isLocalDelivery, transitTime) {
   }
 
   let numberOfWeekendDays = 0;
-  const shipDate = moment(date);
-  const arrivalDate = moment(shipDate).add(transitTime, 'days');
+  let shipDate = moment(date);
+  let arrivalDate = moment(shipDate).add(transitTime, 'days');
   let additionalDays = 0;
   let daysToAdd = 0;
 
@@ -73,7 +73,7 @@ function rushShipmentChecker(date) {
   } else if (moment(date).isoWeekday() === 6) {
     return moment(date).add(2, 'days').toDate();
   }
-  return date;
+  return date.toDate();
 }
 
 function rushRequired(arriveBy, transitTime, isLocal) {
@@ -470,6 +470,7 @@ Meteor.methods({
     + moment(startDate).format('MM/D/YY') + '-'
     + moment(endDate).format('MM/D/YY')
     + noteFormattedUser(user) + '</p>';
+
     ReactionCore.Collections.Orders.update({_id: orderId}, {
       $set: {
         'startTime': startDate,

@@ -74,7 +74,6 @@ Meteor.publish('shippingOrders', function () {
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       'shopId': shopId,
-      'items': {$ne: []},
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderShipping
       },

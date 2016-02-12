@@ -1,3 +1,4 @@
+// TODO most of these methods are pretty similar... good refactor
 Meteor.methods({
   'advancedFulfillment/shipSelectedOrders': function (orderIds) {
     check(orderIds, [String]);

@@ -133,7 +133,7 @@ Package.onTest(function (api) {
   api.use('velocity:html-reporter@0.9.1');
   api.use('velocity:console-reporter@0.1.4');
   api.use('velocity:helpers');
-  api.use('reactioncommerce:reaction-factories');ree
+  api.use('reactioncommerce:reaction-factories');
 
   api.use('reactioncommerce:core@0.11.0');
   api.use('getoutfitted:reaction-advanced-fulfillment');

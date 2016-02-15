@@ -1,7 +1,7 @@
 Package.describe({
   summary: 'Advanced fulfillment tracking for orders through inbound, picking, packing, returns and inventory',
   name: 'getoutfitted:reaction-advanced-fulfillment',
-  version: '0.6.0',
+  version: '0.7.0',
   git: 'https://github.com/getoutfitted/reaction-advanced-fulfillment'
 });
 
@@ -19,7 +19,7 @@ Package.onUse(function (api) {
   api.use('underscore');
   api.use('standard-minifiers');
   api.use('reactioncommerce:core@0.11.0');
-  api.use('reactioncommerce:reaction-accounts@1.5.2');
+  api.use('reactioncommerce:reaction-accounts@1.6.2');
   api.use('iron:router@1.0.12');
   api.use('momentjs:moment@2.10.6');
   api.use('momentjs:twix@0.7.2');
@@ -129,9 +129,9 @@ Package.onTest(function (api) {
   api.use('sanjo:jasmine@0.21.0');
   api.use('underscore');
   api.use('random');
-  api.use('dburles:factory@0.3.12');
-  api.use('velocity:html-reporter@0.9.0');
-  api.use('velocity:console-reporter@0.1.3');
+  api.use('dburles:factory@0.3.10');
+  api.use('velocity:html-reporter@0.9.1');
+  api.use('velocity:console-reporter@0.1.4');
   api.use('velocity:helpers');
   api.use('reactioncommerce:reaction-factories');
 

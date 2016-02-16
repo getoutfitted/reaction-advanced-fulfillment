@@ -1,23 +1,78 @@
+function context(routeName) {
+  check(routeName, String);
+  let baseFilter = {
+    'advancedFulfillment.workflow.status': {
+      $in: AdvancedFulfillment.orderActive
+    },
+    'startTime': {$ne: undefined}
+  };
+
+  let baseSorting = {
+    sort: {
+      'advancedFulfillment.shipmentDate': 1,
+      'advancedFulfillment.localDelivery': 1,
+      'advancedFulfillment.rushDelivery': 1,
+      'shopifyOrderNumber': 1
+    }
+  };
+
+  switch (routeName) {
+  case 'dashboard/advanced-fulfillment':
+    return {
+      subscription: 'shippingOrders',
+      filters: baseFilter,
+      sortingOrder: baseSorting
+    };
+  case 'allShipping':
+    return {
+      subscription: 'shippingOrders',
+      filters: baseFilter,
+      sortingOrder: baseSorting
+    };
+  case 'allLocalDeliveries':
+    let allLocalFilter = _.extend(baseFilter, {
+      'advancedFulfillment.localDelivery': true
+    });
+    return {
+      subscription: 'afOrders',
+      filters: allLocalFilter,
+      sortingOrder: baseSorting
+    };
+  case 'orderByStatus':
+    let status = Router.current().params.status;
+    let byStatusFilter = _.extend(baseFilter, {
+      'advancedFulfillment.workflow.status': status
+    });
+    return {
+      subscription: 'ordersByStatus',
+      filters: byStatusFilter,
+      sortingOrder: baseSorting
+    };
+  default:
+    return ;
+  }
+}
+
 Template.fulfillmentOrders.onCreated(function () {
-  this.subscribe('shippingOrders');
+  const currentRoute = Router.current().route.getName();
+  let result = context(currentRoute);
+  let params = Router.current().params.status || Router.current().params.date;
+  if (params) {
+    this.subscribe(result.subscription, params);
+  } else {
+    this.subscribe(result.subscription);
+  }
   Session.set('selectedOrders', []);
 });
 
 Template.fulfillmentOrders.helpers({
   orders: function () {
-    return ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderActive
-      },
-      'startTime': {$ne: undefined}
-    }, {
-      sort: {
-        'advancedFulfillment.shipmentDate': 1,
-        'advancedFulfillment.localDelivery': 1,
-        'advancedFulfillment.rushDelivery': 1,
-        'shopifyOrderNumber': 1
-      }
-    });
+    const currentRoute = Router.current().route.getName();
+    let result = context(currentRoute);
+    return ReactionCore.Collections.Orders.find(
+      result.filters,
+      result.sortingOrder
+    );
   },
   routeStatus: function () {
     let fullRoute = Router.current().url;

@@ -51,28 +51,27 @@ Router.route('dashboard/advanced-fulfillment/picker', {
 Router.route('dashboard/advanced-fulfillment/shipping', {
   name: 'allShipping',
   controller: advancedFulfillmentController,
-  template: 'fulfillmentOrders',
-  waitOn: function () {
-    return this.subscribe('shippingOrders');
-  },
-  data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      'items': {$ne: []},
-      'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderActive
-      },
-      'startTime': {$ne: undefined}
-    }, {
-      sort: {
-        'advancedFulfillment.shipmentDate': 1,
-        'advancedFulfillment.localDelivery': 1,
-        'advancedFulfillment.rushDelivery': 1,
-        'shopifyOrderNumber': 1
-      }
-    }
+  template: 'fulfillmentOrders'
+  // waitOn: function () {
+  //   return this.subscribe('shippingOrders');
+  // },
+  // data: function () {
+  //   return {orders: ReactionCore.Collections.Orders.find({
+  //     'advancedFulfillment.workflow.status': {
+  //       $in: AdvancedFulfillment.orderActive
+  //     },
+  //     'startTime': {$ne: undefined}
+  //   }, {
+  //     sort: {
+  //       'advancedFulfillment.shipmentDate': 1,
+  //       'advancedFulfillment.localDelivery': 1,
+  //       'advancedFulfillment.rushDelivery': 1,
+  //       'shopifyOrderNumber': 1
+  //     }
+  //   }
 
-    )};
-  }
+  //   )};
+  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/shipping/:date', {
@@ -117,28 +116,27 @@ Router.route('dashboard/advanced-fulfillment/shipping/:date', {
 Router.route('dashboard/advanced-fulfillment/local-deliveries', {
   name: 'allLocalDeliveries',
   controller: advancedFulfillmentController,
-  template: 'fulfillmentOrders',
-  waitOn: function () {
-    return this.subscribe('afOrders');
-  },
-  data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      'items': {$ne: []},
-      'advancedFulfillment.localDelivery': true,
-      'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderActive
-      }
-    }, {
-      sort: {
-        'advancedFulfillment.shipmentDate': 1,
-        'advancedFulfillment.localDelivery': 1,
-        'advancedFulfillment.rushDelivery': 1,
-        'shopifyOrderNumber': 1
-      }
-    }
+  template: 'fulfillmentOrders'
+  // waitOn: function () {
+  //   return this.subscribe('afOrders');
+  // },
+  // data: function () {
+  //   return {orders: ReactionCore.Collections.Orders.find({
+  //     'advancedFulfillment.localDelivery': true,
+  //     'advancedFulfillment.workflow.status': {
+  //       $in: AdvancedFulfillment.orderActive
+  //     }
+  //   }, {
+  //     sort: {
+  //       'advancedFulfillment.shipmentDate': 1,
+  //       'advancedFulfillment.localDelivery': 1,
+  //       'advancedFulfillment.rushDelivery': 1,
+  //       'shopifyOrderNumber': 1
+  //     }
+  //   }
 
-    )};
-  }
+  //   )};
+  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/local-delivery/:date', {

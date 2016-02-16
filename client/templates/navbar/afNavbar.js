@@ -4,6 +4,7 @@ Template.afNavbar.onCreated(function () {
 
 Template.afNavbar.onRendered(function () {
   $('.navbar-primary-tags').hide();
+  $('.admin-controls-menu').hide();
 });
 
 Template.afNavbar.helpers({

@@ -1,13 +1,27 @@
 Template.fulfillmentOrders.onCreated(function () {
+  this.subscribe('shippingOrders');
   Session.set('selectedOrders', []);
 });
 
 Template.fulfillmentOrders.helpers({
+  orders: function () {
+    return ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderActive
+      },
+      'startTime': {$ne: undefined}
+    }, {
+      sort: {
+        'advancedFulfillment.shipmentDate': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'shopifyOrderNumber': 1
+      }
+    });
+  },
   routeStatus: function () {
     let fullRoute = Router.current().url;
     let routeComponents = fullRoute.split('/');
-    // let thisRoute = fullRoute.substr(32, 7);
-    // if (thisRoute === 'shipping') {
     if (_.contains(routeComponents, 'shipping')) {
       return 'Orders Waiting to Be Shipped';
     } else if (_.contains(routeComponents, 'returns')) {

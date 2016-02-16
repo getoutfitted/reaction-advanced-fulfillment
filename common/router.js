@@ -38,37 +38,14 @@ Router.route('dashboard/advanced-fulfillment', {
   name: 'dashboard/advanced-fulfillment',
   path: 'dashboard/advanced-fulfillment',
   template: 'fulfillmentOrders',
-  controller: 'ShopAdminController',
-  waitOn: function () {
-    return this.subscribe('shippingOrders');
-  },
-  data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderActive
-      },
-      'startTime': {$ne: undefined}
-    }, {
-      sort: {
-        'advancedFulfillment.shipmentDate': 1,
-        'advancedFulfillment.localDelivery': 1,
-        'advancedFulfillment.rushDelivery': 1,
-        'shopifyOrderNumber': 1
-      }
-    }
-
-    )};
-  }
+  controller: 'ShopAdminController'
 });
 
 Router.route('dashboard/advanced-fulfillment/picker', {
   name: 'advancedFulfillment.picker',
   path: 'dashboard/advanced-fulfillment/picker',
   template: 'advancedFulfillment.picker.search',
-  controller: 'ShopAdminController',
-  waitOn: function () {
-    return this.subscribe('searchOrders');
-  }
+  controller: 'ShopAdminController'
 });
 
 Router.route('dashboard/advanced-fulfillment/shipping', {

@@ -21,25 +21,27 @@
             <td><a href="tel:{{billingPhone}}">{{billingPhone}}</a></td>
             <td><a href="mailto: {{email}}">{{email}}</a></td>
             <td>{{shippingAddress}}</td>
-            <td>
-              <div class='picker' id='{{_id}}'>
-                <div class="row">
-                  <div class="col-sm-8">
-                    <div class='input-daterange input-group' id='datepicker'>
-                      <input type='text' class='input-sm form-control' name='start' />
-                      <span class='input-group-addon'>to</span>
-                      <input type='text' class='input-sm form-control' name='end' />
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <button class='btn btn-block btn-primary update-rental-dates'>Save Dates</button>
-                  </div>
-                </div>
-              </div>
-            </td>
+            <td>{{> datePicker}}</td>
           </tr>
         {{/each}}
       </tbody>
     </table>
+  </div>
+</template>
+
+<template name='datePicker'>
+  <div class='picker' id='{{_id}}'>
+    <div class="row">
+      <div class="col-sm-8">
+        <div class='input-daterange input-group' id='datepicker'>
+          <input type='text' class='input-sm form-control' name='start' />
+          <span class='input-group-addon'>to</span>
+          <input type='text' class='input-sm form-control' name='end' />
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <button class='btn btn-block btn-primary update-rental-dates'>Save Dates</button>
+      </div>
+    </div>
   </div>
 </template>

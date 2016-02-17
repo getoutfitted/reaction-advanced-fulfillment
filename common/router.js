@@ -216,21 +216,6 @@ Router.route('dashboard/advanced-fulfillment/update-order/:_id', {
   name: 'updateOrder',
   controller: advancedFulfillmentController,
   template: 'updateOrder'
-  // waitOn: function () {
-  //   this.subscribe('afProducts');
-  //   return this.subscribe('advancedFulfillmentOrder', this.params._id);
-  // },
-  // data: function () {
-  //   return ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
-  // },
-  // onBeforeAction: function () {
-  //   let validOrder = ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
-  //   if (validOrder) {
-  //     this.next();
-  //   } else {
-  //     this.render('notFound');
-  //   }
-  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/update-order/:orderId/:itemId', {
@@ -257,19 +242,13 @@ Router.route('dashboard/advanced-fulfillment/update-order/:orderId/:itemId', {
 Router.route('dashboard/advanced-fulfillment/customer-service/impossible-dates', {
   name: 'impossibleDates',
   controller: advancedFulfillmentController,
-  template: 'impossibleDates',
-  waitOn: function () {
-    return this.subscribe('custServOrders');
-  }
+  template: 'impossibleDates'
 });
 
 Router.route('dashboard/advanced-fulfillment/customer-service/missing-rental-dates', {
   name: 'missingRentalDates',
   controller: advancedFulfillmentController,
-  template: 'missingRentalDates',
-  waitOn: function () {
-    return this.subscribe('custServOrders');
-  }
+  template: 'missingRentalDates'
 });
 
 Router.route('dashboard/advanced-fulfillment/customer-service/missing-item-details', {

@@ -79,78 +79,82 @@
         </div>
       </div>
       <hr>
-      <div class='container'>
-        <div class="row">
-          <div class='col-xs-6 col-md-4 text-center'>
-            <form class="updateShippingAddress" id="updateShippingAddressForm">
-              <p><strong>Update Shipping Address</strong></p>
-              <div class="form-group row">
-                <div class="col-xs-12">
-                  <input type="text" class="form-control" name="shippingName" id="shippingName" placeholder="shippingName" value={{address "fullName"}}>
-                </div>
-                <div class="col-xs-12">
-                  <input type="text" class="form-control" name="shippingAddress1" id="shippingAddress1" placeholder="Address1" value={{address "address1"}}>
-                </div>
-                <div class="col-xs-12">
-                  <input type="text" class="form-control" name="shippingAddress2" id="shippingAddress2" placeholder="Address 2" value={{address "address2"}}>
-                </div>
-                <div class="col-xs-4">
-                  <input type="text" class="form-control" name="shippingCity" id="shippingCity" placeholder="City" value={{address "city"}}>
-                </div>
-                <div class="col-xs-4">
-                  <input type="text" maxlength="2" class="form-control" name="shippingRegion" id="shippingRegion" placeholder="State" value={{address "region"}}>
-                </div>
-                <div class="col-xs-4">
-                  <input type="text" class="form-control" name="shippingPostal" id="shippingPostal" placeholder="Postal Code" value={{address "postal"}}>
-                </div>
-              </div>
-              <button type="submit" class="btn btn-success btn-block">Update Shipping Address</button>
-            </form>
-          </div>
-          <div class='col-xs-6 col-md-4 text-center'>
-            <form class="updateContactInformation" id="updateContactInformationForm">
-              <div class="form-group row">
-                <p><strong>Update Contact Information</strong></p>
-                <div class="col-xs-12">
-                  <input type="text" class="form-control" name="contactPhone" id="contactPhone" placeholder="Phone Number" value={{address "phone"}}>
-                </div>
-                <div class="col-xs-12">
-                  <input type="text" class="form-control" name="contactEmail" id="contactEmail" placeholder="Email Address" value={{email}}>
-                </div>
-              </div>
-              <button type="submit" class="btn btn-success btn-block">Update Contact Info</button>
-            </form>
-          </div>
-          <div class="col-xs-12 col-md-4 text-center">
-            <div class="form-group row">
-              <p><strong>Update Ski Dates</strong></p>
-              <div class='picker' id='{{_id}}'>
-                <div class='input-daterange input-group' id='datepicker'>
-                  <input type='text' class='form-control' name='start' placeholder="First Ski Day" value={{formatInputDate startTime}} />
-                  <span class='input-group-addon'>to</span>
-                  <input type='text' class='form-control' name='end' placeholder="Last Ski Day" value={{formatInputDate endTime}} />
-                </div>
-              </div>
-            </div>
-            <button class='btn btn-success btn-block update-rental-dates'>Update Ski Dates</button>
-          </div>
-        </div>
-        <div class='row text-center'>
-          <hr>
-          <a  class='btn btn-danger confirm-to-cancel' href='#'>Cancel Order # {{shopifyOrderNumber}}</a>
-          {{#if cancelOrder}}
-            <div class='row well'>
-              <div>
-                <p>I <strong>{{userName}}</strong>, certifiy that order # {{shopifyOrderNumber}} should be cancelled. By canecelling this order, the order will not be viewed by anyone else and will not be fulfilled to the customer. I have also updated this order in Shopify to reflect the cancelled state.</p>
-
-              </div>
-              <div>
-                <p><a class='btn btn-danger cancel-order'>I {{userName}}, confirm the cancelling of order # {{shopifyOrderNumber}}</a></p>
-              </div>
-            </div>
-        {{/if}}
-        </div>
-      </div>
+      {{> updateCustomerDetails}}
     </div>
   {{/with}}
+</template>
+
+<template name='updateCustomerDetails'>
+  <div class='container'>
+    <div class="row">
+      <div class='col-xs-6 col-md-4 text-center'>
+        <form class="updateShippingAddress" id="updateShippingAddressForm">
+          <p><strong>Update Shipping Address</strong></p>
+          <div class="form-group row">
+            <div class="col-xs-12">
+              <input type="text" class="form-control" name="shippingName" id="shippingName" placeholder="shippingName" value={{address "fullName"}}>
+            </div>
+            <div class="col-xs-12">
+              <input type="text" class="form-control" name="shippingAddress1" id="shippingAddress1" placeholder="Address1" value={{address "address1"}}>
+            </div>
+            <div class="col-xs-12">
+              <input type="text" class="form-control" name="shippingAddress2" id="shippingAddress2" placeholder="Address 2" value={{address "address2"}}>
+            </div>
+            <div class="col-xs-4">
+              <input type="text" class="form-control" name="shippingCity" id="shippingCity" placeholder="City" value={{address "city"}}>
+            </div>
+            <div class="col-xs-4">
+              <input type="text" maxlength="2" class="form-control" name="shippingRegion" id="shippingRegion" placeholder="State" value={{address "region"}}>
+            </div>
+            <div class="col-xs-4">
+              <input type="text" class="form-control" name="shippingPostal" id="shippingPostal" placeholder="Postal Code" value={{address "postal"}}>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success btn-block">Update Shipping Address</button>
+        </form>
+      </div>
+      <div class='col-xs-6 col-md-4 text-center'>
+        <form class="updateContactInformation" id="updateContactInformationForm">
+          <div class="form-group row">
+            <p><strong>Update Contact Information</strong></p>
+            <div class="col-xs-12">
+              <input type="text" class="form-control" name="contactPhone" id="contactPhone" placeholder="Phone Number" value={{address "phone"}}>
+            </div>
+            <div class="col-xs-12">
+              <input type="text" class="form-control" name="contactEmail" id="contactEmail" placeholder="Email Address" value={{email}}>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success btn-block">Update Contact Info</button>
+        </form>
+      </div>
+      <div class="col-xs-12 col-md-4 text-center">
+        <div class="form-group row">
+          <p><strong>Update Ski Dates</strong></p>
+          <div class='picker' id='{{_id}}'>
+            <div class='input-daterange input-group' id='datepicker'>
+              <input type='text' class='form-control' name='start' placeholder="First Ski Day" value={{formatInputDate startTime}} />
+              <span class='input-group-addon'>to</span>
+              <input type='text' class='form-control' name='end' placeholder="Last Ski Day" value={{formatInputDate endTime}} />
+            </div>
+          </div>
+        </div>
+        <button class='btn btn-success btn-block update-rental-dates'>Update Ski Dates</button>
+      </div>
+    </div>
+    <div class='row text-center'>
+      <hr>
+      <a  class='btn btn-danger confirm-to-cancel' href='#'>Cancel Order # {{shopifyOrderNumber}}</a>
+      {{#if cancelOrder}}
+        <div class='row well'>
+          <div>
+            <p>I <strong>{{userName}}</strong>, certifiy that order # {{shopifyOrderNumber}} should be cancelled. By canecelling this order, the order will not be viewed by anyone else and will not be fulfilled to the customer. I have also updated this order in Shopify to reflect the cancelled state.</p>
+
+          </div>
+          <div>
+            <p><a class='btn btn-danger cancel-order'>I {{userName}}, confirm the cancelling of order # {{shopifyOrderNumber}}</a></p>
+          </div>
+        </div>
+    {{/if}}
+    </div>
+  </div>
 </template>

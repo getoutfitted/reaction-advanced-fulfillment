@@ -1,3 +1,7 @@
+Template.missingRentalDates.onCreated(function () {
+  this.subscribe('custServOrders');
+});
+
 Template.missingRentalDates.helpers({
   missingRentalDates: function () {
     return ReactionCore.Collections.Orders.find({
@@ -23,7 +27,7 @@ Template.missingRentalDates.helpers({
   }
 });
 
-Template.missingRentalDates.events({
+Template.datePicker.events({
   'click .update-rental-dates': function (event) {
     event.preventDefault();
     let orderId = this._id;
@@ -34,7 +38,7 @@ Template.missingRentalDates.events({
   }
 });
 
-Template.missingRentalDates.onRendered(function () {
+Template.datePicker.onRendered(function () {
   $('.picker .input-daterange').datepicker({
     startDate: 'today',
     todayBtn: 'linked',

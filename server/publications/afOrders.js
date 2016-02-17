@@ -241,9 +241,28 @@ Meteor.publish('ordersReturningOnDate', function (date) {
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderReturning
       },
-      'advancedFulfillment.shipmentDate': {
+      'advancedFulfillment.returnDate': {
         $gte: startOfDay,
         $lte: endOfDay
+      }
+    }, {
+      fields: {
+        'endTime': 1,
+        'advancedFulfillment.returnDate': 1,
+        'advancedFulfillment.workflow.status': 1,
+        'advancedFulfillment.items._id': 1,
+        'advancedFulfillment.items.workflow': 1,
+        'advancedFulfillment.shipReturnBy': 1,
+        'shopifyOrderNumber': 1,
+        'history': 1,
+        'shipping.address.region': 1,
+        'shipping.address.city': 1,
+        'shipping.address.fullName': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'advancedFulfillment.kayakRental.vendor': 1,
+        'advancedFulfillment.kayakRental.qty': 1,
+        'advancedFulfillment.rushShippingPaid': 1
       }
     });
   }

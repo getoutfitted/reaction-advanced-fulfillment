@@ -188,59 +188,59 @@ Router.route('dashboard/advanced-fulfillment/orders/status/:status', {
 Router.route('dashboard/advanced-fulfillment/returns', {
   name: 'returns',
   template: 'returnOrders',
-  controller: advancedFulfillmentController,
-  waitOn: function () {
-    return this.subscribe('afReturnOrders');
-  },
-  data: function () {
-    return {orders: ReactionCore.Collections.Orders.find({
-      'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderReturning
-      }
-    }, {
-      sort: {
-        'advancedFulfillment.returnDate': 1,
-        'shopifyOrderNumber': 1
-      }
-    })};
-  }
+  controller: advancedFulfillmentController
+  // waitOn: function () {
+  //   return this.subscribe('afReturnOrders');
+  // },
+  // data: function () {
+  //   return {orders: ReactionCore.Collections.Orders.find({
+  //     'advancedFulfillment.workflow.status': {
+  //       $in: AdvancedFulfillment.orderReturning
+  //     }
+  //   }, {
+  //     sort: {
+  //       'advancedFulfillment.returnDate': 1,
+  //       'shopifyOrderNumber': 1
+  //     }
+  //   })};
+  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/returns/:date', {
   name: 'dateReturning',
   controller: advancedFulfillmentController,
-  template: 'returnOrders',
-  waitOn: function () {
-    return this.subscribe('afOrders');
-  },
-  data: function () {
-    let rawDate = this.params.date;
-    let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
-    let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
-    return {
-      orders: ReactionCore.Collections.Orders.find({
-        'advancedFulfillment.workflow.status': {
-          $in: AdvancedFulfillment.orderReturning
-        },
-        'advancedFulfillment.returnDate': {
-          $gte: new Date(dayStart),
-          $lte: new Date(dayEnd)
-        }
-      }, {
-        sort: {
-          shopifyOrderNumber: 1
-        }
-      })};
-  },
-  onBeforeAction: function () {
-    let date = this.params.date;
-    let validDate = moment(date, 'MM-DD-YYYY').isValid();
-    if (validDate) {
-      this.next();
-    }  else {
-      this.render('notFound');
-    }
-  }
+  template: 'returnOrders'
+  // waitOn: function () {
+  //   return this.subscribe('afOrders');
+  // },
+  // data: function () {
+  //   let rawDate = this.params.date;
+  //   let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
+  //   let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
+  //   return {
+  //     orders: ReactionCore.Collections.Orders.find({
+  //       'advancedFulfillment.workflow.status': {
+  //         $in: AdvancedFulfillment.orderReturning
+  //       },
+  //       'advancedFulfillment.returnDate': {
+  //         $gte: new Date(dayStart),
+  //         $lte: new Date(dayEnd)
+  //       }
+  //     }, {
+  //       sort: {
+  //         shopifyOrderNumber: 1
+  //       }
+  //     })};
+  // },
+  // onBeforeAction: function () {
+  //   let date = this.params.date;
+  //   let validDate = moment(date, 'MM-DD-YYYY').isValid();
+  //   if (validDate) {
+  //     this.next();
+  //   }  else {
+  //     this.render('notFound');
+  //   }
+  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/missing', {

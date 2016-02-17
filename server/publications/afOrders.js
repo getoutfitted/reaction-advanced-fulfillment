@@ -178,6 +178,7 @@ Meteor.publish('ordersWithDamagedItems', function () {
 });
 
 Meteor.publish('ordersShippingOnDate', function (date) {
+  check(date, String);
   const shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     const startOfDay = moment(date, 'MM-DD-YYYY').startOf('day').toDate();

@@ -1,3 +1,12 @@
+function fullDay(rawDate) {
+  check(rawDate, String);
+  let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day').toDate();
+  let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day').toDate();
+  return {
+    dayStart: dayStart,
+    dayEnd: dayEnd
+  };
+}
 function context(routeName) {
   check(routeName, String);
   let baseFilter = {
@@ -6,7 +15,6 @@ function context(routeName) {
     },
     'startTime': {$ne: undefined}
   };
-
   let baseSorting = {
     sort: {
       'advancedFulfillment.shipmentDate': 1,
@@ -15,20 +23,9 @@ function context(routeName) {
       'shopifyOrderNumber': 1
     }
   };
-
+  const rawDate = Router.current().params.date;
+  let dayTime;
   switch (routeName) {
-  case 'dashboard/advanced-fulfillment':
-    return {
-      subscription: 'shippingOrders',
-      filters: baseFilter,
-      sortingOrder: baseSorting
-    };
-  case 'allShipping':
-    return {
-      subscription: 'shippingOrders',
-      filters: baseFilter,
-      sortingOrder: baseSorting
-    };
   case 'allLocalDeliveries':
     let allLocalFilter = _.extend(baseFilter, {
       'advancedFulfillment.localDelivery': true
@@ -48,20 +45,55 @@ function context(routeName) {
       filters: byStatusFilter,
       sortingOrder: baseSorting
     };
+  case 'dateShipping':
+    dayTime = fullDay(rawDate);
+    let dateFilter = _.extend(baseFilter, {
+      'advancedFulfillment.shipmentDate': {
+        $gte: dayTime.dayStart,
+        $lte: dayTime.dayEnd
+      }
+    });
+    return {
+      subscription: 'ordersShippingOnDate',
+      filters: dateFilter,
+      sortingOrder: baseSorting
+    };
+  case 'dateLocalDelivery':
+    dayTime = fullDay(rawDate);
+    let localDateFilter = _.extend(baseFilter, {
+      'advancedFulfillment.localDelivery': true,
+      'advancedFulfillment.shipmentDate': {
+        $gte: dayTime.dayStart,
+        $lte: dayTime.dayEnd
+      }
+    });
+    return {
+      subscription: 'ordersShippingOnDate',
+      filters: localDateFilter,
+      sortingOrder: baseSorting
+    };
   default:
-    return ;
+    return {
+      subscription: 'shippingOrders',
+      filters: baseFilter,
+      sortingOrder: baseSorting
+    };
   }
 }
 
 Template.fulfillmentOrders.onCreated(function () {
-  const currentRoute = Router.current().route.getName();
-  let result = context(currentRoute);
-  let params = Router.current().params.status || Router.current().params.date;
-  if (params) {
-    this.subscribe(result.subscription, params);
-  } else {
-    this.subscribe(result.subscription);
-  }
+  let instance = this;
+  instance.autorun(function () {
+    let currentRoute = Router.current().route.getName();
+    let result = context(currentRoute);
+    let params = Router.current().params.status || Router.current().params.date;
+
+    if (params) {
+      instance.subscribe(result.subscription, params);
+    } else {
+      instance.subscribe(result.subscription);
+    }
+  });
   Session.set('selectedOrders', []);
 });
 

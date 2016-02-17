@@ -201,10 +201,7 @@ Router.route('dashboard/advanced-fulfillment/returns', {
   data: function () {
     return {orders: ReactionCore.Collections.Orders.find({
       'advancedFulfillment.workflow.status': {
-        $in: [
-          'orderShipped',
-          'orderReturned'
-        ]
+        $in: AdvancedFulfillment.orderReturning
       }
     }, {
       sort: {
@@ -218,7 +215,7 @@ Router.route('dashboard/advanced-fulfillment/returns', {
 Router.route('dashboard/advanced-fulfillment/returns/:date', {
   name: 'dateReturning',
   controller: advancedFulfillmentController,
-  template: 'fulfillmentOrders',
+  template: 'returnOrders',
   waitOn: function () {
     return this.subscribe('afOrders');
   },
@@ -229,10 +226,7 @@ Router.route('dashboard/advanced-fulfillment/returns/:date', {
     return {
       orders: ReactionCore.Collections.Orders.find({
         'advancedFulfillment.workflow.status': {
-          $in: [
-            'orderShipped',
-            'orderReturned'
-          ]
+          $in: AdvancedFulfillment.orderReturning
         },
         'advancedFulfillment.returnDate': {
           $gte: new Date(dayStart),

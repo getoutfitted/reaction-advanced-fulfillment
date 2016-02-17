@@ -229,3 +229,24 @@ Meteor.publish('afReturnOrders', function () {
   }
   return this.ready();
 });
+
+Meteor.publish('ordersReturningOnDate', function (date) {
+  check(date, String);
+  const shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+    const startOfDay = moment(date, 'MM-DD-YYYY').startOf('day').toDate();
+    const endOfDay = moment(date, 'MM-DD-YYYY').endOf('day').toDate();
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderReturning
+      },
+      'advancedFulfillment.shipmentDate': {
+        $gte: startOfDay,
+        $lte: endOfDay
+      }
+    });
+  }
+
+  return this.ready();
+});

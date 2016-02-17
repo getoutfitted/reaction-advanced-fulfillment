@@ -10,7 +10,16 @@ function labelMaker(word, bootStrapColor = 'primary') {
   return '<span class="label label-' + bootStrapColor + '">' + word + '</span> ';
 }
 
+Template.orderDetails.onCreated(function () {
+  let orderId = Router.current().params._id;
+  this.subscribe('advancedFulfillmentOrder', orderId);
+});
+
 Template.orderDetails.helpers({
+  order: function () {
+    let orderId = Router.current().params._id;
+    return ReactionCore.Collections.Orders.findOne({_id: orderId});
+  },
   currentStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
     let generalTemplates = [

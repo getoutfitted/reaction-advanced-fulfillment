@@ -81,10 +81,7 @@ Router.route('dashboard/advanced-fulfillment/order/:_id', {
 Router.route('dashboard/advanced-fulfillment/order-queue', {
   name: 'orderQueue',
   template: 'orderQueue',
-  controller: advancedFulfillmentController,
-  waitOn: function () {
-    return this.subscribe('userOrderQueue');
-  }
+  controller: advancedFulfillmentController
 });
 
 Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
@@ -189,128 +186,51 @@ Router.route('dashboard/advanced-fulfillment/returns', {
   name: 'returns',
   template: 'returnOrders',
   controller: advancedFulfillmentController
-  // waitOn: function () {
-  //   return this.subscribe('afReturnOrders');
-  // },
-  // data: function () {
-  //   return {orders: ReactionCore.Collections.Orders.find({
-  //     'advancedFulfillment.workflow.status': {
-  //       $in: AdvancedFulfillment.orderReturning
-  //     }
-  //   }, {
-  //     sort: {
-  //       'advancedFulfillment.returnDate': 1,
-  //       'shopifyOrderNumber': 1
-  //     }
-  //   })};
-  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/returns/:date', {
   name: 'dateReturning',
   controller: advancedFulfillmentController,
   template: 'returnOrders'
-  // waitOn: function () {
-  //   return this.subscribe('afOrders');
-  // },
-  // data: function () {
-  //   let rawDate = this.params.date;
-  //   let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day')._d;
-  //   let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day')._d;
-  //   return {
-  //     orders: ReactionCore.Collections.Orders.find({
-  //       'advancedFulfillment.workflow.status': {
-  //         $in: AdvancedFulfillment.orderReturning
-  //       },
-  //       'advancedFulfillment.returnDate': {
-  //         $gte: new Date(dayStart),
-  //         $lte: new Date(dayEnd)
-  //       }
-  //     }, {
-  //       sort: {
-  //         shopifyOrderNumber: 1
-  //       }
-  //     })};
-  // },
-  // onBeforeAction: function () {
-  //   let date = this.params.date;
-  //   let validDate = moment(date, 'MM-DD-YYYY').isValid();
-  //   if (validDate) {
-  //     this.next();
-  //   }  else {
-  //     this.render('notFound');
-  //   }
-  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/missing', {
   name: 'missing',
   controller: advancedFulfillmentController,
-  template: 'missingDamaged',
-  waitOn: function () {
-    return this.subscribe('ordersWithMissingItems');
-  },
-  data: function () {
-    return {
-      orders: ReactionCore.Collections.Orders.find({
-        'advancedFulfillment.items.workflow.status': 'missing'
-      }, {
-        sort: {
-          shopifyOrderNumber: 1
-        }
-      })
-    };
-  }
+  template: 'missingDamaged'
 });
 
 Router.route('dashboard/advanced-fulfillment/damaged', {
   name: 'damaged',
   controller: advancedFulfillmentController,
-  template: 'missingDamaged',
-  waitOn: function () {
-    return this.subscribe('ordersWithDamagedItems');
-  },
-  data: function () {
-    return {
-      orders: ReactionCore.Collections.Orders.find({
-        'advancedFulfillment.items.workflow.status': 'damaged'
-      }, {
-        sort: {
-          shopifyOrderNumber: 1
-        }
-      })
-    };
-  }
+  template: 'missingDamaged'
 });
 
 Router.route('dashboard/advanced-fulfillment/search', {
   name: 'searchOrders',
   controller: advancedFulfillmentController,
-  template: 'searchOrders',
-  waitOn: function () {
-    return this.subscribe('searchOrders');
-  }
+  template: 'searchOrders'
 });
 
 Router.route('dashboard/advanced-fulfillment/update-order/:_id', {
   name: 'updateOrder',
   controller: advancedFulfillmentController,
-  template: 'updateOrder',
-  waitOn: function () {
-    this.subscribe('afProducts');
-    return this.subscribe('advancedFulfillmentOrder', this.params._id);
-  },
-  data: function () {
-    return ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
-  },
-  onBeforeAction: function () {
-    let validOrder = ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
-    if (validOrder) {
-      this.next();
-    } else {
-      this.render('notFound');
-    }
-  }
+  template: 'updateOrder'
+  // waitOn: function () {
+  //   this.subscribe('afProducts');
+  //   return this.subscribe('advancedFulfillmentOrder', this.params._id);
+  // },
+  // data: function () {
+  //   return ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
+  // },
+  // onBeforeAction: function () {
+  //   let validOrder = ReactionCore.Collections.Orders.findOne({ _id: this.params._id});
+  //   if (validOrder) {
+  //     this.next();
+  //   } else {
+  //     this.render('notFound');
+  //   }
+  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/update-order/:orderId/:itemId', {

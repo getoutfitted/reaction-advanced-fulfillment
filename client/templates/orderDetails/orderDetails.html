@@ -1,5 +1,6 @@
 <template name='orderDetails'>
   {{> afNavbar}}
+  {{#if Template.subscriptionsReady}}
   {{#with order}}
     <div class='container-fluid'>
       {{#if orderCreated}}
@@ -149,4 +150,5 @@
       </div>
     </div>
   {{/with}}
+  {{/if}}
 </template>

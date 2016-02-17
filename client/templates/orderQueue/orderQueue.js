@@ -1,3 +1,7 @@
+Template.orderQueue.onCreated(function () {
+  this.subscribe('userOrderQueue');
+});
+
 Template.orderQueue.helpers({
   myOrders: function () {
     let userId = Meteor.userId();

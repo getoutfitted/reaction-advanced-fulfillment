@@ -155,23 +155,14 @@ Meteor.publish('custServOrders', function () {
   return this.ready();
 });
 
-Meteor.publish('ordersWithMissingItems', function () {
+Meteor.publish('ordersWithMissing/DamagedItems', function () {
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       'shopId': shopId,
-      'advancedFulfillment.items.workflow.status': 'missing'
-    });
-  }
-  return this.ready();
-});
-
-Meteor.publish('ordersWithDamagedItems', function () {
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
-      'shopId': shopId,
-      'advancedFulfillment.items.workflow.status': 'damaged'
+      'advancedFulfillment.items.workflow.status': {
+        $in: ['missing', 'damaged']
+      }
     });
   }
   return this.ready();

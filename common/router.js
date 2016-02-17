@@ -76,12 +76,6 @@ Router.route('dashboard/advanced-fulfillment/order/:_id', {
   name: 'orderDetails',
   template: 'orderDetails',
   controller: advancedFulfillmentController
-  // waitOn: function () {
-  //   return this.subscribe('advancedFulfillmentOrder', this.params._id);
-  // },
-  // data: function () {
-  //   return ReactionCore.Collections.Orders.findOne(this.params._id);
-  // }
 });
 
 Router.route('dashboard/advanced-fulfillment/order-queue', {

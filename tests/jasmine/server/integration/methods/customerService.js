@@ -3,11 +3,14 @@ beforeAll(function () {
 });
 
 describe('getoutfitted:reaction-advanced-fulfillment customerService methods', function () {
+
   describe('advancedFulfillment/cancelOrder', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should cancel a single order', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -26,6 +29,7 @@ describe('getoutfitted:reaction-advanced-fulfillment customerService methods', f
       expect(Order.orderNotes).toMatch('Order Cancelled');
       expect(Order.orderNotes).toMatch(user.username);
     });
+
     it('should log as a guest if user is not found', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -44,11 +48,14 @@ describe('getoutfitted:reaction-advanced-fulfillment customerService methods', f
       expect(Order.orderNotes).not.toMatch(user.username);
     });
   });
+
   describe('advancedFulfillment/bundleColorConfirmation', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should mark bundle missing as false', function () {
       let Order = Factory.create('importedShopifyOrder', {
         bundleMissingColor: true
@@ -66,11 +73,14 @@ describe('getoutfitted:reaction-advanced-fulfillment customerService methods', f
       expect(Order.history).toContain(jasmine.objectContaining({userId: user._id}));
     });
   });
+
   describe('advancedFulfillment/updateSkiPackageWithCustomerInfo', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should add ski details to order', function () {
       let skiPackage =  {
         _id: 'bSeX6iLWNfDW3oyT8',
@@ -111,6 +121,7 @@ describe('getoutfitted:reaction-advanced-fulfillment customerService methods', f
       expect(ski[0].skiLevel).toBe('yellow-intermediate');
       expect(ski[0].contactedCustomer).toBe(true);
     });
+
     it('should add a history object', function () {
       let skiPackage =  {
         _id: 'bSeX6iLWNfDW3oyT8',
@@ -142,11 +153,14 @@ describe('getoutfitted:reaction-advanced-fulfillment customerService methods', f
       expect(Order.history).toContain(jasmine.objectContaining({userId: user._id}));
     });
   });
+
   describe('advancedFulfillment/nonWarehouseOrder', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update order status to nonWarehouseOrder', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');

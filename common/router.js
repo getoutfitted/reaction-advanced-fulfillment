@@ -221,22 +221,7 @@ Router.route('dashboard/advanced-fulfillment/update-order/:_id', {
 Router.route('dashboard/advanced-fulfillment/update-order/:orderId/:itemId', {
   name: 'updateOrderItem',
   controller: advancedFulfillmentController,
-  template: 'updateOrderItem',
-  waitOn: function () {
-    this.subscribe('afProducts');
-    return this.subscribe('advancedFulfillmentOrder', this.params.orderId);
-  },
-  data: function () {
-    return ReactionCore.Collections.Orders.findOne({ _id: this.params.orderId});
-  },
-  onBeforeAction: function () {
-    let validOrder = ReactionCore.Collections.Orders.findOne({ _id: this.params.orderId});
-    if (validOrder) {
-      this.next();
-    }  else {
-      this.render('notFound');
-    }
-  }
+  template: 'updateOrderItem'
 });
 
 Router.route('dashboard/advanced-fulfillment/customer-service/impossible-dates', {
@@ -254,26 +239,17 @@ Router.route('dashboard/advanced-fulfillment/customer-service/missing-rental-dat
 Router.route('dashboard/advanced-fulfillment/customer-service/missing-item-details', {
   name: 'missingItemDetails',
   controller: advancedFulfillmentController,
-  template: 'missingItemDetails',
-  waitOn: function () {
-    return this.subscribe('custServOrders');
-  }
+  template: 'missingItemDetails'
 });
 
 Router.route('dashboard/advanced-fulfillment/customer-service/missing-bundle-colors', {
   name: 'missingBundleColors',
   controller: advancedFulfillmentController,
-  template: 'missingBundleColors',
-  waitOn: function () {
-    return this.subscribe('custServOrders');
-  }
+  template: 'missingBundleColors'
 });
 
 Router.route('dashboard/advanced-fulfillment/customer-service/non-warehouse-orders', {
   name: 'nonWarehouseOrders',
   controller: advancedFulfillmentController,
-  template: 'nonWarehouseOrders',
-  waitOn: function () {
-    return this.subscribe('nonWarehouseOrders');
-  }
+  template: 'nonWarehouseOrders'
 });

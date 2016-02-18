@@ -1,3 +1,7 @@
+Template.nonWarehouseOrders.onCreated(function () {
+  this.subscribe('nonWarehouseOrders')
+});
+
 Template.nonWarehouseOrders.helpers({
   nonWarehouseOrders: function () {
     return ReactionCore.Collections.Orders.find({

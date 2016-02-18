@@ -1,3 +1,6 @@
+Template.missingBundleColors.onCreated(function () {
+  this.subscribe('custServOrders');
+});
 Template.missingBundleColors.helpers({
   missingBundleInfo: function () {
     return ReactionCore.Collections.Orders.find({

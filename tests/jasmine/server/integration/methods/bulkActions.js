@@ -3,11 +3,14 @@ beforeAll(function () {
 });
 
 describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', function () {
+
   describe('advancedFulfillment/shipSelectedOrders', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update mulitple orders to ordershipped', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderReadyToShip'
@@ -39,6 +42,7 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(Order3.history.length).toBe(1);
       expect(Order3.history).toContain(jasmine.objectContaining({event: 'orderShipped'}));
     });
+
     it('should not update orders not in orderReadyToShip', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderReadyToShip'
@@ -68,11 +72,14 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(Order3.history.length).toBe(0);
     });
   });
+
   describe('advancedFulfillment/unshipSelectedOrders', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should revert multiple orders from shipped status', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderShipped'
@@ -95,6 +102,7 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(Order.advancedFulfillment.workflow.status).toBe('orderReadyToShip');
       expect(Order2.advancedFulfillment.workflow.status).toBe('orderReadyToShip');
     });
+
     it('should not update an order if order is not in orderShipped', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderShipped'
@@ -118,11 +126,14 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(Order2.advancedFulfillment.workflow.status).toBe('orderPicked');
     });
   });
+
   describe('advancedFulfillment/printSelectedOrders', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update mulitple orders to orderPrinter', function () {
       let Order = Factory.create('importedShopifyOrder');
       let Order2 = Factory.create('importedShopifyOrder');
@@ -148,6 +159,7 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(Order3.history.length).toBe(1);
       expect(Order3.history).toContain(jasmine.objectContaining({event: 'orderPrinted'}));
     });
+
     it('should not update orders not in a different status', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderReadyToShip'
@@ -177,11 +189,14 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(Order3.history.length).toBe(1);
     });
   });
+
   describe('advancedFulfillment/returnSelectedOrders', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should updated shipped orders to returned', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderShipped'
@@ -203,6 +218,7 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(Order.advancedFulfillment.workflow.status).toBe('orderReturned');
       expect(Order2.advancedFulfillment.workflow.status).toBe('orderReturned');
     });
+
     it('should update all items to shipped', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderShipped'
@@ -233,6 +249,7 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(orderItems).toBe(true);
       expect(order2Items).toBe(true);
     });
+
     it('should not update an order that isnt shipped', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderShipped'
@@ -268,11 +285,14 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(order2Items).toBe(false);
     });
   });
+
   describe('advancedFulfillment/completeSelectedOrders', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update mulitple orders to complete', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderShipped'
@@ -304,6 +324,7 @@ describe('getoutfitted:reaction-advanced-fulfillment bulkActions methods', funct
       expect(Order3.history.length).toBe(2);
       expect(Order3.history).toContain(jasmine.objectContaining({event: 'orderCompleted'}));
     });
+
     it('should not update orders not in orderShipped or orderReturned', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderShipped'

@@ -3,10 +3,13 @@ beforeAll(function () {
 });
 
 describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', function () {
+
   describe('advancedFulfillment/updateItemWorkflow', function () {
+
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update a single item a single step', function () {
       let Order = Factory.create('importedShopifyOrder');
       let item = Order.advancedFulfillment.items[0];
@@ -24,6 +27,7 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       expect(item.workflow.status).toBe('picked');
       expect(item2.workflow.status).toBe('In Stock');
     });
+
     it('should update an items workflow history', function () {
       let Order = Factory.create('importedShopifyOrder');
       let item = Order.advancedFulfillment.items[0];
@@ -42,6 +46,7 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       expect(item2.workflow.workflow.length).not.toBe(1);
       expect(item2.workflow.workflow).not.toContain('In Stock');
     });
+
     it('should update an item multiple times all the way through completed', function () {
       let Order = Factory.create('importedShopifyOrder');
       let item = Order.advancedFulfillment.items[0];
@@ -90,6 +95,7 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       expect(item.workflow.workflow).toContain('shipped');
       expect(item.workflow.workflow).toContain('returned');
     });
+
     it('should update a single item that isnt first item', function () {
       let Order = Factory.create('importedShopifyOrder');
       let item = Order.advancedFulfillment.items[0];
@@ -106,10 +112,13 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       expect(item.workflow.status).toBe('In Stock');
     });
   });
+
   describe('advancedFulfillment/updateAllItems', function () {
+
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update all items in an order', function () {
       let Order = Factory.create('importedShopifyOrder');
       let itemWorkflowStatusUpdated = _.every(Order.advancedFulfillment.items, function (item) {
@@ -124,6 +133,7 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       });
       expect(itemWorkflowStatusUpdated).toBe(true);
     });
+
     it('should update all items workflow ', function () {
       let Order = Factory.create('importedShopifyOrder');
       let itemWorkflowLength = _.every(Order.advancedFulfillment.items, function (item) {
@@ -142,6 +152,7 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       });
       expect(addedToItemWorkflow).toBe(true);
     });
+
     it('can update all items multiple times', function () {
       let Order = Factory.create('importedShopifyOrder');
       spyOn(ReactionCore, 'hasPermission').and.returnValue(true);
@@ -166,11 +177,14 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       expect(itemWorkflowStatusUpdated).toBe(true);
     });
   });
+
   describe('advancedFulfillment/itemIssue', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should make an item have an issue status', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -191,6 +205,7 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       expect(item.workflow.workflow).toContain('Missing');
       expect(item2.workflow.status).toBe('In Stock');
     });
+
     it('should add a history object for issue', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -204,10 +219,13 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       expect(Order.history).toContain(jasmine.objectContaining({userId: user._id}));
     });
   });
+
   describe('advancedFulfillment/itemResolved', function () {
+
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should mark an item as returned', function () {
       let Order = Factory.create('importedShopifyOrder');
       let item = Order.advancedFulfillment.items[0];
@@ -221,10 +239,13 @@ describe('getoutfitted:reaction-advanced-fulfillment itemDetails methods', funct
       expect(item.workflow.workflow).toContain('Missing');
     });
   });
+
   describe('advancedFulfillment/updateAllItemsToSpecificStatus', function () {
+
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update all items to any status', function () {
       let Order = Factory.create('importedShopifyOrder');
       spyOn(ReactionCore, 'hasPermission').and.returnValue(true);

@@ -3,10 +3,13 @@ beforeAll(function () {
 });
 
 describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', function () {
+
   describe('advancedFulfillment/updateOrderWorkflow', function () {
+
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update the order workflow from created to printed', function () {
       const Order = Factory.create('importedShopifyOrder');
       const userId = Random.id();
@@ -21,6 +24,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(updatedOrder.history.length).toBe(1);
       expect(updatedOrder.history).toContain(jasmine.objectContaining({event: 'orderPrinted'}));
     });
+
     it('should update through the entire workflow', function () {
       let Order = Factory.create('importedShopifyOrder');
       const userId = Random.id();
@@ -42,6 +46,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.advancedFulfillment.workflow.status).toEqual('orderPicked');
       expect(Order.history.length).toBe(3);
     });
+
     it('should throw an error if incorrect permissions', function () {
       let Order = Factory.create('importedShopifyOrder');
       const userId = Random.id();
@@ -54,10 +59,13 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       }).toThrowError('Access Denied [403]');
     });
   });
+
   describe('advancedFulfillment/reverseOrderWorkflow', function () {
+
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should reverse the workflow', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderPicking'
@@ -73,6 +81,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.advancedFulfillment.workflow.status).toBe('orderPrinted');
       expect(Order.history.length).toBe(1);
     });
+
     it('should reverse the workflow multiple times', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderPicking'
@@ -92,10 +101,13 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.history.length).toBe(2);
     });
   });
+
   describe('advancedFulfillment/orderCompletionVerifier', function () {
+
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update order to incomplete if not items returned', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderReturned'
@@ -109,6 +121,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.advancedFulfillment.workflow.status).toBe('orderIncomplete');
       expect(Order.history).toContain(jasmine.objectContaining({event: 'orderIncomplete'}));
     });
+
     it('should update order to complete if all items returned', function () {
       let Order = Factory.create('importedShopifyOrder', {
         'advancedFulfillment.workflow.status': 'orderReturned'
@@ -124,11 +137,14 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.history).toContain(jasmine.objectContaining({event: 'orderCompleted'}));
     });
   });
+
   describe('advancedFulfillment/updateOrderNotes', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should create a new note with user info', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -142,6 +158,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.orderNotes).toMatch(notes);
       expect(Order.orderNotes).toMatch(user.username);
     });
+
     it('should add to an orderNote when called multiple times', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -162,10 +179,13 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.orderNotes).toMatch(altUser.username);
     });
   });
+
   describe('advancedFulfillment/printInvoice', function () {
+
     beforeEach(function () {
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update order to printed', function () {
       let Order = Factory.create('importedShopifyOrder');
       const userId = Random.id();
@@ -179,11 +199,14 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.history.length).toBe(1);
     });
   });
+
   describe('advancedFulfillment/updateRentalDates', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should throw a warning if no fedex api info', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -250,14 +273,18 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       // expect(sameEnd).toBe(true);
     });
   });
+
   describe('advancedFulfillment/updateShippingAddress', function () {
     // XXX TODO: Run this test later
   });
+
   describe('advancedFulfillment/updateContactInformation', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update phone and email', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -271,6 +298,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.email).toBe('test@getoutfitted.com');
       expect(Order.shipping[0].address.phone).toBe('1234567');
     });
+
     it('should log success when successful', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -282,6 +310,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       Meteor.call('advancedFulfillment/updateContactInformation', Order._id, phone, email);
       expect(ReactionCore.Log.info).toHaveBeenCalled();
     });
+
     it('should add a history object when updated', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -297,6 +326,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.history).toContain(jasmine.objectContaining({event: 'orderContactInfoUpdated'}));
       expect(Order.history).toContain(jasmine.objectContaining({userId: user._id}));
     });
+
     it('should throw an error when no phone number', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -309,6 +339,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
         return Meteor.call('advancedFulfillment/updateContactInformation', Order._id, phone, email);
       }).toThrow();
     });
+
     it('should throw an error when no email', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -322,12 +353,15 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       }).toThrow();
     });
   });
+
   describe('advancedFulfillment/updateItemsColorAndSize', function () {
+
     beforeEach(function () {
       Meteor.users.remove({});
       ReactionCore.Collections.Products.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should update an items location and sku', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -343,6 +377,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.advancedFulfillment.items[0].sku).toBe('MB005');
       expect(Order.advancedFulfillment.items[0].location).toBe('A3');
     });
+
     it('should update items color and size', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -360,6 +395,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.items[0].variants.color).toBe('Grayeen');
       expect(Order.items[0].variants.size).toBe('Small');
     });
+
     it('should update order notes', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -378,6 +414,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.orderNotes).toMatch(variant.size);
       expect(Order.orderNotes).toMatch(user.username);
     });
+
     it('should reset the flag if all items have variants', function () {
       let Order = Factory.create('importedShopifyOrder', {
         itemMissingDetails: true
@@ -402,6 +439,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       ReactionCore.Collections.Products.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should exchange items', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -417,6 +455,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.advancedFulfillment.items[0].itemDescription).toBe('Mens - Burton - Cargo Pant');
       expect(Order.advancedFulfillment.items[0].variantId).toBe(variant._id);
     });
+
     it('should add ordernotes to order', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -432,6 +471,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.orderNotes).toMatch('Small');
       expect(Order.orderNotes).toMatch('Grayeen');
     });
+
     it('should reset the flag if item was missing details', function () {
       let Order = Factory.create('importedShopifyOrder', {
         itemMissingDetails: true
@@ -446,6 +486,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       Order = ReactionCore.Collections.Orders.findOne(Order._id);
       expect(Order.itemMissingDetails).toBe(false);
     });
+
     it('should add a history object when item exchanged', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -466,6 +507,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       ReactionCore.Collections.Products.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should add an item to items and AF items', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -486,6 +528,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.advancedFulfillment.items[afItemCount]).not.toBe(undefined);
       expect(Order.advancedFulfillment.items[afItemCount].itemDescription).toBe('Mens - Burton - Cargo Pant');
     });
+
     it('should add descriptive order notes when item added', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -500,6 +543,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(Order.orderNotes).toMatch('Small');
       expect(Order.orderNotes).toMatch('Grayeen');
     });
+
     it('should add add a descriptive history object when item is added', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -518,6 +562,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       Meteor.users.remove({});
       return ReactionCore.Collections.Orders.remove({});
     });
+
     it('should bypass the workflow the complete the order', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');
@@ -529,6 +574,7 @@ describe('getoutfitted:reaction-advanced-fulfillment orderDetails methods', func
       expect(ReactionCore.Collections.Orders.update).toHaveBeenCalled();
       expect(Order.advancedFulfillment.workflow.status).toBe('orderCompleted');
     });
+
     it('should create two history objects', function () {
       let Order = Factory.create('importedShopifyOrder');
       const user = Factory.create('user');

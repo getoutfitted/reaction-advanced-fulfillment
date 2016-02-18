@@ -92,16 +92,6 @@ Router.route('dashboard/advanced-fulfillment/order/pdf/:_id', {
   onBeforeAction() {
     this.layout('print');
     return this.next();
-  },
-  subscriptions: function () {
-    this.subscribe('advancedFulfillmentOrder', this.params._id);
-  },
-  data: function () {
-    if (this.ready()) {
-      return ReactionCore.Collections.Orders.findOne({
-        _id: this.params._id
-      });
-    }
   }
 });
 
@@ -114,16 +104,6 @@ Router.route('dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id
   onBeforeAction() {
     this.layout('print');
     return this.next();
-  },
-  subscriptions: function () {
-    this.subscribe('advancedFulfillmentOrder', this.params._id);
-  },
-  data: function () {
-    if (this.ready()) {
-      return ReactionCore.Collections.Orders.findOne({
-        _id: this.params._id
-      });
-    }
   }
 });
 
@@ -135,29 +115,6 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/date/:date', {
   onBeforeAction() {
     this.layout('print');
     return this.next();
-  },
-  subscriptions: function () {
-    this.subscribe('ordersShippingOnDate', this.params.date);
-  },
-  data: function () {
-    let day = this.params.date;
-    let startOfDay = moment(day, 'MM-DD-YYYY').startOf('day').toDate();
-    let endOfDay = moment(day, 'MM-DD-YYYY').endOf('day').toDate();
-    return {
-      orders: ReactionCore.Collections.Orders.find({
-        'advancedFulfillment.workflow.status': {
-          $in: AdvancedFulfillment.orderActive
-        },
-        'advancedFulfillment.shipmentDate': {
-          $gte: startOfDay,
-          $lte: endOfDay
-        }
-      }, {
-        sort: {
-          shopifyOrderNumber: 1
-        }
-      })
-    };
   }
 });
 
@@ -169,9 +126,6 @@ Router.route('dashboard/advanced-fulfillment/orders/pdf/selected', {
   onBeforeAction() {
     this.layout('print');
     return this.next();
-  },
-  subscriptions: function () {
-    this.subscribe('selectedOrders', JSON.parse(localStorage.getItem('selectedOrdersToPrint'))); // TODO: Optimize this subscription, migrate it to template subscription
   }
 });
 

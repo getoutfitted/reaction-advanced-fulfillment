@@ -1,4 +1,15 @@
+Template.advancedFulfillmentPDF.onCreated(function () {
+  const orderId = Router.current().params._id;
+  this.subscribe('advancedFulfillmentOrder', orderId);
+});
+
 Template.advancedFulfillmentPDF.helpers({
+  order: function () {
+    const orderId = Router.current().params._id;
+    return ReactionCore.Collections.Orders.findOne({
+      _id: orderId
+    });
+  },
   shippingDate: function () {
     let date = this.advancedFulfillment.shipmentDate;
     return moment(date).format('MMMM Do, YYYY');
@@ -15,7 +26,7 @@ Template.advancedFulfillmentPDF.helpers({
   }
 });
 
-Template.advancedFulfillmentPDF.onRendered(function () {
+Template.barcode.onRendered(function () {
   let orderId = Router.current().params._id;
   $('#barcode').barcode(orderId, 'code128', {
     barWidth: 2,

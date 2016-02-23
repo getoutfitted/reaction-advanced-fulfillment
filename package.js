@@ -18,16 +18,20 @@ Package.onUse(function (api) {
   api.use('http');
   api.use('underscore');
   api.use('standard-minifiers');
-  api.use('reactioncommerce:core@0.11.0');
-  api.use('reactioncommerce:reaction-accounts@1.6.2');
-  api.use('iron:router@1.0.12');
+  api.use('reactioncommerce:core@0.12.0');
+  api.use('kadira:flow-router');
+  api.use('kadira:blaze-layout');
+  api.use('reactioncommerce:reaction-router');
+  api.use('reactioncommerce:reaction-collections');
+
+  // api.use('iron:router@1.0.12');
   api.use('momentjs:moment@2.10.6');
   api.use('momentjs:twix@0.7.2');
   api.use('meteorhacks:search-source');
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  api.use('getoutfitted:reaction-rental-products@0.2.0');
+  api.use('getoutfitted:reaction-rental-products@0.3.0');
   api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
 
   api.addFiles('lib/advancedFulfillment.js');
@@ -46,11 +50,12 @@ Package.onUse(function (api) {
   ], 'server');
 
   api.addFiles([
-    'common/router.js',
+    // 'common/router.js',
     'common/collections.js'
   ], ['client', 'server']);
 
   api.addFiles([
+    'common/router.js',
     'client/search.js',
     'client/templates/helpers.js',
     'client/templates/settings/settings.html',

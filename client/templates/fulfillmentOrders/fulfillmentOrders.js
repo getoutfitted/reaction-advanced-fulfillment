@@ -23,7 +23,7 @@ function context(routeName) {
       'shopifyOrderNumber': 1
     }
   };
-  const rawDate = Router.current().params.date;
+  const rawDate = ReactionRouter.current().params.date;
   let dayTime;
   switch (routeName) {
   case 'allLocalDeliveries':
@@ -36,7 +36,7 @@ function context(routeName) {
       sortingOrder: baseSorting
     };
   case 'orderByStatus':
-    let status = Router.current().params.status;
+    let status = ReactionRouter.current().params.status;
     let byStatusFilter = _.extend(baseFilter, {
       'advancedFulfillment.workflow.status': status
     });
@@ -84,9 +84,10 @@ function context(routeName) {
 Template.fulfillmentOrders.onCreated(function () {
   let instance = this;
   instance.autorun(function () {
-    let currentRoute = Router.current().route.getName();
+    let currentRoute = ReactionRouter.current().route.name;
+    // let currentRoute = Router.current().route.getName();
     let result = context(currentRoute);
-    let params = Router.current().params.status || Router.current().params.date;
+    let params = ReactionRouter.current().params.status || ReactionRouter.current().params.date;
 
     if (params) {
       instance.subscribe(result.subscription, params);
@@ -99,7 +100,7 @@ Template.fulfillmentOrders.onCreated(function () {
 
 Template.fulfillmentOrders.helpers({
   orders: function () {
-    const currentRoute = Router.current().route.getName();
+    const currentRoute = ReactionRouter.current().route.name;
     let result = context(currentRoute);
     return ReactionCore.Collections.Orders.find(
       result.filters,
@@ -107,7 +108,7 @@ Template.fulfillmentOrders.helpers({
     );
   },
   routeStatus: function () {
-    let fullRoute = Router.current().url;
+    let fullRoute = ReactionRouter.current().path;
     let routeComponents = fullRoute.split('/');
     if (_.contains(routeComponents, 'shipping')) {
       return 'Orders Waiting to Be Shipped';
@@ -116,20 +117,20 @@ Template.fulfillmentOrders.helpers({
     } else if (_.contains(routeComponents, 'local-deliveries')) {
       return 'All Local Deliveries';
     } else if (_.contains(routeComponents, 'local-delivery')) {
-      return 'Local Deliveries for ' + Router.current().params.date;
-    } else if (Router.current().params.status) {
-      return AdvancedFulfillment.humanOrderStatuses[Router.current().params.status] + ' Orders';
+      return 'Local Deliveries for ' + ReactionRouter.current().params.date;
+    } else if (ReactionRouter.current().params.status) {
+      return AdvancedFulfillment.humanOrderStatuses[ReactionRouter.current().params.status] + ' Orders';
     }
   },
   showPrintOrdersLink: function () {
-    let currentRoute = Router.current().route.getName();
+    let currentRoute = ReactionRouter.current().route.name;
     if (currentRoute === 'dateShipping') {
       return true;
     }
     return false;
   },
   shippingDate: function () {
-    return Router.current().params.date;
+    return ReactionRouter.current().params.date;
   },
   ordersSelected: function () {
     return Session.get('selectedOrders').length;
@@ -199,10 +200,10 @@ Template.fulfillmentOrder.helpers({
     return Session.get('selectedOrders').indexOf(this._id) !== -1;
   },
   toBeShipped: function () {
-    let fullRoute = Router.current().url;
+    let fullRoute = ReactionRouter.current().path;
     let routeComponents = fullRoute.split('/');
     let toBeShipped = _.intersection(routeComponents, ['shipping', 'local-delivery', 'local-deliveries']);
-    let params = Router.current().params.status;
+    let params = ReactionRouter.current().params.status;
     let active = _.contains(AdvancedFulfillment.orderActive, params);
     if (toBeShipped.length > 0 || active) {
       return true;

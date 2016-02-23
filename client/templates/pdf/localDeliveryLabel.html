@@ -30,7 +30,7 @@
     </style>
   </head>
 <body>
-
+  {{#with order}}
   <div id='non-printable' class='container'>
     <div class='col-md-6 col-md-offset-3'>
       <a href='javascript:window.print()' style='text-align: center;'><button type='button' class='btn btn-info btn-lg btn-block'>Print</button></a>
@@ -54,9 +54,6 @@
         <div  class='col-xs-12'>
           <h3><strong>Deliver By: {{dateHelper advancedFulfillment.arriveBy}}</strong></h3>
         </div>
-<!--         <div class='col-xs-12'>
-          <h3><strong>Pickup Date: </strong>{{dateHelper advancedFulfillment.shipReturnBy}}</h3>
-        </div> -->
       </div>
     </div>
   </header>
@@ -84,7 +81,7 @@
       <p><strong>Call: 888-618-0305</strong></p>
     </div>
   </div>
-
+  {{/with}}
 </body>
 </template>
 

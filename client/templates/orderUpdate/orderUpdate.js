@@ -3,23 +3,21 @@ function findOrderItem(order, itemId) {
 }
 
 Template.updateOrder.onCreated(function () {
+  const orderId = Router.current().params._id;
   this.subscribe('afProducts');
+  this.subscribe('advancedFulfillmentOrder', orderId);
 });
 
 Template.updateOrder.onRendered(function () {
   const orderId = Router.current().params._id;
   Session.setDefault('cancel-order-' + orderId, false);
-  $('.picker .input-daterange').datepicker({
-    startDate: 'today',
-    todayBtn: 'linked',
-    clearBtn: true,
-    calendarWeeks: true,
-    autoclose: true,
-    todayHighlight: true
-  });
 });
 
 Template.updateOrder.helpers({
+  order: function () {
+    const orderId = Router.current().params._id;
+    return ReactionCore.Collections.Orders.findOne({ _id: orderId});
+  },
   afItems: function () {
     return this.advancedFulfillment.items;
   },
@@ -90,7 +88,9 @@ Template.updateOrder.helpers({
   addingItems: function () {
     let addingItems = Session.get('addItems');
     return addingItems || false;
-  },
+  }
+});
+Template.updateCustomerDetails.helpers({
   address: function (param) {
     return this.shipping[0].address[param];
   },
@@ -103,7 +103,6 @@ Template.updateOrder.helpers({
     return userName;
   }
 });
-
 
 Template.updateOrder.events({
   'change .color-selector': function (event) {
@@ -132,7 +131,21 @@ Template.updateOrder.events({
     event.preventDefault();
     let addingItems = !Session.get('addItems') || false;
     Session.set('addItems', addingItems);
-  },
+  }
+});
+
+Template.updateCustomerDetails.onRendered(function () {
+  $('.picker .input-daterange').datepicker({
+    startDate: 'today',
+    todayBtn: 'linked',
+    clearBtn: true,
+    calendarWeeks: true,
+    autoclose: true,
+    todayHighlight: true
+  });
+});
+
+Template.updateCustomerDetails.events({
   'click .update-rental-dates': function (event) {
     event.preventDefault();
     let orderId = this._id;

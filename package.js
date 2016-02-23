@@ -27,11 +27,11 @@ Package.onUse(function (api) {
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  api.use('getoutfitted:reaction-rental-products@0.3.0');
-  api.use('rajit:bootstrap3-datepicker@1.4.1', ['client']);
+  api.use('getoutfitted:reaction-rental-products@0.2.0');
+  api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
 
-  api.addFiles('lib/fedex.js',  'server');
   api.addFiles('lib/advancedFulfillment.js');
+  api.addFiles('lib/fedex.js', 'server');
 
   api.addFiles([
     'server/registry.js',
@@ -119,7 +119,6 @@ Package.onUse(function (api) {
     'client/templates/deliveryLabels/deliveryLabels.js'
   ], 'client');
 
-
   // Public assets go at the bottom, should load last.
   api.addAssets('public/images/go-logo-1000.png', 'client');
   api.addAssets('public/images/logo-horizontal.png', 'client');
@@ -129,6 +128,7 @@ Package.onUse(function (api) {
 Package.onTest(function (api) {
   api.use('sanjo:jasmine@0.21.0');
   api.use('underscore');
+  api.use('random');
   api.use('dburles:factory@0.3.10');
   api.use('velocity:html-reporter@0.9.1');
   api.use('velocity:console-reporter@0.1.4');
@@ -138,6 +138,15 @@ Package.onTest(function (api) {
   api.use('reactioncommerce:core@0.11.0');
   api.use('getoutfitted:reaction-advanced-fulfillment');
 
-  api.addFiles('tests/jasmine/server/integration/methods.js', 'server');
+  api.addFiles('lib/advancedFulfillment.js');
+  api.addFiles('lib/fedex.js');
+  api.addFiles([
+    'common/factories/orders.js',
+    'common/factories/ordersWithAF.js'
+  ], 'server');
+  api.addFiles('tests/jasmine/server/integration/methods/orderDetails.js', 'server');
+  api.addFiles('tests/jasmine/server/integration/methods/itemDetails.js', 'server');
+  api.addFiles('tests/jasmine/server/integration/methods/customerService.js', 'server');
+  api.addFiles('tests/jasmine/server/integration/methods/bulkActions.js', 'server');
   api.addFiles('tests/jasmine/server/integration/hooks.js', 'server');
 });

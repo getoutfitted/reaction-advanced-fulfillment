@@ -1,4 +1,15 @@
+Template.localDeliveryLabelPDF.onCreated(function () {
+  const orderId = Router.current().params._id;
+  this.subscribe('advancedFulfillmentOrder', orderId);
+});
+
 Template.localDeliveryLabelPDF.helpers({
+  order: function () {
+    const orderId = Router.current().params._id;
+    return ReactionCore.Collections.Orders.findOne({
+      _id: orderId
+    });
+  },
   dateHelper: function (date) {
     return moment(date).format('dddd, MM/DD/YYYY');
   },

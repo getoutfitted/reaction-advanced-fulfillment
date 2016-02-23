@@ -433,6 +433,31 @@ ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schema
   orderNotes: {
     type: String,
     optional: true
+  },
+  shopifyOrderNumber: {
+    type: Number,
+    optional: true,
+    index: 1
+  },
+  shopifyOrderId: {
+    type: Number,
+    optional: true
+  },
+  shopifyOrderCreatedAt: {
+    type: Date,
+    optional: true
+  },
+  infoMissing: {
+    type: Boolean,
+    optional: true
+  },
+  itemMissingDetails: {
+    type: Boolean,
+    optional: true
+  },
+  bundleMissingColor: {
+    type: Boolean,
+    optional: true
   }
 }]);
 

@@ -1,4 +1,27 @@
+Template.missingDamaged.onCreated(function () {
+  this.subscribe('ordersWithMissing/DamagedItems');
+});
 Template.missingDamaged.helpers({
+  orders: function () {
+    let thisRoute = Router.current().route.getName();
+    if (thisRoute === 'damaged') {
+      return ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.items.workflow.status': 'damaged'
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      });
+    } else if (thisRoute === 'missing') {
+      return ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.items.workflow.status': 'missing'
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      });
+    }
+  },
   typeOf: function () {
     let thisRoute = Router.current().route.getName();
     if (thisRoute === 'damaged') {

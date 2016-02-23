@@ -54,6 +54,8 @@ Meteor.methods({
     check(itemId, String);
     check(userId, String);
     check(issue, String);
+    // TODO XXX: Check to see if issue is actually a valid status
+
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
@@ -78,6 +80,7 @@ Meteor.methods({
     check(orderId, String);
     check(itemId, String);
     check(issue, String);
+        // TODO XXX: Check to see if issue is actually a valid status
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
@@ -89,7 +92,7 @@ Meteor.methods({
         'advancedFulfillment.items.$.workflow.status': 'returned'
       },
       $addToSet: {
-        'advancedFulfillment.items.$.workflow.status': issue
+        'advancedFulfillment.items.$.workflow.workflow': issue
       }
     });
     return ReactionCore.Collections.Orders.findOne(orderId);
@@ -97,6 +100,7 @@ Meteor.methods({
   'advancedFulfillment/updateAllItemsToSpecificStatus': function (order, desiredItemStatus) {
     check(order, Object);
     check(desiredItemStatus, String);
+    // TODO XXX: Check to see if status is actually a valid status
     let items = order.advancedFulfillment.items;
     _.each(items, function (item) {
       item.workflow.status = desiredItemStatus;

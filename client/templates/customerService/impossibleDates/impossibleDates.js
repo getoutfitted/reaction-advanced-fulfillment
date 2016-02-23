@@ -1,3 +1,7 @@
+Template.impossibleDates.onCreated(function () {
+  this.subscribe('custServOrders');
+});
+
 Template.impossibleDates.helpers({
   impossibleDates: function () {
     return ReactionCore.Collections.Orders.find({
@@ -16,7 +20,7 @@ Template.impossibleDates.helpers({
   }
 });
 
-Template.impossibleDates.onRendered(function () {
+Template.impossibleDateOrder.onRendered(function () {
   $('.picker .input-daterange').datepicker({
     startDate: 'today',
     todayBtn: 'linked',
@@ -27,7 +31,20 @@ Template.impossibleDates.onRendered(function () {
   });
 });
 
-Template.impossibleDates.events({
+Template.impossibleDateOrder.helpers({
+  billingName: function () {
+    return this.billing[0].address.fullName;
+  },
+  billingPhone: function () {
+    return this.billing[0].address.phone;
+  },
+  shippingAddress: function () {
+    let address = this.shipping[0].address;
+    return address.address1 + ' ' + address.city + ', ' + address.region + ' ' + address.postal;
+  }
+});
+
+Template.impossibleDateOrder.events({
   'click .update-rental-dates': function (event) {
     event.preventDefault();
     let orderId = this._id;

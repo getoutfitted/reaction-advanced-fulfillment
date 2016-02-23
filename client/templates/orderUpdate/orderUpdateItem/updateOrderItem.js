@@ -2,7 +2,15 @@ function uniqueFieldValues(allProducts, field) {
   let uniq = _.uniq(_.pluck(allProducts, field));
   return _.without(uniq, undefined);
 }
+
+Template.updateOrderItem.onCreated(function () {
+  this.subscribe('advancedFulfillmentOrder', Router.current().params.orderId);
+});
 Template.updateOrderItem.helpers({
+  order: function () {
+    let orderId = Router.current().params.orderId;
+    return ReactionCore.Collections.Orders.findOne({ _id: orderId});
+  },
   item: function () {
     let itemId = Router.current().params.itemId;
     let order = this;
@@ -13,6 +21,10 @@ Template.updateOrderItem.helpers({
       afItem: afItem
     };
   }
+});
+
+Template.productSelector.onCreated(function () {
+  this.subscribe('afProducts');
 });
 
 Template.productSelector.onRendered(function () {

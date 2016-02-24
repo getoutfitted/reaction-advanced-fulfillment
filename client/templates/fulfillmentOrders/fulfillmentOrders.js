@@ -95,7 +95,7 @@ Template.fulfillmentOrders.onCreated(function () {
       instance.subscribe(result.subscription);
     }
   });
-  Session.set('selectedOrders', []);
+  Session.setDefault('selectedOrders', []);
 });
 
 Template.fulfillmentOrders.helpers({

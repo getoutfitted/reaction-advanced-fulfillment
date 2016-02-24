@@ -213,3 +213,4 @@ Factory.define('afProduct', ReactionCore.Collections.Products,
     cleaningBuffer: 0
   })
 );
+

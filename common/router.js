@@ -23,6 +23,85 @@ afRoutes.route('/', {
   }
 });
 
+afRoutes.route('/picker', {
+  name: 'advancedFulfillment.picker',
+  action: function () {
+    BlazeLayout.render('coreAdminLayout', {
+      layoutHeader: 'layoutHeader',
+      dashboardHeader: '',
+      template: 'advancedFulfillment.picker.search',
+      layoutFooter: 'layoutFooter',
+      dashboardControls: 'dashboardControls'
+    });
+  }
+});
+
+afRoutes.route('/shipping', {
+  name: 'allShipping',
+  action: function () {
+    BlazeLayout.render('coreAdminLayout', {
+      layoutHeader: 'layoutHeader',
+      dashboardHeader: 'afNavbar',
+      template: 'fulfillmentOrders',
+      layoutFooter: 'layoutFooter',
+      dashboardControls: 'dashboardControls'
+    });
+  }
+});
+
+afRoutes.route('/shipping/:date', {
+  name: 'dateShipping',
+  action: function () {
+    BlazeLayout.render('coreAdminLayout', {
+      layoutHeader: 'layoutHeader',
+      dashboardHeader: 'afNavbar',
+      template: 'fulfillmentOrders',
+      layoutFooter: 'layoutFooter',
+      dashboardControls: 'dashboardControls'
+    });
+  }
+});
+
+afRoutes.route('/order/:_id', {
+  name: 'orderDetails',
+  action: function () {
+    BlazeLayout.render('coreAdminLayout', {
+      layoutHeader: 'layoutHeader',
+      dashboardHeader: 'afNavbar',
+      template: 'orderDetails',
+      layoutFooter: 'layoutFooter',
+      dashboardControls: 'dashboardControls'
+    });
+  }
+});
+
+afRoutes.route('/orders/status/:status', {
+  name: 'orderByStatus',
+  action: function () {
+    BlazeLayout.render('coreAdminLayout', {
+      layoutHeader: 'layoutHeader',
+      dashboardHeader: 'afNavbar',
+      template: 'fulfillmentOrder',
+      layoutFooter: 'layoutFooter',
+      dashboardControls: 'dashboardControls'
+    });
+  }
+});
+
+afRoutes.route('/local-deliveries', {
+  name: 'allLocalDeliveries',
+  action: function () {
+    BlazeLayout.render('coreAdminLayout', {
+      layoutHeader: 'layoutHeader',
+      dashboardHeader: 'afNavbar',
+      template: 'fulfillmentOrder',
+      layoutFooter: 'layoutFooter',
+      dashboardControls: 'dashboardControls'
+    });
+  }
+});
+
+
 // advancedFulfillmentController = ShopController.extend({
 //   onBeforeAction: function () {
 //     const advancedFulfillment = ReactionCore.Collections.Packages.findOne({

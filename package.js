@@ -19,12 +19,8 @@ Package.onUse(function (api) {
   api.use('underscore');
   api.use('standard-minifiers');
   api.use('reactioncommerce:core@0.12.0');
-  api.use('kadira:flow-router');
-  api.use('kadira:blaze-layout');
   api.use('reactioncommerce:reaction-router');
   api.use('reactioncommerce:reaction-collections');
-
-  // api.use('iron:router@1.0.12');
   api.use('momentjs:moment@2.10.6');
   api.use('momentjs:twix@0.7.2');
   api.use('meteorhacks:search-source');
@@ -50,12 +46,10 @@ Package.onUse(function (api) {
   ], 'server');
 
   api.addFiles([
-    // 'common/router.js',
     'common/collections.js'
   ], ['client', 'server']);
 
   api.addFiles([
-    'common/router.js',
     'client/search.js',
     'client/templates/helpers.js',
     'client/templates/settings/settings.html',

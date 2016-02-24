@@ -3,7 +3,7 @@ Template.missingDamaged.onCreated(function () {
 });
 Template.missingDamaged.helpers({
   orders: function () {
-    let thisRoute = Router.current().route.getName();
+    let thisRoute = ReactionRouter.current().route.name;
     if (thisRoute === 'damaged') {
       return ReactionCore.Collections.Orders.find({
         'advancedFulfillment.items.workflow.status': 'damaged'
@@ -23,7 +23,7 @@ Template.missingDamaged.helpers({
     }
   },
   typeOf: function () {
-    let thisRoute = Router.current().route.getName();
+    let thisRoute = ReactionRouter.current().route.name;
     if (thisRoute === 'damaged') {
       return 'Damaged';
     } else if (thisRoute === 'missing') {
@@ -35,7 +35,7 @@ Template.missingDamaged.helpers({
 Template.missingDamagedOrder.helpers({
   missingDamagedItems: function () {
     let items = this.advancedFulfillment.items;
-    let thisRoute = Router.current().route.getName();
+    let thisRoute = ReactionRouter.current().route.name;
     if (thisRoute === 'damaged') {
       return  _.filter(items, function (item) {
         return item.workflow.status === 'damaged';
@@ -59,7 +59,7 @@ Template.missingDamagedOrder.helpers({
 
 Template.missingDamagedItem.helpers({
   missing: function () {
-    let missing = Router.current().route.getName();
+    let missing = ReactionRouter.current().route.name;
     if (missing === 'missing') {
       return true;
     }

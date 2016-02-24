@@ -10,7 +10,7 @@ function fullDay(rawDate) {
 Template.returnOrders.onCreated(function () {
   let instance = this;
   instance.autorun(function () {
-    let date = Router.current().params.date;
+    let date = ReactionRouter.current().params.date;
     if (date) {
       instance.subscribe('ordersReturningOnDate', date);
     } else {
@@ -22,7 +22,7 @@ Template.returnOrders.onCreated(function () {
 
 Template.returnOrders.helpers({
   orders: function () {
-    let params = Router.current().params.date;
+    let params = ReactionRouter.current().params.date;
     if (params) {
       let dayTime = fullDay(params);
       return ReactionCore.Collections.Orders.find({

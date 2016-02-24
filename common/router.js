@@ -1,105 +1,105 @@
-// let shopHandle;
-// Tracker.autorun(function () {
-//   if (ReactionCore.ready()) {
-//     shopHandle = ReactionCore.getShopName().toLowerCase();
+// // let shopHandle;
+// // Tracker.autorun(function () {
+// //   if (ReactionCore.ready()) {
+// //     shopHandle = ReactionCore.getShopName().toLowerCase();
+// //   }
+// // });
+
+// let afRoutes = ReactionRouter.group({
+//   prefix: '/reaction/dashboard/advanced-fulfillment',
+//   name: 'advancedFulfillment'
+// });
+
+// afRoutes.route('/', {
+//   name: 'dashboard/advanced-fulfillment',
+//   action: function () {
+//     BlazeLayout.render('coreAdminLayout', {
+//       layoutHeader: 'layoutHeader',
+//       dashboardHeader: 'dashboardHeader',
+//       template: 'fulfillmentOrders',
+//       layoutFooter: 'layoutFooter',
+//       dashboardControls: 'dashboardControls'
+//     });
 //   }
 // });
 
-let afRoutes = ReactionRouter.group({
-  prefix: '/reaction/dashboard/advanced-fulfillment',
-  name: 'advancedFulfillment'
-});
+// afRoutes.route('/picker', {
+//   name: 'advancedFulfillment.picker',
+//   action: function () {
+//     BlazeLayout.render('coreAdminLayout', {
+//       layoutHeader: 'layoutHeader',
+//       dashboardHeader: '',
+//       template: 'advancedFulfillment.picker.search',
+//       layoutFooter: 'layoutFooter',
+//       dashboardControls: 'dashboardControls'
+//     });
+//   }
+// });
 
-afRoutes.route('/', {
-  name: 'dashboard/advanced-fulfillment',
-  action: function () {
-    BlazeLayout.render('coreAdminLayout', {
-      layoutHeader: 'layoutHeader',
-      dashboardHeader: 'dashboardHeader',
-      template: 'fulfillmentOrders',
-      layoutFooter: 'layoutFooter',
-      dashboardControls: 'dashboardControls'
-    });
-  }
-});
+// afRoutes.route('/shipping', {
+//   name: 'allShipping',
+//   action: function () {
+//     BlazeLayout.render('coreAdminLayout', {
+//       layoutHeader: 'layoutHeader',
+//       dashboardHeader: 'afNavbar',
+//       template: 'fulfillmentOrders',
+//       layoutFooter: 'layoutFooter',
+//       dashboardControls: 'dashboardControls'
+//     });
+//   }
+// });
 
-afRoutes.route('/picker', {
-  name: 'advancedFulfillment.picker',
-  action: function () {
-    BlazeLayout.render('coreAdminLayout', {
-      layoutHeader: 'layoutHeader',
-      dashboardHeader: '',
-      template: 'advancedFulfillment.picker.search',
-      layoutFooter: 'layoutFooter',
-      dashboardControls: 'dashboardControls'
-    });
-  }
-});
+// afRoutes.route('/shipping/:date', {
+//   name: 'dateShipping',
+//   action: function () {
+//     BlazeLayout.render('coreAdminLayout', {
+//       layoutHeader: 'layoutHeader',
+//       dashboardHeader: 'afNavbar',
+//       template: 'fulfillmentOrders',
+//       layoutFooter: 'layoutFooter',
+//       dashboardControls: 'dashboardControls'
+//     });
+//   }
+// });
 
-afRoutes.route('/shipping', {
-  name: 'allShipping',
-  action: function () {
-    BlazeLayout.render('coreAdminLayout', {
-      layoutHeader: 'layoutHeader',
-      dashboardHeader: 'afNavbar',
-      template: 'fulfillmentOrders',
-      layoutFooter: 'layoutFooter',
-      dashboardControls: 'dashboardControls'
-    });
-  }
-});
+// afRoutes.route('/order/:_id', {
+//   name: 'orderDetails',
+//   action: function () {
+//     BlazeLayout.render('coreAdminLayout', {
+//       layoutHeader: 'layoutHeader',
+//       dashboardHeader: 'afNavbar',
+//       template: 'orderDetails',
+//       layoutFooter: 'layoutFooter',
+//       dashboardControls: 'dashboardControls'
+//     });
+//   }
+// });
 
-afRoutes.route('/shipping/:date', {
-  name: 'dateShipping',
-  action: function () {
-    BlazeLayout.render('coreAdminLayout', {
-      layoutHeader: 'layoutHeader',
-      dashboardHeader: 'afNavbar',
-      template: 'fulfillmentOrders',
-      layoutFooter: 'layoutFooter',
-      dashboardControls: 'dashboardControls'
-    });
-  }
-});
+// afRoutes.route('/orders/status/:status', {
+//   name: 'orderByStatus',
+//   action: function () {
+//     BlazeLayout.render('coreAdminLayout', {
+//       layoutHeader: 'layoutHeader',
+//       dashboardHeader: 'afNavbar',
+//       template: 'fulfillmentOrder',
+//       layoutFooter: 'layoutFooter',
+//       dashboardControls: 'dashboardControls'
+//     });
+//   }
+// });
 
-afRoutes.route('/order/:_id', {
-  name: 'orderDetails',
-  action: function () {
-    BlazeLayout.render('coreAdminLayout', {
-      layoutHeader: 'layoutHeader',
-      dashboardHeader: 'afNavbar',
-      template: 'orderDetails',
-      layoutFooter: 'layoutFooter',
-      dashboardControls: 'dashboardControls'
-    });
-  }
-});
-
-afRoutes.route('/orders/status/:status', {
-  name: 'orderByStatus',
-  action: function () {
-    BlazeLayout.render('coreAdminLayout', {
-      layoutHeader: 'layoutHeader',
-      dashboardHeader: 'afNavbar',
-      template: 'fulfillmentOrder',
-      layoutFooter: 'layoutFooter',
-      dashboardControls: 'dashboardControls'
-    });
-  }
-});
-
-afRoutes.route('/local-deliveries', {
-  name: 'allLocalDeliveries',
-  action: function () {
-    BlazeLayout.render('coreAdminLayout', {
-      layoutHeader: 'layoutHeader',
-      dashboardHeader: 'afNavbar',
-      template: 'fulfillmentOrder',
-      layoutFooter: 'layoutFooter',
-      dashboardControls: 'dashboardControls'
-    });
-  }
-});
+// afRoutes.route('/local-deliveries', {
+//   name: 'allLocalDeliveries',
+//   action: function () {
+//     BlazeLayout.render('coreAdminLayout', {
+//       layoutHeader: 'layoutHeader',
+//       dashboardHeader: 'afNavbar',
+//       template: 'fulfillmentOrder',
+//       layoutFooter: 'layoutFooter',
+//       dashboardControls: 'dashboardControls'
+//     });
+//   }
+// });
 
 
 // advancedFulfillmentController = ShopController.extend({

@@ -15,12 +15,12 @@
       <tbody>
         {{#each nonWarehouseOrders }}
           <tr>
-            <td><a href="{{pathFor 'orderDetails'}}"><strong>{{shopifyOrderNumber}}</strong></a></td>
+            <td><a href="{{pathFor 'orderDetails' _id=_id}}"><strong>{{shopifyOrderNumber}}</strong></a></td>
             <td>{{formattedDate startTime}}</td>
-            <td>{{billingName this}}</td>
-            <td>{{billingPhone this}}</td>
-            <td>{{email this}}</td>
-            <td>{{shippingAddress this}}</td>
+            <td>{{billingName}}</td>
+            <td>{{billingPhone}}</td>
+            <td>{{email}}</td>
+            <td>{{shippingAddress}}</td>
           </tr>
         {{/each}}
       </tbody>

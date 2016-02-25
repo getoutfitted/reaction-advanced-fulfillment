@@ -54,6 +54,7 @@ Template.afNavbar.events({
     event.preventDefault();
     let searchValue = event.target.orderNumber.value;
     let order = null;
+
     OrderSearch.search(searchValue);
     // let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue, 10)}]});
     if (OrderSearch.getStatus() === 'loaded') {

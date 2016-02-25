@@ -55,10 +55,7 @@ Meteor.publish('searchOrders', function () {
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
-      'shopId': shopId,
-      'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderActive
-      }
+      'shopId': shopId
     }, {
       fields: {
         _id: 1,

@@ -23,7 +23,6 @@ Package.onUse(function (api) {
   api.use('reactioncommerce:reaction-collections');
   api.use('momentjs:moment@2.10.6');
   api.use('momentjs:twix@0.7.2');
-  api.use('meteorhacks:search-source');
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');

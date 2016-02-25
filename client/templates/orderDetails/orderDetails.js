@@ -11,8 +11,10 @@ function labelMaker(word, bootStrapColor = 'primary') {
 }
 
 Template.orderDetails.onCreated(function () {
-  let orderId = ReactionRouter.current().params._id;
-  this.subscribe('advancedFulfillmentOrder', orderId);
+  this.autorun(() => {
+    let orderId = ReactionRouter.getParam('_id');
+    this.subscribe('advancedFulfillmentOrder', orderId);
+  });
 });
 
 Template.orderDetails.helpers({

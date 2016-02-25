@@ -11,13 +11,13 @@ function labelMaker(word, bootStrapColor = 'primary') {
 }
 
 Template.orderDetails.onCreated(function () {
-  let orderId = Router.current().params._id;
+  let orderId = ReactionRouter.current().params._id;
   this.subscribe('advancedFulfillmentOrder', orderId);
 });
 
 Template.orderDetails.helpers({
   order: function () {
-    let orderId = Router.current().params._id;
+    let orderId = ReactionRouter.current().params._id;
     return ReactionCore.Collections.Orders.findOne({_id: orderId});
   },
   currentStatus: function () {
@@ -192,7 +192,7 @@ Template.orderDetails.helpers({
 });
 
 Template.orderDetails.onRendered(function () {
-  let orderId = Router.current().params._id;
+  let orderId = ReactionRouter.current().params._id;
   $('#barcode').barcode(orderId, 'code128', {
     barWidth: 2,
     barHeight: 150,

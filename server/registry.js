@@ -64,22 +64,22 @@ ReactionCore.registerPackage({
     route: '/dashboard/advanced-fulfillment/order/pdf/:_id',
     name: 'advancedFulfillmentPDF',
     template: 'advancedFulfillmentPDF',
-    workflow: 'printLayout'
+    workflow: 'afPrint'
   }, {
     route: '/dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id',
     name: 'localDeliveryLabelPDF',
     template: 'localDeliveryLabelPDF',
-    workflow: 'printLayout'
+    workflow: 'afPrint'
   }, {
     route: '/dashboard/advanced-fulfillment/orders/pdf/date/:date',
     name: 'orders.printAllForDate',
     template: 'advancedFulfillmentOrdersPrint',
-    workflow: 'printLayout'
+    workflow: 'afPrint'
   }, {
     route: '/dashboard/advanced-fulfillment/orders/pdf/selected',
     name: 'orders.printSelected',
     template: 'advancedFulfillmentOrdersPrint',
-    workflow: 'printLayout'
+    workflow: 'afPrint'
   }, {
     route: '/dashboard/advanced-fulfillment/returns',
     name: 'returns',
@@ -141,6 +141,7 @@ ReactionCore.registerPackage({
     template: 'nonWarehouseOrders',
     workflow: 'afWorkflow'
   }],
+
   layout: [{
     workflow: 'afWorkflow',
     layout: 'coreLayout',
@@ -155,6 +156,21 @@ ReactionCore.registerPackage({
       dashboardControls: 'accountsDashboardControls',
       dashboardHeaderControls: '',
       adminControlsFooter: 'adminControlsFooter'
+    }
+  }, {
+    workflow: 'afPrint',
+    layout: 'printLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'advancedFulfillmentOrdersPrint',
+      layoutHeader: '',
+      layoutFooter: '',
+      notFound: 'notFound',
+      dashboardHeader: '',
+      dashboardControls: '',
+      dashboardHeaderControls: '',
+      adminControlsFooter: ''
     }
   }]
 });

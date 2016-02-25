@@ -161,7 +161,7 @@ Template.fulfillmentOrders.events({
     if (event.currentTarget.value === 'print') {
       localStorage.selectedOrdersToPrint = JSON.stringify(Session.get('selectedOrders'));
       Meteor.call('advancedFulfillment/printSelectedOrders', Session.get('selectedOrders'));
-      window.open(window.location.origin + Router.path('orders.printSelected'));
+      window.open(window.location.origin + ReactionRouter.path('orders.printSelected'));
     } else if (event.currentTarget.value === 'ship') {
       Meteor.call('advancedFulfillment/shipSelectedOrders', Session.get('selectedOrders'));
     } else if (event.currentTarget.value === 'undoShipped') {
@@ -278,7 +278,7 @@ Template.fulfillmentOrder.helpers({
 
 Template.fulfillmentOrder.events({
   'click .orderRow': function (event) {
-    Router.go('orderDetails', {_id: $(event.currentTarget).data('id')});
+    ReactionRouter.go('orderDetails', {_id: $(event.currentTarget).data('id')});
   },
   'click .advanceOrder': function (event) {
     event.preventDefault();
@@ -288,7 +288,7 @@ Template.fulfillmentOrder.events({
     let orderId = this._id;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
-    Router.go('orderDetails', {_id: orderId});
+    ReactionRouter.go('orderDetails', {_id: orderId});
   },
   'click .selfAssignOrder': function (event) {
     event.preventDefault();

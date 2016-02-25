@@ -1,11 +1,12 @@
 Template.localDeliveryLabelPDF.onCreated(function () {
-  const orderId = Router.current().params._id;
+  Blaze._allowJavascriptUrls();
+  const orderId = ReactionRouter.current().params._id;
   this.subscribe('advancedFulfillmentOrder', orderId);
 });
 
 Template.localDeliveryLabelPDF.helpers({
   order: function () {
-    const orderId = Router.current().params._id;
+    const orderId = ReactionRouter.current().params._id;
     return ReactionCore.Collections.Orders.findOne({
       _id: orderId
     });

@@ -111,7 +111,7 @@ Template.returnOrder.helpers({
 
 Template.returnOrder.events({
   'click .orderRow': function (event) {
-    Router.go('orderDetails', {_id: $(event.currentTarget).data('id')});
+    ReactionRouter.go('orderDetails', {_id: $(event.currentTarget).data('id')});
   },
   'click label .fa-check-square-o, click label .fa-square-o': function (event) {
     event.stopPropagation();

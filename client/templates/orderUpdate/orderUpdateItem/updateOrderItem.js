@@ -4,15 +4,15 @@ function uniqueFieldValues(allProducts, field) {
 }
 
 Template.updateOrderItem.onCreated(function () {
-  this.subscribe('advancedFulfillmentOrder', Router.current().params.orderId);
+  this.subscribe('advancedFulfillmentOrder', ReactionRouter.current().params.orderId);
 });
 Template.updateOrderItem.helpers({
   order: function () {
-    let orderId = Router.current().params.orderId;
+    let orderId = ReactionRouter.current().params.orderId;
     return ReactionCore.Collections.Orders.findOne({ _id: orderId});
   },
   item: function () {
-    let itemId = Router.current().params.itemId;
+    let itemId = ReactionRouter.current().params.itemId;
     let order = this;
     let regItem = _.findWhere(order.items, {_id: itemId});
     let afItem = _.findWhere(order.advancedFulfillment.items, {_id: itemId});
@@ -38,8 +38,8 @@ Template.productSelector.onRendered(function () {
 
 Template.productSelector.helpers({
   addItem: function () {
-    let orderId = Router.current().params.orderId;
-    let itemId = Router.current().params.itemId;
+    let orderId = ReactionRouter.current().params.orderId;
+    let itemId = ReactionRouter.current().params.itemId;
     if (orderId && itemId) {
       return false;
     }
@@ -189,7 +189,7 @@ Template.productSelector.events({
     event.preventDefault();
     let order = this;
     let user = Meteor.user();
-    let oldItemId = Router.current().params.itemId;
+    let oldItemId = ReactionRouter.current().params.itemId;
     let type = Session.get('productType-' + this._id);
     let gender = Session.get('productGender-' + this._id);
     let title = Session.get('productTitle-' + this._id);
@@ -202,7 +202,7 @@ Template.productSelector.events({
     Session.set('productTitle-' + this._id, undefined);
     Session.set('productVariant-' + this._id, undefined);
     Session.set('productType-' + this._id, undefined);
-    Router.go('updateOrder', {_id: order._id});
+    ReactionRouter.go('updateOrder', {_id: order._id});
   },
   'click .add-item': function (event) {
     event.preventDefault();

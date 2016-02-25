@@ -3,19 +3,19 @@ function findOrderItem(order, itemId) {
 }
 
 Template.updateOrder.onCreated(function () {
-  const orderId = Router.current().params._id;
+  const orderId = ReactionRouter.current().params._id;
   this.subscribe('afProducts');
   this.subscribe('advancedFulfillmentOrder', orderId);
 });
 
 Template.updateOrder.onRendered(function () {
-  const orderId = Router.current().params._id;
+  const orderId = ReactionRouter.current().params._id;
   Session.setDefault('cancel-order-' + orderId, false);
 });
 
 Template.updateOrder.helpers({
   order: function () {
-    const orderId = Router.current().params._id;
+    const orderId = ReactionRouter.current().params._id;
     return ReactionCore.Collections.Orders.findOne({ _id: orderId});
   },
   afItems: function () {

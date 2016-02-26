@@ -3,9 +3,11 @@ function findOrderItem(order, itemId) {
 }
 
 Template.updateOrder.onCreated(function () {
-  const orderId = ReactionRouter.current().params._id;
-  this.subscribe('afProducts');
-  this.subscribe('advancedFulfillmentOrder', orderId);
+  this.autorun(() => {
+    let orderId = ReactionRouter.getParam('_id');
+    this.subscribe('afProducts');
+    this.subscribe('advancedFulfillmentOrder', orderId);
+  });
 });
 
 Template.updateOrder.onRendered(function () {

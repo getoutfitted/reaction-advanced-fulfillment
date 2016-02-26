@@ -1,25 +1,21 @@
 Template.csDetails.helpers({
-  billingName: function (order) {
-    return order.billing[0].address.fullName;
+  test: function () {
+    debugger
   },
-  billingPhone: function (order) {
-    return order.billing[0].address.phone;
+  billingName: function () {
+    return this.billing[0].address.fullName;
   },
-  email: function (order) {
-    return order.email;
+  billingPhone: function () {
+    return this.billing[0].address.phone;
   },
   shippingName: function () {
-    return this.order.shipping[0].address.fullName;
+    return this.shipping[0].address.fullName;
   },
-  shippingPhone: function (order) {
-    return order.shipping[0].address.phone;
+  shippingPhone: function () {
+    return this.shipping[0].address.phone;
   },
-  shippingAddress: function (order) {
-    let address = order.shipping[0].address;
+  shippingAddress: function () {
+    let address = this.shipping[0].address;
     return address.address1 + ' ' + address.address2 + ' ' + address.city + ', ' + address.region + ' ' + address.postal;
   }
-  // shippingAddress: function (order) {
-  //   let address = order.shipping[0].address;
-  //   return '<p>' + address.fullName + '</p><p>' + address.address1 + ' ' + address.address2 + '</p><p>' + address.city + ', ' + address.region + ', ' + address.postal + '</p>';
-  // }
 });

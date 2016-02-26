@@ -19,7 +19,7 @@ Template.orderDetails.onCreated(function () {
 
 Template.orderDetails.helpers({
   order: function () {
-    let orderId = ReactionRouter.current().params._id;
+    let orderId = ReactionRouter.getParam('_id');
     return ReactionCore.Collections.Orders.findOne({_id: orderId});
   },
   currentStatus: function () {

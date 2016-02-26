@@ -23,7 +23,7 @@ function context(routeName) {
       'shopifyOrderNumber': 1
     }
   };
-  const rawDate = ReactionRouter.current().params.date;
+  const rawDate = ReactionRouter.getParam('date');
   let dayTime;
   switch (routeName) {
   case 'allLocalDeliveries':
@@ -36,7 +36,7 @@ function context(routeName) {
       sortingOrder: baseSorting
     };
   case 'orderByStatus':
-    let status = ReactionRouter.current().params.status;
+    let status = ReactionRouter.getParam('status');
     let byStatusFilter = _.extend(baseFilter, {
       'advancedFulfillment.workflow.status': status
     });
@@ -82,17 +82,16 @@ function context(routeName) {
 }
 
 Template.fulfillmentOrders.onCreated(function () {
-  let instance = this;
-  instance.autorun(function () {
-    let currentRoute = ReactionRouter.current().route.name;
+  this.autorun(() => {
+    let currentRoute = ReactionRouter.getRouteName();
     // let currentRoute = Router.current().route.getName();
     let result = context(currentRoute);
-    let params = ReactionRouter.current().params.status || ReactionRouter.current().params.date;
+    let params = ReactionRouter.getParam('status') || ReactionRouter.getParam('date');
 
     if (params) {
-      instance.subscribe(result.subscription, params);
+      this.subscribe(result.subscription, params);
     } else {
-      instance.subscribe(result.subscription);
+      this.subscribe(result.subscription);
     }
   });
   Session.setDefault('selectedOrders', []);
@@ -100,7 +99,7 @@ Template.fulfillmentOrders.onCreated(function () {
 
 Template.fulfillmentOrders.helpers({
   orders: function () {
-    const currentRoute = ReactionRouter.current().route.name;
+    const currentRoute = ReactionRouter.getRouteName();
     let result = context(currentRoute);
     return ReactionCore.Collections.Orders.find(
       result.filters,
@@ -108,6 +107,9 @@ Template.fulfillmentOrders.helpers({
     );
   },
   routeStatus: function () {
+    Tracker.autorun(() => {
+      ReactionRouter.watchPathChange();
+    });
     let fullRoute = ReactionRouter.current().path;
     let routeComponents = fullRoute.split('/');
     if (_.contains(routeComponents, 'shipping')) {
@@ -117,20 +119,20 @@ Template.fulfillmentOrders.helpers({
     } else if (_.contains(routeComponents, 'local-deliveries')) {
       return 'All Local Deliveries';
     } else if (_.contains(routeComponents, 'local-delivery')) {
-      return 'Local Deliveries for ' + ReactionRouter.current().params.date;
-    } else if (ReactionRouter.current().params.status) {
-      return AdvancedFulfillment.humanOrderStatuses[ReactionRouter.current().params.status] + ' Orders';
+      return 'Local Deliveries for ' + ReactionRouter.getParam('date');
+    } else if (ReactionRouter.getParam('status')) {
+      return AdvancedFulfillment.humanOrderStatuses[ReactionRouter.getParam('status')] + ' Orders';
     }
   },
   showPrintOrdersLink: function () {
-    let currentRoute = ReactionRouter.current().route.name;
+    let currentRoute = ReactionRouter.getRouteName();
     if (currentRoute === 'dateShipping') {
       return true;
     }
     return false;
   },
   shippingDate: function () {
-    return ReactionRouter.current().params.date;
+    return ReactionRouter.getParam('date');
   },
   ordersSelected: function () {
     return Session.get('selectedOrders').length;
@@ -196,14 +198,13 @@ Template.fulfillmentOrder.helpers({
     return this.shipping[0].address.city + ', ' + this.shipping[0].address.region;
   },
   orderSelected: function () {
-    // Session.setDefault('selectedOrders', []);
     return Session.get('selectedOrders').indexOf(this._id) !== -1;
   },
   toBeShipped: function () {
     let fullRoute = ReactionRouter.current().path;
     let routeComponents = fullRoute.split('/');
     let toBeShipped = _.intersection(routeComponents, ['shipping', 'local-delivery', 'local-deliveries']);
-    let params = ReactionRouter.current().params.status;
+    let params = ReactionRouter.getParam('status');
     let active = _.contains(AdvancedFulfillment.orderActive, params);
     if (toBeShipped.length > 0 || active) {
       return true;

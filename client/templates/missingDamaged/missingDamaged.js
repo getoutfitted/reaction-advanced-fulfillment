@@ -1,9 +1,13 @@
 Template.missingDamaged.onCreated(function () {
-  this.subscribe('ordersWithMissing/DamagedItems');
+  this.autorun(() => {
+    ReactionRouter.watchPathChange();
+    this.subscribe('ordersWithMissing/DamagedItems');
+  });
 });
+
 Template.missingDamaged.helpers({
   orders: function () {
-    let thisRoute = ReactionRouter.current().route.name;
+    let thisRoute = ReactionRouter.getRouteName();
     if (thisRoute === 'damaged') {
       return ReactionCore.Collections.Orders.find({
         'advancedFulfillment.items.workflow.status': 'damaged'
@@ -23,7 +27,7 @@ Template.missingDamaged.helpers({
     }
   },
   typeOf: function () {
-    let thisRoute = ReactionRouter.current().route.name;
+    let thisRoute = ReactionRouter.getRouteName();
     if (thisRoute === 'damaged') {
       return 'Damaged';
     } else if (thisRoute === 'missing') {
@@ -35,7 +39,7 @@ Template.missingDamaged.helpers({
 Template.missingDamagedOrder.helpers({
   missingDamagedItems: function () {
     let items = this.advancedFulfillment.items;
-    let thisRoute = ReactionRouter.current().route.name;
+    let thisRoute = ReactionRouter.getRouteName();
     if (thisRoute === 'damaged') {
       return  _.filter(items, function (item) {
         return item.workflow.status === 'damaged';
@@ -59,7 +63,7 @@ Template.missingDamagedOrder.helpers({
 
 Template.missingDamagedItem.helpers({
   missing: function () {
-    let missing = ReactionRouter.current().route.name;
+    let missing = ReactionRouter.getRouteName();
     if (missing === 'missing') {
       return true;
     }

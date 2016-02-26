@@ -8,13 +8,12 @@ function fullDay(rawDate) {
   };
 }
 Template.returnOrders.onCreated(function () {
-  let instance = this;
-  instance.autorun(function () {
+  this.autorun(() => {
     let date = ReactionRouter.current().params.date;
     if (date) {
-      instance.subscribe('ordersReturningOnDate', date);
+      this.subscribe('ordersReturningOnDate', date);
     } else {
-      instance.subscribe('afReturnOrders');
+      this.subscribe('afReturnOrders');
     }
   });
   Session.setDefault('returnOrders', []);
@@ -22,7 +21,7 @@ Template.returnOrders.onCreated(function () {
 
 Template.returnOrders.helpers({
   orders: function () {
-    let params = ReactionRouter.current().params.date;
+    let params = ReactionRouter.getParam('date');
     if (params) {
       let dayTime = fullDay(params);
       return ReactionCore.Collections.Orders.find({

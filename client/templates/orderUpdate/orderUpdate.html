@@ -84,6 +84,7 @@
 </template>
 
 <template name='updateCustomerDetails'>
+{{#if Template.subscriptionsReady}}
   <div class='container'>
     <div class="row">
       <div class='col-xs-6 col-md-4 text-center'>
@@ -126,19 +127,7 @@
           <button type="submit" class="btn btn-success btn-block">Update Contact Info</button>
         </form>
       </div>
-      <div class="col-xs-12 col-md-4 text-center">
-        <div class="form-group row">
-          <p><strong>Update Ski Dates</strong></p>
-          <div class='picker' id='{{_id}}'>
-            <div class='input-daterange input-group' id='datepicker'>
-              <input type='text' class='form-control' name='start' placeholder="First Ski Day" value={{formatInputDate startTime}} />
-              <span class='input-group-addon'>to</span>
-              <input type='text' class='form-control' name='end' placeholder="Last Ski Day" value={{formatInputDate endTime}} />
-            </div>
-          </div>
-        </div>
-        <button class='btn btn-success btn-block update-rental-dates'>Update Ski Dates</button>
-      </div>
+      {{> updateCustomerDates}}
     </div>
     <div class='row text-center'>
       <hr>
@@ -155,5 +144,22 @@
         </div>
     {{/if}}
     </div>
+  </div>
+  {{/if}}
+</template>
+
+<template name='updateCustomerDates'>
+  <div class="col-xs-12 col-md-4 text-center">
+    <div class="form-group row">
+      <p><strong>Update Ski Dates</strong></p>
+      <div class='picker' id='{{_id}}'>
+        <div class='input-daterange input-group' id='datepicker'>
+          <input type='text' class='form-control' name='start' placeholder="First Ski Day" value={{formatInputDate startTime}} />
+          <span class='input-group-addon'>to</span>
+          <input type='text' class='form-control' name='end' placeholder="Last Ski Day" value={{formatInputDate endTime}} />
+        </div>
+      </div>
+    </div>
+    <button class='btn btn-success btn-block update-rental-dates'>Update Ski Dates</button>
   </div>
 </template>

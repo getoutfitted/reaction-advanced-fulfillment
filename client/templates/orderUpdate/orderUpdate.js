@@ -92,6 +92,14 @@ Template.updateOrder.helpers({
     return addingItems || false;
   }
 });
+
+Template.updateCustomerDetails.onCreated(function () {
+  this.autorun(() => {
+    let orderId = ReactionRouter.getParam('_id');
+    this.subscribe('advancedFulfillmentOrder', orderId);
+  });
+});
+
 Template.updateCustomerDetails.helpers({
   address: function (param) {
     return this.shipping[0].address[param];
@@ -136,7 +144,7 @@ Template.updateOrder.events({
   }
 });
 
-Template.updateCustomerDetails.onRendered(function () {
+Template.updateCustomerDates.onRendered(function () {
   $('.picker .input-daterange').datepicker({
     startDate: 'today',
     todayBtn: 'linked',
@@ -147,7 +155,7 @@ Template.updateCustomerDetails.onRendered(function () {
   });
 });
 
-Template.updateCustomerDetails.events({
+Template.updateCustomerDates.events({
   'click .update-rental-dates': function (event) {
     event.preventDefault();
     let orderId = this._id;
@@ -159,7 +167,10 @@ Template.updateCustomerDetails.events({
     Alerts.add('Rental Dates updated', 'success', {
       autoHide: true
     });
-  },
+  }
+});
+
+Template.updateCustomerDetails.events({
   'submit #updateShippingAddressForm': function (event) {
     event.preventDefault();
     const form = event.currentTarget;

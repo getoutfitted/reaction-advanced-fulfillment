@@ -4,15 +4,15 @@ function uniqueFieldValues(allProducts, field) {
 }
 
 Template.updateOrderItem.onCreated(function () {
-  this.subscribe('advancedFulfillmentOrder', ReactionRouter.current().params.orderId);
+  this.subscribe('advancedFulfillmentOrder', ReactionRouter.getParam('orderId'));
 });
 Template.updateOrderItem.helpers({
   order: function () {
-    let orderId = ReactionRouter.current().params.orderId;
+    let orderId = ReactionRouter.getParam('orderId');
     return ReactionCore.Collections.Orders.findOne({ _id: orderId});
   },
   item: function () {
-    let itemId = ReactionRouter.current().params.itemId;
+    let itemId = ReactionRouter.getParam('itemId');
     let order = this;
     let regItem = _.findWhere(order.items, {_id: itemId});
     let afItem = _.findWhere(order.advancedFulfillment.items, {_id: itemId});
@@ -38,8 +38,8 @@ Template.productSelector.onRendered(function () {
 
 Template.productSelector.helpers({
   addItem: function () {
-    let orderId = ReactionRouter.current().params.orderId;
-    let itemId = ReactionRouter.current().params.itemId;
+    let orderId = ReactionRouter.getParam('orderId');
+    let itemId = ReactionRouter.getParam('itemId');
     if (orderId && itemId) {
       return false;
     }
@@ -189,7 +189,7 @@ Template.productSelector.events({
     event.preventDefault();
     let order = this;
     let user = Meteor.user();
-    let oldItemId = ReactionRouter.current().params.itemId;
+    let oldItemId = ReactionRouter.getParam('itemId');
     let type = Session.get('productType-' + this._id);
     let gender = Session.get('productGender-' + this._id);
     let title = Session.get('productTitle-' + this._id);

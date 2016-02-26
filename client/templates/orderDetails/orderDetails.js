@@ -194,7 +194,7 @@ Template.orderDetails.helpers({
 });
 
 Template.orderDetails.onRendered(function () {
-  let orderId = ReactionRouter.current().params._id;
+  let orderId = ReactionRouter.getParam('_id');
   $('#barcode').barcode(orderId, 'code128', {
     barWidth: 2,
     barHeight: 150,

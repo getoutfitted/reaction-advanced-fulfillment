@@ -84,7 +84,6 @@ function context(routeName) {
 Template.fulfillmentOrders.onCreated(function () {
   this.autorun(() => {
     let currentRoute = ReactionRouter.getRouteName();
-    // let currentRoute = Router.current().route.getName();
     let result = context(currentRoute);
     let params = ReactionRouter.getParam('status') || ReactionRouter.getParam('date');
 

@@ -9,7 +9,7 @@ function fullDay(rawDate) {
 }
 Template.returnOrders.onCreated(function () {
   this.autorun(() => {
-    let date = ReactionRouter.current().params.date;
+    let date = ReactionRouter.getParam('date');
     if (date) {
       this.subscribe('ordersReturningOnDate', date);
     } else {

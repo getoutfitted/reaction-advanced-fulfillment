@@ -11,13 +11,13 @@ Template.updateOrder.onCreated(function () {
 });
 
 Template.updateOrder.onRendered(function () {
-  const orderId = ReactionRouter.current().params._id;
+  const orderId = ReactionRouter.getParam('_id');
   Session.setDefault('cancel-order-' + orderId, false);
 });
 
 Template.updateOrder.helpers({
   order: function () {
-    const orderId = ReactionRouter.current().params._id;
+    const orderId = ReactionRouter.getParam('_id');
     return ReactionCore.Collections.Orders.findOne({ _id: orderId});
   },
   afItems: function () {

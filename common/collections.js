@@ -458,6 +458,14 @@ ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schema
   bundleMissingColor: {
     type: Boolean,
     optional: true
+  },
+  startTime: {
+    type: Date,
+    optional: true
+  },
+  endTime: {
+    type: Date,
+    optional: true
   }
 }]);
 

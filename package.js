@@ -26,11 +26,12 @@ Package.onUse(function (api) {
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  api.use('getoutfitted:reaction-rental-products@0.3.0');
+  // api.use('getoutfitted:reaction-rental-products@0.3.0');
   api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
 
   api.addFiles('lib/advancedFulfillment.js');
   api.addFiles('lib/fedex.js', 'server');
+  api.addFiles('lib/advancedFulfillmentFunctions.js');
 
   api.addFiles([
     'server/registry.js',

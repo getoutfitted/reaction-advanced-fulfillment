@@ -121,6 +121,8 @@ Package.onUse(function (api) {
   // Public assets go at the bottom, should load last.
   api.addAssets('public/images/go-logo-1000.png', 'client');
   api.addAssets('public/images/logo-horizontal.png', 'client');
+
+  api.export("AdvancedFulfillment");
 });
 
 

@@ -12,35 +12,21 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
 
   const shippingAddress = AdvancedFulfillment.addressFormatForFedExApi(order.shipping[0].address);
   const localDelivery = AdvancedFulfillment.determineLocalDelivery(order.shipping[0].address.postal);
-  let transitTime;
-  localDelivery ? transitTime = 0 : transitTime  = AdvancedFulfillment.FedExApi.getFedexTransitTime(shippingAddress);
+
+  let transitTime = localDelivery ? 0 : AdvancedFulfillment.FedExApi.getFedexTransitTime(shippingAddress);
+  if (transitTime === false) {
+    transitTime = afPackage.settings.buffer.shipping; // If no fedEx setting to general date
+  }
+  // localDelivery ? transitTime = 0 : transitTime  = AdvancedFulfillment.FedExApi.getFedexTransitTime(shippingAddress);
+
   // MOCKING OUR START TIME and END TIME
   order.startTime = new Date (2016, 2, 15); // Tue March 15, 2015
+  order.endTime = new Date(2016, 2, 25); // Friday March 25
 
   let arrivalDate = AdvancedFulfillment.date.determineArrivalDate(order.startTime);
+  let shipReturnBy = AdvancedFulfillment.date.determineShipReturnByDate(order.endTime);
   let shipmentDate = AdvancedFulfillment.date.determineShipmentDate(arrivalDate, transitTime);
-
-  // if (!order.startTime) {
-  //   arrivalDate = 'TODO';
-  // }
-
-  let afItems = _.map(itemList, function (item) {
-    return {
-      _id: item._id,
-      productId: item.productId,
-      shopId: item.shopId,
-      quantity: item.quantity,
-      variantId: item.variants._id,
-      itemDescription: item.variants.title,
-      workflow: {
-        status: 'In Stock',
-        workflow: []
-      },
-      price: item.variants.price,
-      sku: item.variants.sku,
-      location: item.variants.location
-    };
-  });
+  let afItems = AdvancedFulfillment.itemsToAFItems(items);
   ReactionCore.Collections.Orders.update({_id: orderId}, {
     $set: {
       'advancedFulfillment.workflow.status': 'orderCreated',
@@ -49,7 +35,8 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       'advancedFulfillment.localDelivery': localDelivery,
       'advancedFulfillment.items': afItems,
       'advancedFulfillment.arriveBy': arrivalDate,
-      'advancedFulfillment.shipmentDate': shipmentDate
+      'advancedFulfillment.shipmentDate': shipmentDate,
+      'advancedFulfillment.shipReturnBy': shipReturnBy
     }
   });
   return orderId;

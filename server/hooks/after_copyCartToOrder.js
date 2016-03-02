@@ -48,7 +48,8 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       'advancedFulfillment.transitTime': transitTime,
       'advancedFulfillment.localDelivery': localDelivery,
       'advancedFulfillment.items': afItems,
-      'advancedFulfillment.arriveBy': arrivalDate
+      'advancedFulfillment.arriveBy': arrivalDate,
+      'advancedFulfillment.shipmentDate': shipmentDate
     }
   });
   return orderId;

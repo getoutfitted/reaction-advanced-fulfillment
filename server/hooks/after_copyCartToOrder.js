@@ -17,15 +17,16 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
   if (transitTime === false) {
     transitTime = afPackage.settings.buffer.shipping; // If no fedEx setting to general date
   }
-  // localDelivery ? transitTime = 0 : transitTime  = AdvancedFulfillment.FedExApi.getFedexTransitTime(shippingAddress);
-
   // MOCKING OUR START TIME and END TIME
-  order.startTime = new Date (2016, 2, 15); // Tue March 15, 2015
-  order.endTime = new Date(2016, 2, 25); // Friday March 25
+  let month = _.random(2, 11);
+  let date = _.random(1, 25);
+  order.startTime = new Date (2016, month, date);
+  order.endTime = new Date(2016, month, date + 3);
 
   let arrivalDate = AdvancedFulfillment.date.determineArrivalDate(order.startTime);
   let shipReturnBy = AdvancedFulfillment.date.determineShipReturnByDate(order.endTime);
   let shipmentDate = AdvancedFulfillment.date.determineShipmentDate(arrivalDate, transitTime);
+  let returnDate = AdvancedFulfillment.date.determineReturnDate(shipReturnBy, transitTime);
   let afItems = AdvancedFulfillment.itemsToAFItems(items);
   ReactionCore.Collections.Orders.update({_id: orderId}, {
     $set: {
@@ -36,7 +37,10 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       'advancedFulfillment.items': afItems,
       'advancedFulfillment.arriveBy': arrivalDate,
       'advancedFulfillment.shipmentDate': shipmentDate,
-      'advancedFulfillment.shipReturnBy': shipReturnBy
+      'advancedFulfillment.shipReturnBy': shipReturnBy,
+      'advancedFulfillment.returnDate': returnDate,
+      'startTime': order.startTime,
+      'endTime': order.endTime
     }
   });
   return orderId;

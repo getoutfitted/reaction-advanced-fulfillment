@@ -136,7 +136,7 @@ Package.onTest(function (api) {
   api.use('velocity:helpers');
   api.use('reactioncommerce:reaction-factories');
 
-  api.use('reactioncommerce:core@0.11.0');
+  api.use('reactioncommerce:core@0.12.0');
   api.use('getoutfitted:reaction-advanced-fulfillment');
 
   api.addFiles('lib/advancedFulfillment.js');

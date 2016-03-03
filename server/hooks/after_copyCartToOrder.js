@@ -18,10 +18,15 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
     transitTime = afPackage.settings.buffer.shipping; // If no fedEx setting to general date
   }
   // MOCKING OUR START TIME and END TIME
-  let month = _.random(2, 11);
-  let date = _.random(1, 25);
-  order.startTime = new Date (2016, month, date);
-  order.endTime = new Date(2016, month, date + 3);
+    let month = _.random(2, 11);
+    let date = _.random(1, 25);
+    if (!order.startTime) {
+      order.startTime = new Date (2016, month, date);
+    }
+    if (!order.endTime) {
+      order.endTime = new Date(2016, month, date + 3);
+    }
+  // delete in future
 
   let arrivalDate = AdvancedFulfillment.date.determineArrivalDate(order.startTime);
   let shipReturnBy = AdvancedFulfillment.date.determineShipReturnByDate(order.endTime);

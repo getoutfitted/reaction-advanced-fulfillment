@@ -278,7 +278,8 @@ Template.fulfillmentOrder.helpers({
 
 Template.fulfillmentOrder.events({
   'click .orderRow': function (event) {
-    ReactionRouter.go('orderDetails', {_id: $(event.currentTarget).data('id')});
+    event.preventDefault();
+    ReactionRouter.go('orderDetails', {_id: event.currentTarget.dataset.id});
   },
   'click .advanceOrder': function (event) {
     event.preventDefault();

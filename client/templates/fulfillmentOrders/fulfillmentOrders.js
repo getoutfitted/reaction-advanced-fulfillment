@@ -183,10 +183,16 @@ Template.fulfillmentOrder.helpers({
     return moment(this.advancedFulfillment.shipmentDate).calendar(null, AdvancedFulfillment.shippingCalendarReference);
   },
   arrivalDay: function () {
-    return moment(this.advancedFulfillment.arriveBy).calendar(null, AdvancedFulfillment.shippingCalendarReference);
+    if (this.advancedFulfillment.arriveBy) {
+      return moment(this.advancedFulfillment.arriveBy).calendar(null, AdvancedFulfillment.shippingCalendarReference);
+    }
+    return '--------------';
   },
-  firstSkiDay: function () {
-    return moment(this.startTime).calendar(null, AdvancedFulfillment.shippingCalendarReference);
+  firstUseDay: function () {
+    if (this.startTime) {
+      return moment(this.startTime).calendar(null, AdvancedFulfillment.shippingCalendarReference);
+    }
+    return '--------------';
   },
   returningDate: function () {
     let longDate = this.advancedFulfillment.returnDate;
@@ -220,22 +226,6 @@ Template.fulfillmentOrder.helpers({
   },
   phoneNumber: function () {
     return this.shipping[0].address.phone || '';
-  },
-  uniqueItemsCount: function () {
-    return this.advancedFulfillment.items.length;
-  },
-  totalItemsCount: function () {
-    let total = _.reduce(this.items, function (sum, item) {
-      return sum + item.quantity;
-    }, 0);
-    return total;
-  },
-  orderId: function () {
-    return this._id;
-  },
-  orderCreated: function () {
-    let valid = this.advancedFulfillment.workflow.status === 'orderCreated';
-    return valid;
   },
   readyForAssignment: function () {
     let status = this.advancedFulfillment.workflow.status;

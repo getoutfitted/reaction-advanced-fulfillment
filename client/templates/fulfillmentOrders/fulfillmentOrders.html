@@ -68,14 +68,14 @@
       {{> deliveryLabels}}
     </td>
     <td>
-      {{#if pastDate this.advancedFulfillment.shipmentDate}}
-        <span class='text-danger'><strong>Today</strong></span>
+      {{#if pastDate advancedFulfillment.shipmentDate}}
+        <span class='text-danger'><strong>Today</strong></span>-{{shippingDate}}
       {{else}}
         {{shippingDate}}
       {{/if}}
     </td>
     <td class="hidden-xs hidden-sm">{{arrivalDay}}</td>
-    <td class="hidden-xs hidden-sm">{{firstSkiDay}}</td>
+    <td class="hidden-xs hidden-sm">{{firstUseDay}}</td>
     <td>{{shippingName}}</td>
     <td>{{shippingLoc}}</td>
     <td>{{status}}</td>

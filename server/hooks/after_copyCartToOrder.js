@@ -36,11 +36,18 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
     advancedFulfillment.returnDate = AdvancedFulfillment.date.determineReturnDate(advancedFulfillment.shipReturnBy, advancedFulfillment.transitTime);
   }
 
-  ReactionCore.Collections.Orders.update({
+  af.orderNumber =  AdvancedFulfillment.findNextOrderNumber();
+
+
+  let result = ReactionCore.Collections.Orders.update({
     _id: orderId
   }, {
     $set: af
   });
+  if (result === 1) {
+    AdvancedFulfillment.setNextOrderNumber();
+  }
+
   return orderId;
 });
 

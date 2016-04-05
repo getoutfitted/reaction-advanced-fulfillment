@@ -1,3 +1,23 @@
+ReactionCore.Collections.AFCounter = AFCounter = this.AFCounter = new Mongo.Collection('AFCounter');
+
+ReactionCore.Schemas.AFCounter = new SimpleSchema({
+  shopId: {
+    type: String,
+    optional: true
+  },
+  seq: {
+    type: Number,
+    optional: true,
+    defaultValue: 10000
+  },
+  name: {
+    type: String,
+    optional: true
+  }
+});
+
+ReactionCore.Collections.AFCounter.attachSchema(ReactionCore.Schemas.AFCounter);
+
 
 ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
   ReactionCore.Schemas.PackageConfig, {
@@ -449,6 +469,10 @@ ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schema
   },
   shopifyOrderCreatedAt: {
     type: Date,
+    optional: true
+  },
+  orderNumber: {
+    type: Number,
     optional: true
   },
   infoMissing: {

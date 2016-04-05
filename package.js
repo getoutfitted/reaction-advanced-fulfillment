@@ -35,6 +35,7 @@ Package.onUse(function (api) {
 
   api.addFiles([
     'server/registry.js',
+    'server/startup.js',
     'server/advancedFulfillment.js', // Static vars for server.
     'server/search.js',
     'server/hooks/after_copyCartToOrder.js',

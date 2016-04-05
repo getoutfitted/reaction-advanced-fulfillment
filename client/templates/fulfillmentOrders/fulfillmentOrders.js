@@ -174,10 +174,12 @@ Template.fulfillmentOrders.events({
 
 Template.fulfillmentOrder.helpers({
   orderNumber: function  () {
-    if (this.shopifyOrderNumber) {
+    if (this.orderNumber) {
+      return '#' + this.orderNumber;
+    } else if (this.shopifyOrderNumber) {
       return '#' + this.shopifyOrderNumber + ' ';
     }
-    return '';
+    return '#' + this._id;
   },
   shippingDate: function () {
     return moment(this.advancedFulfillment.shipmentDate).calendar(null, AdvancedFulfillment.shippingCalendarReference);

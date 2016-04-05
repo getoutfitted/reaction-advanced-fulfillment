@@ -2,6 +2,7 @@
 {{#if Template.subscriptionsReady}}
   {{#with order}}
     <div class='container-fluid'>
+    <!-- I don't think does anything -->
       {{#if orderCreated}}
         <a class='btn btn-block btn-lg btn-success print-invoice hidden-md hidden-lg' style="line-height: 36px; font-size: 36px; font-weight: bold; margin-top: 10px; margin-bottom: 10px;" data-order-id='{{_id}}'  target='_blank' href="{{pathFor 'advancedFulfillmentPDF' _id=this._id }}">Print Invoice</a>
       {{else}}
@@ -58,7 +59,7 @@
             </td>
             <td>
               {{#if pastDate this.advancedFulfillment.shipmentDate}}
-                <span class='text-danger'><strong>Today</strong></span>
+                <span class='text-danger'><strong>Today</strong></span> -{{formattedDate advancedFulfillment.shipmentDate}}
               {{else}}
                 {{formattedDate advancedFulfillment.shipmentDate}}
               {{/if}}

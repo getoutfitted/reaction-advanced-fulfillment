@@ -36,18 +36,22 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
     advancedFulfillment.returnDate = AdvancedFulfillment.date.determineReturnDate(advancedFulfillment.shipReturnBy, advancedFulfillment.transitTime);
   }
 
-  af.orderNumber =  AdvancedFulfillment.findNextOrderNumber();
+  af.orderNumber =  AdvancedFulfillment.findAndUpdateNextOrderNumber();
 
-
-  let result = ReactionCore.Collections.Orders.update({
-    _id: orderId
-  }, {
-    $set: af
-  });
-  if (result === 1) {
-    AdvancedFulfillment.setNextOrderNumber();
+  try {
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: af
+    });
+  } catch (error) {
+    af.orderNumber =  AdvancedFulfillment.findHighestOrderNumber();
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: af
+    });
   }
-
   return orderId;
 });
 

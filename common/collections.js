@@ -473,7 +473,8 @@ ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schema
   },
   orderNumber: {
     type: Number,
-    optional: true
+    optional: true,
+    unique: true
   },
   infoMissing: {
     type: Boolean,

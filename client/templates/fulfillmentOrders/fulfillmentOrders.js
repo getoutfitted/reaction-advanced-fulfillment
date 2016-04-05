@@ -12,8 +12,7 @@ function context(routeName) {
   let baseFilter = {
     'advancedFulfillment.workflow.status': {
       $in: AdvancedFulfillment.orderActive
-    },
-    'startTime': {$ne: undefined}
+    }
   };
   let baseSorting = {
     sort: {

@@ -36,7 +36,7 @@
             <th><i class='fa fa-truck'></i></th>
             <th>Ship By</th>
             <th class="hidden-xs hidden-sm">Arrival Day</th>
-            <th class="hidden-xs hidden-sm">First Ski Day</th>
+            <th class="hidden-xs hidden-sm">First Use Day</th>
             <th>Customer</th>
             <th>Destination</th>
             <th>Status</th>
@@ -67,19 +67,15 @@
     <td>
       {{> deliveryLabels}}
     </td>
-    {{#if startTime}}
-      <td>
-        {{#if pastDate this.advancedFulfillment.shipmentDate}}
-          <span class='text-danger'><strong>Today</strong></span>
-        {{else}}
-          {{shippingDate}}
-        {{/if}}
-      </td>
-      <td class="hidden-xs hidden-sm">{{arrivalDay}}</td>
-      <td class="hidden-xs hidden-sm">{{firstSkiDay}}</td>
-    {{else}}
-      <td colspan=3>First Ski Day Missing!</td>
-    {{/if}}
+    <td>
+      {{#if pastDate this.advancedFulfillment.shipmentDate}}
+        <span class='text-danger'><strong>Today</strong></span>
+      {{else}}
+        {{shippingDate}}
+      {{/if}}
+    </td>
+    <td class="hidden-xs hidden-sm">{{arrivalDay}}</td>
+    <td class="hidden-xs hidden-sm">{{firstSkiDay}}</td>
     <td>{{shippingName}}</td>
     <td>{{shippingLoc}}</td>
     <td>{{status}}</td>

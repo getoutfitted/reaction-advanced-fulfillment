@@ -28,6 +28,7 @@ Template.advancedFulfillmentPDF.helpers({
 });
 
 Template.barcode.onRendered(function () {
+  $('.admin-controls-menu').remove();
   let orderId = ReactionRouter.getParam('_id');
   $('#barcode').barcode(orderId, 'code128', {
     barWidth: 2,

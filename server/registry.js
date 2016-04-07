@@ -13,7 +13,7 @@ ReactionCore.registerPackage({
     icon: 'fa fa-barcode',
     template: 'fulfillmentOrders',
     workflow: 'afWorkflow',
-    priority: 1
+    priority: 2
   }, {
     route: '/dashboard/advanced-fulfillment/settings',
     provides: 'settings',

@@ -4,6 +4,12 @@ Template.localDeliveryLabelPDF.onCreated(function () {
   this.subscribe('advancedFulfillmentOrder', orderId);
 });
 
+Template.localDeliveryLabelPDF.onRendered(function () {
+  $('.admin-controls-menu').hide();
+  console.log("Rendering!");
+  // BlazeLayout.render("localDeliveryLabelPDF");
+});
+
 Template.localDeliveryLabelPDF.helpers({
   order: function () {
     const orderId = ReactionRouter.getParam('_id');

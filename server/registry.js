@@ -159,7 +159,7 @@ ReactionCore.registerPackage({
     }
   }, {
     workflow: 'afPrint',
-    layout: 'coreLayout',
+    layout: 'print',
     theme: 'default',
     enabled: true,
     structure: {

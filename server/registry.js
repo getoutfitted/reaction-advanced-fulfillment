@@ -159,14 +159,14 @@ ReactionCore.registerPackage({
     }
   }, {
     workflow: 'afPrint',
-    layout: 'print',
+    layout: 'coreLayout',
     theme: 'default',
     enabled: true,
     structure: {
       template: 'advancedFulfillmentOrdersPrint',
       layoutHeader: '',
       layoutFooter: '',
-      notFound: 'notFound',
+      notFound: 'advancedFulfillmentPDF',
       dashboardHeader: '',
       dashboardControls: '',
       dashboardHeaderControls: '',

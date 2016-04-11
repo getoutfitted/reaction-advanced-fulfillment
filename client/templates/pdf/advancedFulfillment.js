@@ -4,6 +4,10 @@ Template.advancedFulfillmentPDF.onCreated(function () {
   this.subscribe('advancedFulfillmentOrder', orderId);
 });
 
+Template.advancedFulfillmentPDF.onRendered(function () {
+  BlazeLayout.render('advancedFulfillmentPDF');
+});
+
 Template.advancedFulfillmentPDF.helpers({
   order: function () {
     const orderId = ReactionRouter.getParam('_id');

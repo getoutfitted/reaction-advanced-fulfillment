@@ -48,6 +48,36 @@
           <img class='img-responsive' src="/packages/getoutfitted_reaction-advanced-fulfillment/public/images/go-logo-1000.png">
         </div>
       </div>
+      {{#with order}}
+        <div class='row'>
+          <div class='col-xs-12'><h1>Order #  {{displayOrderNumber}}</h1></div>
+        </div>
+        {{#if hasNoRentals }}
+          <div class='row'>
+            <div  class='col-xs-12'>
+              <h3><strong>Ship By: {{dateHelper advancedFulfillment.shipmentDate}}</strong></h3>
+            </div>
+          </div>
+        {{else}}
+          <div class='row'>
+            <div  class='col-xs-12'>
+              <h3><strong>Deliver By: {{dateHelper advancedFulfillment.arriveBy}}</strong></h3>
+            </div>
+          </div>
+        {{/if}}
+        <div class='row'>
+          <div class='col-xs-12'>
+            {{#with shippingAddress}}
+              <h4><strong>{{fullName}}</strong></h4>
+              <h4><strong>{{address1}} {{#if address2}}{{address2}}{{/if}}</strong></h4>
+              <h4><strong>{{city}}, {{region}} {{postal}} {{country}}</strong></h4>
+              <hr>
+            {{/with}}
+              <h4><strong>Primary #{{shippingPhone}} | Billing #{{billingPhone}}</strong></h4>
+
+          </div>
+        </div>
+      {{/with}}
     </div>
   </body>
 </template>

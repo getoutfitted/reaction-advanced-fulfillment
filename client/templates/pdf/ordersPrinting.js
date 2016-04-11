@@ -8,6 +8,10 @@ Template.advancedFulfillmentOrdersPrint.onCreated(function () {
   }
 });
 
+Template.advancedFulfillmentOrdersPrint.onRendered(function () {
+  BlazeLayout.render("advancedFulfillmentOrdersPrint");
+});
+
 Template.advancedFulfillmentOrdersPrint.helpers({
   humanReadableDate: function (day) {
     // let date = this.advancedFulfillment.shipmentDate;

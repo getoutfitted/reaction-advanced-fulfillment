@@ -5,9 +5,7 @@ Template.localDeliveryLabelPDF.onCreated(function () {
 });
 
 Template.localDeliveryLabelPDF.onRendered(function () {
-  $('.admin-controls-menu').hide();
-  console.log("Rendering!");
-  // BlazeLayout.render("localDeliveryLabelPDF");
+  BlazeLayout.render("localDeliveryLabelPDF");
 });
 
 Template.localDeliveryLabelPDF.helpers({
@@ -16,6 +14,14 @@ Template.localDeliveryLabelPDF.helpers({
     return ReactionCore.Collections.Orders.findOne({
       _id: orderId
     });
+  },
+  hasNoRentals: function () {
+    return _.every(this.items, function (item) {
+      return item.variants.functionalType === 'variant';
+    });
+  },
+  displayOrderNumber: function () {
+    return this.orderNumber || this.shopifyOrderNumber || this._id;
   },
   dateHelper: function (date) {
     return moment(date).format('dddd, MM/DD/YYYY');

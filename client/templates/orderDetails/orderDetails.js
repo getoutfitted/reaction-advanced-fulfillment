@@ -209,10 +209,18 @@ Template.orderDetails.events({
     let currentStatus = this.advancedFulfillment.workflow.status;
     let orderId = this._id;
     let userId = Meteor.userId();
-    if (currentStatus === 'orderShipped') {
+    let orderShipped = currentStatus === 'orderShipped';
+    if (orderShipped) {
       Meteor.call('advancedFulfillment/updateAllItemsToSpecificStatus', this, 'shipped');
     }
-    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+    let noRentals = _.every(this.items, function (item) {
+      return item.variants.functionalType === 'variant';
+    });
+    if (orderShipped && noRentals) {
+      Meteor.call('advancedFulfillment/bypassWorkflowAndComplete', orderId, userId);
+    } else {
+      Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+    }
   },
   'submit .add-notes': function (event) {
     event.preventDefault();

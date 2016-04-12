@@ -94,7 +94,7 @@ Template.returnOrder.helpers({
   shippingDay: function () {
     return moment(this.advancedFulfillment.shipReturnBy).calendar(null, AdvancedFulfillment.calendarReferenceTime);
   },
-  lastSkiDay: function () {
+  lastUseDay: function () {
     return moment(this.endTime).calendar(null, AdvancedFulfillment.calendarReferenceTime);
   },
   returnName: function () {

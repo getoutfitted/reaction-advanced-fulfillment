@@ -33,6 +33,7 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
     let date = _.random(1, 25);
     if (!order.startTime) {
       order.startTime = new Date (2016, month, date);
+      af.impossibleShipDate = true;
     }
     if (!order.endTime) {
       order.endTime = new Date(2016, month, date + 3);

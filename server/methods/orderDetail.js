@@ -213,7 +213,7 @@ Meteor.methods({
 
     let afItems = order.advancedFulfillment.items;
     let allItemsReturned = _.every(afItems, function (item) {
-      return item.workflow.status === 'returned';
+      return item.workflow.status === 'returned' || item.workflow.status === 'completed';
     });
     let orderStatus = 'orderIncomplete';
     if (allItemsReturned) {

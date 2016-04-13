@@ -14,7 +14,10 @@ Template.orderReturned.onCreated(function () {
 
 Template.orderReturned.helpers({
   items: function () {
-    return this.advancedFulfillment.items;
+    let afItems = this.advancedFulfillment.items;
+    return _.reject(afItems, function (item) {
+      return item.functionalType === 'variant';
+    });
   },
   orderId: function () {
     return this._id;
@@ -54,6 +57,13 @@ Template.orderReturned.helpers({
     let orderId = this._id;
     let itemStatus = Session.get('orderReturned-' + orderId)[itemId];
     return itemStatus === 'shipped';
+  },
+  itemType: function (item) {
+    let itemType = item.functionalType;
+    if (itemType === 'variant') {
+      return 'purchased';
+    }
+    return 'rental';
   }
 });
 
@@ -84,7 +94,7 @@ Template.orderReturned.events({
     let orderItems = order.advancedFulfillment.items;
     let userId = Meteor.userId();
     let valid = _.every(orderItems, function (item) {
-      return _.contains(['returned', 'missing', 'damaged'], item.workflow.status);
+      return _.contains(['returned', 'missing', 'damaged', 'completed'], item.workflow.status);
     });
     if (valid) {
       Meteor.call('advancedFulfillment/orderCompletionVerifier', order, userId);

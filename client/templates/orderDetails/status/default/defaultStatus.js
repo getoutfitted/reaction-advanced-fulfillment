@@ -39,5 +39,12 @@ Template.defaultStatus.helpers({
     if (orderItem) {
       return orderItem.variants.size;
     }
+  },
+  itemType: function (item) {
+    let itemType = item.functionalType;
+    if (itemType === 'variant') {
+      return 'purchased';
+    }
+    return 'rental';
   }
 });

@@ -211,10 +211,10 @@ Template.orderDetails.events({
     let userId = Meteor.userId();
     let orderShipped = currentStatus === 'orderShipped';
     if (orderShipped) {
-      Meteor.call('advancedFulfillment/updateAllItemsToSpecificStatus', this, 'shipped');
+      Meteor.call('advancedFulfillment/updateItemsToShippedOrCompleted', this);
     }
-    let noRentals = _.every(this.items, function (item) {
-      return item.variants.functionalType === 'variant';
+    let noRentals = _.every(this.advancedFulfillment.items, function (afItem) {
+      return afItem.functionalType === 'variant';
     });
     if (orderShipped && noRentals) {
       Meteor.call('advancedFulfillment/bypassWorkflowAndComplete', orderId, userId);

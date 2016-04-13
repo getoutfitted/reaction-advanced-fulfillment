@@ -290,6 +290,10 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
     type: [String],
     optional: true
   },
+  functionalType: {
+    type: String,
+    optional: true
+  },
   productId: {
     type: String,
     index: 1,

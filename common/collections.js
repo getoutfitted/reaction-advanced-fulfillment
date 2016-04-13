@@ -58,6 +58,27 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
       label: 'Use Live API? (uncheck for testing)',
       optional: true,
       defaultValue: false
+    },
+    'settings.ups.liveApi': {
+      type: Boolean,
+      label: 'Use Live API? (uncheck for testing)',
+      optional: true,
+      defaultValue: false
+    },
+    'settings.ups.accessKey': {
+      type: String,
+      label: 'UPS Access Key',
+      optional: true
+    },
+    'settings.ups.username': {
+      type: String,
+      label: 'UPS Username',
+      optional: true
+    },
+    'settings.ups.password': {
+      type: String,
+      label: 'UPS Password',
+      optional: true
     }
   }
 ]);

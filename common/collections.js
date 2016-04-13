@@ -32,6 +32,32 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
       defaultValue: 4,
       label: 'Number of days past the customer use date, until orders should be returned.',
       optional: true
+    },
+    'settings.fedex.key': {
+      type: String,
+      label: 'Fedex API key',
+      optional: true
+    },
+    'settings.fedex.password': {
+      type: String,
+      label: 'Fedex API password',
+      optional: true
+    },
+    'settings.fedex.accountNumber': {
+      type: String,
+      label: 'Fedex API Account Number',
+      optional: true
+    },
+    'settings.fedex.meterNumber': {
+      type: String,
+      label: 'Fedex API Meter Number',
+      optional: true
+    },
+    'settings.fedex.liveApi': {
+      type: Boolean,
+      label: 'Use Live API? (uncheck for testing)',
+      optional: true,
+      defaultValue: false
     }
   }
 ]);

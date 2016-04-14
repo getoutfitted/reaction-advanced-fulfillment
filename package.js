@@ -7,7 +7,8 @@ Package.describe({
 
 Npm.depends({
   'faker': '3.0.1',
-  'shipping-fedex': '0.1.4'
+  'shipping-fedex': '0.1.4',
+  'shipping-ups': '0.5.4'
 });
 
 
@@ -32,6 +33,7 @@ Package.onUse(function (api) {
 
   api.addFiles('lib/advancedFulfillment.js');
   api.addFiles('lib/fedex.js', 'server');
+  api.addFiles('lib/ups.js', 'server');
   api.addFiles('lib/advancedFulfillmentFunctions.js');
 
   api.addFiles([

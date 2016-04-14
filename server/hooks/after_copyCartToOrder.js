@@ -23,7 +23,7 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
     advancedFulfillment.shipmentDate = AdvancedFulfillment.date.nextBusinessDay(today);
   } else {
     // if local set tranist time to 0 else call FedEx Api for tranist time
-    advancedFulfillment.transitTime = advancedFulfillment.localDelivery ? 0 : AdvancedFulfillment.FedExApi.getFedexTransitTime(shippingAddress);
+    advancedFulfillment.transitTime = advancedFulfillment.localDelivery ? 0 : AdvancedFulfillment.determineShippingCarrier(afPackage.settings.selectedShipping, shippingAddress);
     if (advancedFulfillment.transitTime === false) {
       advancedFulfillment.transitTime = afPackage.settings.buffer.shipping || 4; // If no fedEx setting to general date
     }

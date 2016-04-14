@@ -79,6 +79,12 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
       type: String,
       label: 'UPS Password',
       optional: true
+    },
+    'settings.selectedShipping': {
+      type: String,
+      label: 'Carrier to calculate transit time',
+      optional: true,
+      allowedValues: ['UPS', 'Fedex']
     }
   }
 ]);

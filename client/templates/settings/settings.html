@@ -11,7 +11,16 @@
     <p>Advanced Fulfillment Buffer Setup</p>
     {{>afQuickField  name='settings.buffer.shipping'}}
     {{>afQuickField  name='settings.buffer.returning'}}
+    <br />
+    <p>Choose Shipping Carrier</p>
+    {{>afQuickField  name='settings.selectedShipping' options="allowed"}}
+    <br />
 
+    <p>UPS Account Setup</p>
+    {{>afQuickField  name='settings.ups.liveApi'}}
+    {{>afQuickField  name='settings.ups.accessKey'}}
+    {{>afQuickField  name='settings.ups.username'}}
+    {{>afQuickField  name='settings.ups.password' }}
     <br />
     <p>Fedex Account Setup</p>
     {{>afQuickField  name='settings.fedex.liveApi'}}
@@ -19,7 +28,7 @@
     {{>afQuickField  name='settings.fedex.key'}}
     {{>afQuickField  name='settings.fedex.accountNumber'}}
     {{>afQuickField  name='settings.fedex.meterNumber'}}
-    <br />
+
     <button type="submit" class="btn btn-primary pull-right">Save Changes</button>
       {{/autoForm}}
   </div>

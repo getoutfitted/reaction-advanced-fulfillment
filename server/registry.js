@@ -3,6 +3,9 @@ ReactionCore.registerPackage({
   name: 'reaction-advanced-fulfillment',
   icon: 'fa fa-barcode',
   autoEnable: false,
+  settings: {
+    shipstation: false
+  },
   registry: [{
     route: '/dashboard/advanced-fulfillment',
     provides: 'dashboard',

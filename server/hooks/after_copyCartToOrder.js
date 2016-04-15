@@ -62,6 +62,9 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       $set: af
     });
   }
+  if (afPackage.settings.shipstation) {
+    AdvancedFulfillment.Shipstation.createOrder(orderId);
+  }
   return orderId;
 });
 

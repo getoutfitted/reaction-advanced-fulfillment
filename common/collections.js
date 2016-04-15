@@ -85,6 +85,11 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
       label: 'Carrier to calculate transit time',
       optional: true,
       allowedValues: ['UPS', 'Fedex']
+    },
+    'settings.shipstation': {
+      type: Boolean,
+      label: 'Enable Intrgration from Shipstation Package',
+      optional: true
     }
   }
 ]);

@@ -11,37 +11,6 @@ AdvancedFulfillment.Shipstation.createOrder = function (orderId) {
   check(orderId, String);
   const order = ReactionCore.Collections.Orders.findOne(orderId);
   if (order) {
-    // let shipstation = {
-    //   orderNumber: 40,
-    //   orderDate: new Date(),
-    //   orderStatus: 'awaiting_shipment',
-    //   billTo: {
-    //     name: 'Paul Grever',
-    //     company: 'GetOutfitted',
-    //     street1: '460 S Marion pkwy',
-    //     street2: '1602C',
-    //     street3: null,
-    //     city: 'Denver',
-    //     state: 'CO',
-    //     postalCode: '80209',
-    //     phone: '6082392471',
-    //     residential: true,
-    //     addressVerified: 'Address validated successfully'
-    //   },
-    //   shipTo: {
-    //     name: 'Paul Grever',
-    //     company: 'GetOutfitted',
-    //     street1: '460 S Marion pkwy',
-    //     street2: '1602C',
-    //     street3: null,
-    //     city: 'Denver',
-    //     state: 'CO',
-    //     postalCode: '80209',
-    //     phone: '6082392471',
-    //     residential: true,
-    //     addressVerified: 'Address validated successfully'
-    //   }
-    // };
     let shipstation = {};
     shipstation.orderNumber = order.orderNumber;
     shipstation.orderDate = order.createdAt;
@@ -118,59 +87,6 @@ AdvancedFulfillment.Shipstation.createOrder = function (orderId) {
       }
       shipstation.items.push(i);
     });
-  //   shipstation.items = [
-  //   {
-  //     "orderItemId": 192210956,
-  //     "lineItemKey": "vd08-MSLbtx",
-  //     "sku": "ABC123",
-  //     "name": "Test item #1",
-  //     "imageUrl": null,
-  //     "weight": {
-  //       "value": 24,
-  //       "units": "ounces"
-  //     },
-  //     "quantity": 2,
-  //     "unitPrice": 99.99,
-  //     "taxAmount": 2.5,
-  //     "shippingAmount": 5,
-  //     "warehouseLocation": "Aisle 1, Bin 7",
-  //     "options": [
-  //       {
-  //         "name": "Size",
-  //         "value": "Large"
-  //       }
-  //     ],
-  //     "productId": null,
-  //     "fulfillmentSku": null,
-  //     "adjustment": false,
-  //     "upc": "32-65-98",
-  //     "createDate": "2016-02-16T15:16:53.707",
-  //     "modifyDate": "2016-02-16T15:16:53.707"
-  //   },
-  //   {
-  //     "orderItemId": 192210957,
-  //     "lineItemKey": null,
-  //     "sku": "DISCOUNT CODE",
-  //     "name": "10% OFF",
-  //     "imageUrl": null,
-  //     "weight": {
-  //       "value": 0,
-  //       "units": "ounces"
-  //     },
-  //     "quantity": 1,
-  //     "unitPrice": -20.55,
-  //     "taxAmount": null,
-  //     "shippingAmount": null,
-  //     "warehouseLocation": null,
-  //     "options": [],
-  //     "productId": null,
-  //     "fulfillmentSku": "SKU-Discount",
-  //     "adjustment": true,
-  //     "upc": null,
-  //     "createDate": "2016-02-16T15:16:53.707",
-  //     "modifyDate": "2016-02-16T15:16:53.707"
-  //   }
-  // ],
     Shipstation.createOrder(shipstation);
   }
 };

@@ -53,7 +53,12 @@ Template.afNavbar.events({
   'submit .subnav-search-form, submit .navbar-search-form': function (event) {
     event.preventDefault();
     let searchValue = event.target.orderNumber.value;
-    let order = ReactionCore.Collections.Orders.findOne({shopifyOrderNumber: parseInt(searchValue, 10)});
+    let order = ReactionCore.Collections.Orders.findOne({
+      $or : [
+        { shopifyOrderNumber: parseInt(searchValue, 10)},
+        { orderNumber: parseInt(searchValue, 10)}
+      ]
+    });
     if (order) {
       ReactionRouter.go('orderDetails', {_id: order._id});
       event.target.orderNumber.value = '';

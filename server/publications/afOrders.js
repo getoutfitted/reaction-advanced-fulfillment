@@ -60,7 +60,8 @@ Meteor.publish('searchOrders', function () {
     }, {
       fields: {
         _id: 1,
-        shopifyOrderNumber: 1
+        shopifyOrderNumber: 1,
+        orderNumber: 1
       }
     });
   }

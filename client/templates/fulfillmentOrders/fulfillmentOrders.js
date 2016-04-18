@@ -105,10 +105,11 @@ Template.fulfillmentOrders.helpers({
     );
   },
   routeStatus: function () {
+    let fullRoute = ReactionRouter.current().path;
     Tracker.autorun(() => {
       ReactionRouter.watchPathChange();
+      fullRoute = ReactionRouter.current().path;
     });
-    let fullRoute = ReactionRouter.current().path;
     let routeComponents = fullRoute.split('/');
     if (_.contains(routeComponents, 'shipping')) {
       return 'Orders Waiting to Be Shipped';

@@ -2,7 +2,6 @@
 {{#if Template.subscriptionsReady}}
   {{#with order}}
     <div class='container-fluid'>
-    <!-- I don't think does anything -->
       {{#if orderCreated}}
         <a class='btn btn-block btn-lg btn-success print-invoice hidden-md hidden-lg' style="line-height: 36px; font-size: 36px; font-weight: bold; margin-top: 10px; margin-bottom: 10px;" data-order-id='{{_id}}'  target='_blank' href="{{pathFor 'advancedFulfillmentPDF' _id=this._id }}">Print Invoice</a>
       {{else}}
@@ -116,9 +115,6 @@
           <p>Email: {{contactInfo}}</p>
           <p>Phone: {{phoneNumber}}</p>
         </div>
-        <!-- <div class='col-sm-5 col-sm-offset-2 hidden-xs'>
-          <div id='barcode'></div>
-        </div> -->
       </div>
       <hr>
       {{> Template.dynamic template=currentStatus}}

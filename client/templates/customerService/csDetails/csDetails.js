@@ -1,7 +1,4 @@
 Template.csDetails.helpers({
-  test: function () {
-    debugger
-  },
   billingName: function () {
     return this.billing[0].address.fullName;
   },

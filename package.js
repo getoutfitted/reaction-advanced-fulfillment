@@ -27,7 +27,6 @@ Package.onUse(function (api) {
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  // api.use('getoutfitted:reaction-rental-products@0.3.0');
   api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
   api.use('kadira:blaze-layout');
 
@@ -54,7 +53,6 @@ Package.onUse(function (api) {
   ], ['client', 'server']);
 
   api.addFiles([
-    'client/search.js',
     'client/templates/helpers.js',
     'client/templates/settings/settings.html',
     'client/templates/settings/settings.js',

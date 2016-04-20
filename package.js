@@ -29,6 +29,7 @@ Package.onUse(function (api) {
   api.use('dburles:factory@0.3.10');
   api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
   api.use('kadira:blaze-layout');
+  api.use('simple:json-routes');
 
   api.addFiles('lib/advancedFulfillment.js');
   api.addFiles('lib/fedex.js', 'server');
@@ -41,10 +42,12 @@ Package.onUse(function (api) {
     'server/advancedFulfillment.js', // Static vars for server.
     'server/search.js',
     'server/hooks/after_copyCartToOrder.js',
+    'server/hooks/aftership_webhook.js',
     'server/methods/orderDetail.js',
     'server/methods/itemDetails.js',
     'server/methods/customerService.js',
     'server/methods/bulkActions.js',
+    'server/methods/aftership.js',
     'server/publications/afOrders.js'
   ], 'server');
 

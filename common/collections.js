@@ -90,6 +90,16 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
       type: Boolean,
       label: 'Enable Intrgration from Shipstation Package',
       optional: true
+    },
+    'settings.aftership.enabled': {
+      type: Boolean,
+      label: 'Enable Aftership webhook',
+      optional: true
+    },
+    'settings.aftership.preSharedKey': {
+      type: String,
+      label: 'Pre Shared Key for authenticating webhooks',
+      optional: true
     }
   }
 ]);

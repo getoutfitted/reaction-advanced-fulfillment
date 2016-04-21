@@ -40,7 +40,6 @@ Package.onUse(function (api) {
     'server/registry.js',
     'server/startup.js',
     'server/advancedFulfillment.js', // Static vars for server.
-    'server/search.js',
     'server/hooks/after_copyCartToOrder.js',
     'server/hooks/aftership_webhook.js',
     'server/methods/orderDetail.js',

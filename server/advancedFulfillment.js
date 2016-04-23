@@ -67,7 +67,7 @@ AdvancedFulfillment.Shipstation.createOrder = function (orderId) {
         taxAmount: 0,
         shippingAmount: 0,
         imageUrl: null,
-        warehouseLocation: item.variants.location,
+        warehouseLocation: item.variants.location || null,
         productId: null,
         fulfillmentSku: item.variants.title,
         adjustment: false,
@@ -75,11 +75,11 @@ AdvancedFulfillment.Shipstation.createOrder = function (orderId) {
         options: [
           {
             name: 'size',
-            value: item.variants.size
+            value: item.variants.size || 'One Size'
           },
           {
             name: 'color',
-            value: item.variants.color
+            value: item.variants.color || 'No Color'
           }
         ],
         createDate: order.createdAt,

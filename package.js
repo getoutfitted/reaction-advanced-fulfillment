@@ -26,9 +26,9 @@ Package.onUse(function (api) {
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  // api.use('getoutfitted:reaction-rental-products@0.3.0');
   api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
   api.use('kadira:blaze-layout');
+  api.use('simple:json-routes');
   api.use('getoutfitted:transit-times');
 
   api.addFiles('lib/advancedFulfillment.js');
@@ -38,12 +38,13 @@ Package.onUse(function (api) {
     'server/registry.js',
     'server/startup.js',
     'server/advancedFulfillment.js', // Static vars for server.
-    'server/search.js',
     'server/hooks/after_copyCartToOrder.js',
+    'server/hooks/aftership_webhook.js',
     'server/methods/orderDetail.js',
     'server/methods/itemDetails.js',
     'server/methods/customerService.js',
     'server/methods/bulkActions.js',
+    'server/methods/aftership.js',
     'server/publications/afOrders.js'
   ], 'server');
 
@@ -52,7 +53,6 @@ Package.onUse(function (api) {
   ], ['client', 'server']);
 
   api.addFiles([
-    'client/search.js',
     'client/templates/helpers.js',
     'client/templates/settings/settings.html',
     'client/templates/settings/settings.js',
@@ -124,7 +124,7 @@ Package.onUse(function (api) {
   api.addAssets('public/images/go-logo-1000.png', 'client');
   api.addAssets('public/images/logo-horizontal.png', 'client');
 
-  api.export("AdvancedFulfillment");
+  api.export('AdvancedFulfillment');
 });
 
 

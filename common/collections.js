@@ -18,7 +18,6 @@ ReactionCore.Schemas.AFCounter = new SimpleSchema({
 
 ReactionCore.Collections.AFCounter.attachSchema(ReactionCore.Schemas.AFCounter);
 
-
 ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
   ReactionCore.Schemas.PackageConfig, {
     'settings.buffer.shipping': {

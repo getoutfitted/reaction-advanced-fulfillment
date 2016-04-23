@@ -11,7 +11,6 @@ Npm.depends({
   'shipping-ups': '0.5.4'
 });
 
-
 Package.onUse(function (api) {
   api.versionsFrom('METEOR@1.2');
   api.use('meteor-platform');
@@ -30,6 +29,7 @@ Package.onUse(function (api) {
   // api.use('getoutfitted:reaction-rental-products@0.3.0');
   api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
   api.use('kadira:blaze-layout');
+  api.use('getoutfitted:transit-times');
 
   api.addFiles('lib/advancedFulfillment.js');
   api.addFiles('lib/fedex.js', 'server');

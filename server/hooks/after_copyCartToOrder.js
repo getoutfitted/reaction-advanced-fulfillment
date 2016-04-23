@@ -5,48 +5,42 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
     name: 'reaction-advanced-fulfillment',
     shopId: ReactionCore.getShopId()
   });
+
   let af = {};
   advancedFulfillment = af.advancedFulfillment = {};
   advancedFulfillment.workflow = {
     status: 'orderCreated',
     workflow: []
   };
+
+  const shippingAddress = TransitTimes.formatAddress(order.shipping[0].address); // XXX: do we need this?
+  // check if local delivery
+  advancedFulfillment.localDelivery = TransitTimes.isLocalDelivery(shippingAddress.postal);
   advancedFulfillment.items = AdvancedFulfillment.itemsToAFItems(order.items);
+
   let orderHasNoRentals = _.every(order.items, function (item) {
     return item.variants.functionalType === 'variant';
   });
-  const shippingAddress = AdvancedFulfillment.addressFormatForFedExApi(order.shipping[0].address);
-  // check if local delivery
-  advancedFulfillment.localDelivery = AdvancedFulfillment.determineLocalDelivery(order.shipping[0].address.postal);
+
   if (orderHasNoRentals) {
     let today = new Date();
-    advancedFulfillment.shipmentDate = AdvancedFulfillment.date.nextBusinessDay(today);
+    advancedFulfillment.shipmentDate = TransitTimes.date.nextBusinessDay(today);
   } else {
-    // if local set tranist time to 0 else call FedEx Api for tranist time
-    advancedFulfillment.transitTime = advancedFulfillment.localDelivery ? 0 : AdvancedFulfillment.determineShippingCarrier(afPackage.settings.selectedShipping, shippingAddress);
-    if (advancedFulfillment.transitTime === false) {
-      advancedFulfillment.transitTime = afPackage.settings.buffer.shipping || 4; // If no fedEx setting to general date
+    if (!order.startTime || !order.endTime) {
+      ReactionCore.Log.error(`Order: ${order._id} came through without a start or end time`);
+      // Log CS Issue and Report to Dev Team
     }
-    // set all the transit times - as we should have order.startTime and order.endtime
-    // TODO REMOVE!!!!!!!!!mocking random start date
-    let month = _.random(2, 11);
-    let date = _.random(1, 25);
-    if (!order.startTime) {
-      order.startTime = new Date (2016, month, date);
-      af.impossibleShipDate = true;
-    }
-    if (!order.endTime) {
-      order.endTime = new Date(2016, month, date + 3);
-    }
+
     af.startTime = order.startTime;
     af.endTime = order.endTime;
-    advancedFulfillment.arriveBy = AdvancedFulfillment.date.determineArrivalDate(order.startTime);
-    advancedFulfillment.shipReturnBy = AdvancedFulfillment.date.determineShipReturnByDate(order.endTime);
-    advancedFulfillment.shipmentDate = AdvancedFulfillment.date.determineShipmentDate(advancedFulfillment.arriveBy, advancedFulfillment.transitTime);
-    advancedFulfillment.returnDate = AdvancedFulfillment.date.determineReturnDate(advancedFulfillment.shipReturnBy, advancedFulfillment.transitTime);
-  }
 
-  af.orderNumber =  AdvancedFulfillment.findAndUpdateNextOrderNumber();
+    advancedFulfillment.arriveBy = order.startTime;
+    advancedFulfillment.shipReturnBy = order.endTime;
+    advancedFulfillment.shipmentDate = TransitTimes.calculateShippingDay(order);
+    advancedFulfillment.returnDate = TransitTimes.calculateReturnDay(order);
+  }
+  // Let's abstract the order number parts of this to a standalone package
+  af.orderNumber = AdvancedFulfillment.findAndUpdateNextOrderNumber();
 
   try {
     ReactionCore.Collections.Orders.update({
@@ -55,7 +49,7 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       $set: af
     });
   } catch (error) {
-    af.orderNumber =  AdvancedFulfillment.findHighestOrderNumber();
+    af.orderNumber = AdvancedFulfillment.findHighestOrderNumber();
     ReactionCore.Collections.Orders.update({
       _id: orderId
     }, {
@@ -67,4 +61,3 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
   }
   return orderId;
 });
-

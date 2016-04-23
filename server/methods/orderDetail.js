@@ -1,3 +1,5 @@
+// import _ from 'underscore';
+
 function shipmentDateChecker(date, localDelivery, transitTime) {
   if (localDelivery) {
     return date;
@@ -80,8 +82,8 @@ function rushRequired(arriveBy, transitTime, isLocal) {
   if (isLocal) {
     return false;
   }
-  const possibleArrival = moment().startOf('day').add(transitTime, 'days'); // shipDate as start of day
-  return moment(possibleArrival).diff(moment(arriveBy)) > 0;
+  const estimatedArrival = moment().startOf('day').add(transitTime, 'days'); // shipDate as start of day
+  return moment(estimatedArrival).diff(moment(arriveBy)) > 0;
 }
 
 function isLocalDelivery(postal) {
@@ -305,6 +307,9 @@ Meteor.methods({
       }
     });
   },
+  // TODO: This should check availability and not allow updates if availability does not exist.
+  // TODO: This should also update the availability calendar
+  // Currently just switches dates in AF
   'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate, userObj) {
     check(orderId, String);
     check(startDate, Date);
@@ -319,32 +324,23 @@ Meteor.methods({
     const localDelivery = order.advancedFulfillment.localDelivery;
     let user = userNameDeterminer(userObj);
 
-    let impossibleShipDate = order.advancedFulfillment.impossibleShipDate;
-    if (order.advancedFulfillment.impossibleShipDate) {
-      impossibleShipDate = false; // Resetting impossibleShipDate here, but could probably just set it
-    }
-    let infoMissing = order.infoMissing;
-    if (order.infoMissing) {
-      infoMissing = false;
-    }
-    let fedexTransitTime = AdvancedFulfillment.FedExApi.getFedexTransitTime(order.shipping[0].address);
-    let bufferObject = buffer();
-    let shippingBuffer = fedexTransitTime || bufferObject.shipping;
-    let returnBuffer = fedexTransitTime || bufferObject.returning;
-
     let rentalLength = moment(endDate).diff(moment(startDate), 'days');
-    let returnDate = returnDateChecker(moment(endDate).add(returnBuffer, 'days').toDate(), localDelivery);
-    let arrivalDate = arrivalDateChecker(moment(startDate).subtract(1, 'days').toDate(), localDelivery);
-    let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery, shippingBuffer);
-    let returnBy = moment(endDate).add(1, 'days').toDate();
-    let orderCreated = {status: 'orderCreated'};
-    let rushOrder = rushRequired(arrivalDate, fedexTransitTime, localDelivery);
+    let arrivalDate = startDate;
+    let returnBy = endDate;
+    let shipmentDate = TransitTimes.calculateShippingDay(_.defaults({startTime: startDate}, order));
+    let returnDate = TransitTimes.calculateReturnDay(_.defaults({endTime: endDate}, order));
+    let shippingDays = TransitTimes.calculateTotalShippingDays(_.defaults({startTime: startDate}, order));
+
+    let rushOrder = rushRequired(arrivalDate, shippingDays, localDelivery);
     if (rushOrder && !localDelivery) {
-      shipmentDate = rushShipmentChecker(moment().startOf('day'));
+      shipmentDate = TransitTimes.date.nextBusinessDay(moment().startOf('day')); // Ship Next Business Day
     }
+
     if (localDelivery) {
-      shipmentDate = arrivalDate; // Remove transit day from local deliveries
+      shipmentDate = arrivalDate; // Local delivery should be delivered the day it's due.
     }
+
+    // TODO: Call some function in RentalProducts to update rental dates as stored in calendar
 
     let orderNotes = anyOrderNotes(order.orderNotes);
     orderNotes = orderNotes + '<p> Rental Dates updated to: '
@@ -357,13 +353,13 @@ Meteor.methods({
         'startTime': startDate,
         'endTime': endDate,
         'rentalDays': rentalLength,
-        'infoMissing': infoMissing,
+        'infoMissing': false,
         'advancedFulfillment.shipmentDate': shipmentDate,
         'advancedFulfillment.returnDate': returnDate,
-        'advancedFulfillment.workflow': orderCreated,
+        'advancedFulfillment.workflow': {status: 'orderCreated'},
         'advancedFulfillment.arriveBy': arrivalDate,
         'advancedFulfillment.shipReturnBy': returnBy,
-        'advancedFulfillment.impossibleShipDate': impossibleShipDate,
+        'advancedFulfillment.impossibleShipDate': false,
         'orderNotes': orderNotes
       },
       $addToSet: {
@@ -386,28 +382,38 @@ Meteor.methods({
     const userName = user.username || user.emails[0].address;
     const order = ReactionCore.Collections.Orders.findOne(orderId);
     const prevAddress = order.shipping[0].address;
-    const localDelivery = isLocalDelivery(address.postal);
-    const startDate = order.startTime;
-    const endDate = order.endTime;
-    let fedexTransitTime = AdvancedFulfillment.FedExApi.getFedexTransitTime(address);
-    // Should abstract this section \/
-    let bufferObject = buffer();
-    let shippingBuffer = fedexTransitTime || bufferObject.shipping;
-    let returnBuffer = fedexTransitTime || bufferObject.returning;
-    let returnDate = returnDateChecker(moment(endDate).add(returnBuffer, 'days').toDate(), localDelivery);
-    let arrivalDate = arrivalDateChecker(moment(startDate).subtract(1, 'days').toDate(), localDelivery);
-    let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery, shippingBuffer);
-    if (localDelivery) {
-      shipmentDate = arrivalDate; // Remove transit day from local deliveries
-    }
-    let returnBy = moment(endDate).add(1, 'days').toDate();
+    const localDelivery = TransitTimes.isLocalDelivery(address.postal);
+    const transitTime = TransitTimes.calculateTransitTimeFromAddress(address);
+    const transitTimeToPrevAddress = TransitTimes.calculateTransitTimeFromAddress(prevAddress);
 
-    let rushOrder = rushRequired(arrivalDate, fedexTransitTime, localDelivery);
-    if (rushOrder && !localDelivery) {
-      shipmentDate = rushShipmentChecker(moment().startOf('day'));
+    let returnDate = order.advancedFulfillment.returnDate;
+    let shipmentDate = order.advancedFulfillment.shipmentDate;
+    let arrivalDate = order.advancedFulfillment.arrivalDate;
+    let returnBy = order.advancedFulfillment.returnBy;
+
+    if (transitTime !== transitTimeToPrevAddress) {
+      order.shipping[0].address = address;
+      const startDate = order.startTime;
+      const endDate = order.endTime;
+      const totalShippingDays = TransitTimes.calculateTotalShippingDays(order);
+
+      shipmentDate = TransitTimes.calculateShippingDay(order);
+      arrivalDate = startDate;
+      returnBy = endDate;
+      returnDate = TransitTimes.calculateReturnDay(order);
+
+      if (localDelivery) {
+        shipmentDate = arrivalDate; // Remove transit day from local deliveries
+      }
+
+      let rushOrder = rushRequired(arrivalDate, totalShippingDays, localDelivery);
+      if (rushOrder && !localDelivery) {
+        shipmentDate = TransitTimes.nextBusinessDay(moment().startOf('day'));
+      }
     }
 
     let orderNotes = anyOrderNotes(order.orderNotes);
+    // TODO: turn order notes into an array of strings
     // Build updated orderNotes
     orderNotes = orderNotes + '<br /><p> Shipping Address updated from: <br />'
     + prevAddress.fullName + '<br />'
@@ -424,7 +430,7 @@ Meteor.methods({
         $set: {
           'advancedFulfillment.localDelivery': localDelivery,
           // This line adds a day to transit time because we estimate from first ski day during import.
-          'advancedFulfillment.transitTime': localDelivery ? fedexTransitTime : fedexTransitTime + 1,
+          'advancedFulfillment.transitTime': transitTime,
           'advancedFulfillment.shipmentDate': shipmentDate,
           'advancedFulfillment.returnDate': returnDate,
           'advancedFulfillment.arriveBy': arrivalDate,
@@ -474,6 +480,7 @@ Meteor.methods({
     }
   },
 
+  // TODO: This will need to check availability of items before updating
   'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId, userObj) {
     check(order, Object);
     check(itemId, String);
@@ -530,6 +537,7 @@ Meteor.methods({
     });
   },
 
+  // TODO: This should check item availability before swapping items
   'advancedFulfillment/itemExchange': function (order, oldItemId, type, gender, title, color, variantId, userObj) {
     check(order, Object);
     check(oldItemId, String);
@@ -622,6 +630,7 @@ Meteor.methods({
     });
   },
 
+  // TODO: Should check availability before updating items
   'advancedFulfillment/addItem': function (order, type, gender, title, color, variantId, userObj) {
     check(order, Object);
     check(type, String);

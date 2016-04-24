@@ -5,6 +5,10 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
     name: 'reaction-advanced-fulfillment',
     shopId: ReactionCore.getShopId()
   });
+  if (!afPackage.enabled) {
+    ReactionCore.Log.warn('Advanced Fulfillment Not Enabled.');
+    return orderId;
+  }
   let af = {};
   advancedFulfillment = af.advancedFulfillment = {};
   advancedFulfillment.workflow = {

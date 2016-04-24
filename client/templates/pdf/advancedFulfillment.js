@@ -1,11 +1,16 @@
 Template.advancedFulfillmentPDF.onCreated(function () {
-  const orderId = Router.current().params._id;
+  Blaze._allowJavascriptUrls();
+  const orderId = ReactionRouter.getParam('_id');
   this.subscribe('advancedFulfillmentOrder', orderId);
+});
+
+Template.advancedFulfillmentPDF.onRendered(function () {
+  BlazeLayout.render('advancedFulfillmentPDF');
 });
 
 Template.advancedFulfillmentPDF.helpers({
   order: function () {
-    const orderId = Router.current().params._id;
+    const orderId = ReactionRouter.getParam('_id');
     return ReactionCore.Collections.Orders.findOne({
       _id: orderId
     });
@@ -27,7 +32,8 @@ Template.advancedFulfillmentPDF.helpers({
 });
 
 Template.barcode.onRendered(function () {
-  let orderId = Router.current().params._id;
+  $('.admin-controls-menu').remove();
+  let orderId = ReactionRouter.getParam('_id');
   $('#barcode').barcode(orderId, 'code128', {
     barWidth: 2,
     barHeight: 100,

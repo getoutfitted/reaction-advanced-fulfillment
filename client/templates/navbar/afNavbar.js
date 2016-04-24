@@ -1,5 +1,5 @@
 Template.afNavbar.onCreated(function () {
-  // this.subscribe('searchOrders');
+  this.subscribe('searchOrders');
 });
 
 Template.afNavbar.onRendered(function () {
@@ -53,24 +53,20 @@ Template.afNavbar.events({
   'submit .subnav-search-form, submit .navbar-search-form': function (event) {
     event.preventDefault();
     let searchValue = event.target.orderNumber.value;
-    let order = null;
-    OrderSearch.search(searchValue);
-    // let order = ReactionCore.Collections.Orders.findOne({$or: [{_id: searchValue}, {shopifyOrderNumber: parseInt(searchValue, 10)}]});
-    if (OrderSearch.getStatus() === 'loaded') {
-      order = OrderSearch.getData()[0];
-      Router.go('orderDetails', {_id: order._id});
+    let order = ReactionCore.Collections.Orders.findOne({
+      $or : [
+        { shopifyOrderNumber: parseInt(searchValue, 10)},
+        { orderNumber: parseInt(searchValue, 10)}
+      ]
+    });
+    if (order) {
+      ReactionRouter.go('orderDetails', {_id: order._id});
+      event.target.orderNumber.value = '';
     } else {
-      setTimeout(function () {
-        order = OrderSearch.getData()[0];
-        if (order) {
-          Router.go('orderDetails', {_id: order._id});
-        } else {
-          Alerts.removeSeen();
-          Alerts.add(searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
-            autoHide: true
-          });
-        }
-      }, 500);
+      Alerts.removeSeen();
+      Alerts.add(searchValue + ' is not a valid order number or order id, please try your search again.', 'danger', {
+        autoHide: true
+      });
     }
   },
   'click #afShipButton': function (event) {
@@ -79,7 +75,7 @@ Template.afNavbar.events({
     let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
     if (verifiedDate) {
       let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
-      Router.go('dateShipping', {date: date});
+      ReactionRouter.go('dateShipping', {date: date});
     }
   },
   'click #afLocalDeliveryButton': function (event) {
@@ -88,7 +84,7 @@ Template.afNavbar.events({
     let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
     if (verifiedDate) {
       let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
-      Router.go('dateLocalDelivery', {date: date});
+      ReactionRouter.go('dateLocalDelivery', {date: date});
     }
   },
   'click #afReturnButton': function (event) {
@@ -97,7 +93,7 @@ Template.afNavbar.events({
     let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
     if (verifiedDate) {
       let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
-      Router.go('dateReturning', {date: date});
+      ReactionRouter.go('dateReturning', {date: date});
     }
   }
 });

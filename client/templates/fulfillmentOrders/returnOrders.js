@@ -8,13 +8,12 @@ function fullDay(rawDate) {
   };
 }
 Template.returnOrders.onCreated(function () {
-  let instance = this;
-  instance.autorun(function () {
-    let date = Router.current().params.date;
+  this.autorun(() => {
+    let date = ReactionRouter.getParam('date');
     if (date) {
-      instance.subscribe('ordersReturningOnDate', date);
+      this.subscribe('ordersReturningOnDate', date);
     } else {
-      instance.subscribe('afReturnOrders');
+      this.subscribe('afReturnOrders');
     }
   });
   Session.setDefault('returnOrders', []);
@@ -22,7 +21,7 @@ Template.returnOrders.onCreated(function () {
 
 Template.returnOrders.helpers({
   orders: function () {
-    let params = Router.current().params.date;
+    let params = ReactionRouter.getParam('date');
     if (params) {
       let dayTime = fullDay(params);
       return ReactionCore.Collections.Orders.find({
@@ -95,7 +94,7 @@ Template.returnOrder.helpers({
   shippingDay: function () {
     return moment(this.advancedFulfillment.shipReturnBy).calendar(null, AdvancedFulfillment.calendarReferenceTime);
   },
-  lastSkiDay: function () {
+  lastUseDay: function () {
     return moment(this.endTime).calendar(null, AdvancedFulfillment.calendarReferenceTime);
   },
   returnName: function () {
@@ -111,7 +110,7 @@ Template.returnOrder.helpers({
 
 Template.returnOrder.events({
   'click .orderRow': function (event) {
-    Router.go('orderDetails', {_id: $(event.currentTarget).data('id')});
+    ReactionRouter.go('orderDetails', {_id: $(event.currentTarget).data('id')});
   },
   'click label .fa-check-square-o, click label .fa-square-o': function (event) {
     event.stopPropagation();

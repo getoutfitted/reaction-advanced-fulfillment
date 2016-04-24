@@ -1,5 +1,4 @@
 <template name='missingRentalDates'>
-  {{> afNavbar}}
   <div class="container-fluid">
     <div class='row text-center'>
       <h2><strong>Orders with Missing Rental Dates</strong></h2>
@@ -16,7 +15,7 @@
       <tbody>
         {{#each missingRentalDates}}
           <tr>
-            <td><a href="{{pathFor 'orderDetails'}}"><strong>{{shopifyOrderNumber}}</strong></a></td>
+            <td><a href="{{pathFor 'orderDetails' _id=_id}}"><strong>{{shopifyOrderNumber}}</strong></a></td>
             <td>{{billingName}}</td>
             <td><a href="tel:{{billingPhone}}">{{billingPhone}}</a></td>
             <td><a href="mailto: {{email}}">{{email}}</a></td>

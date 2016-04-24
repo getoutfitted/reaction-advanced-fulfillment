@@ -3,19 +3,21 @@ function findOrderItem(order, itemId) {
 }
 
 Template.updateOrder.onCreated(function () {
-  const orderId = Router.current().params._id;
-  this.subscribe('afProducts');
-  this.subscribe('advancedFulfillmentOrder', orderId);
+  this.autorun(() => {
+    let orderId = ReactionRouter.getParam('_id');
+    this.subscribe('afProducts');
+    this.subscribe('advancedFulfillmentOrder', orderId);
+  });
 });
 
 Template.updateOrder.onRendered(function () {
-  const orderId = Router.current().params._id;
+  const orderId = ReactionRouter.getParam('_id');
   Session.setDefault('cancel-order-' + orderId, false);
 });
 
 Template.updateOrder.helpers({
   order: function () {
-    const orderId = Router.current().params._id;
+    const orderId = ReactionRouter.getParam('_id');
     return ReactionCore.Collections.Orders.findOne({ _id: orderId});
   },
   afItems: function () {
@@ -90,6 +92,14 @@ Template.updateOrder.helpers({
     return addingItems || false;
   }
 });
+
+Template.updateCustomerDetails.onCreated(function () {
+  this.autorun(() => {
+    let orderId = ReactionRouter.getParam('_id');
+    this.subscribe('advancedFulfillmentOrder', orderId);
+  });
+});
+
 Template.updateCustomerDetails.helpers({
   address: function (param) {
     return this.shipping[0].address[param];
@@ -134,7 +144,7 @@ Template.updateOrder.events({
   }
 });
 
-Template.updateCustomerDetails.onRendered(function () {
+Template.updateCustomerDates.onRendered(function () {
   $('.picker .input-daterange').datepicker({
     startDate: 'today',
     todayBtn: 'linked',
@@ -145,7 +155,7 @@ Template.updateCustomerDetails.onRendered(function () {
   });
 });
 
-Template.updateCustomerDetails.events({
+Template.updateCustomerDates.events({
   'click .update-rental-dates': function (event) {
     event.preventDefault();
     let orderId = this._id;
@@ -157,7 +167,10 @@ Template.updateCustomerDetails.events({
     Alerts.add('Rental Dates updated', 'success', {
       autoHide: true
     });
-  },
+  }
+});
+
+Template.updateCustomerDetails.events({
   'submit #updateShippingAddressForm': function (event) {
     event.preventDefault();
     const form = event.currentTarget;

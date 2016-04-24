@@ -1,3 +1,23 @@
+ReactionCore.Collections.AFCounter = AFCounter = this.AFCounter = new Mongo.Collection('AFCounter');
+
+ReactionCore.Schemas.AFCounter = new SimpleSchema({
+  shopId: {
+    type: String,
+    optional: true
+  },
+  seq: {
+    type: Number,
+    optional: true,
+    defaultValue: 10000
+  },
+  name: {
+    type: String,
+    optional: true
+  }
+});
+
+ReactionCore.Collections.AFCounter.attachSchema(ReactionCore.Schemas.AFCounter);
+
 
 ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
   ReactionCore.Schemas.PackageConfig, {
@@ -11,6 +31,74 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
       type: Number,
       defaultValue: 4,
       label: 'Number of days past the customer use date, until orders should be returned.',
+      optional: true
+    },
+    'settings.fedex.key': {
+      type: String,
+      label: 'Fedex API key',
+      optional: true
+    },
+    'settings.fedex.password': {
+      type: String,
+      label: 'Fedex API password',
+      optional: true
+    },
+    'settings.fedex.accountNumber': {
+      type: String,
+      label: 'Fedex API Account Number',
+      optional: true
+    },
+    'settings.fedex.meterNumber': {
+      type: String,
+      label: 'Fedex API Meter Number',
+      optional: true
+    },
+    'settings.fedex.liveApi': {
+      type: Boolean,
+      label: 'Use Live API? (uncheck for testing)',
+      optional: true,
+      defaultValue: false
+    },
+    'settings.ups.liveApi': {
+      type: Boolean,
+      label: 'Use Live API? (uncheck for testing)',
+      optional: true,
+      defaultValue: false
+    },
+    'settings.ups.accessKey': {
+      type: String,
+      label: 'UPS Access Key',
+      optional: true
+    },
+    'settings.ups.username': {
+      type: String,
+      label: 'UPS Username',
+      optional: true
+    },
+    'settings.ups.password': {
+      type: String,
+      label: 'UPS Password',
+      optional: true
+    },
+    'settings.selectedShipping': {
+      type: String,
+      label: 'Carrier to calculate transit time',
+      optional: true,
+      allowedValues: ['UPS', 'Fedex']
+    },
+    'settings.shipstation': {
+      type: Boolean,
+      label: 'Enable Intrgration from Shipstation Package',
+      optional: true
+    },
+    'settings.aftership.enabled': {
+      type: Boolean,
+      label: 'Enable Aftership webhook',
+      optional: true
+    },
+    'settings.aftership.preSharedKey': {
+      type: String,
+      label: 'Pre Shared Key for authenticating webhooks',
       optional: true
     }
   }
@@ -266,6 +354,14 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
     type: String,
     optional: true
   },
+  ancestors: {
+    type: [String],
+    optional: true
+  },
+  functionalType: {
+    type: String,
+    optional: true
+  },
   productId: {
     type: String,
     index: 1,
@@ -447,6 +543,11 @@ ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schema
     type: Date,
     optional: true
   },
+  orderNumber: {
+    type: Number,
+    optional: true,
+    unique: true
+  },
   infoMissing: {
     type: Boolean,
     optional: true
@@ -457,6 +558,14 @@ ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schema
   },
   bundleMissingColor: {
     type: Boolean,
+    optional: true
+  },
+  startTime: {
+    type: Date,
+    optional: true
+  },
+  endTime: {
+    type: Date,
     optional: true
   }
 }]);

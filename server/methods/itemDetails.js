@@ -112,5 +112,23 @@ Meteor.methods({
         'advancedFulfillment.items': items
       }
     });
+  },
+  'advancedFulfillment/updateItemsToShippedOrCompleted': function (order) {
+    check(order, Object);
+    let items = order.advancedFulfillment.items;
+    _.each(items, function (item) {
+      if (item.functionalType === 'variant') {
+        item.workflow.status = 'completed';
+      } else {
+        item.workflow.status = 'shipped';
+      }
+    });
+    ReactionCore.Collections.Orders.update({
+      _id: order._id
+    }, {
+      $set: {
+        'advancedFulfillment.items': items
+      }
+    });
   }
 });

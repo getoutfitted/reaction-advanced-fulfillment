@@ -3,32 +3,177 @@ ReactionCore.registerPackage({
   name: 'reaction-advanced-fulfillment',
   icon: 'fa fa-barcode',
   autoEnable: false,
-  registry: [
-    // Dashboard card
-    {
-      provides: 'dashboard',
-      label: 'Advanced Fulfillment',
-      description: 'Advanced Order Fulfillment Tracking',
-      route: 'dashboard/advanced-fulfillment',
-      icon: 'fa fa-barcode',
-      cycle: '3',
-      container: 'dashboard'
-    },
+  settings: {
+    shipstation: false
+  },
+  registry: [{
+    route: '/dashboard/advanced-fulfillment',
+    provides: 'dashboard',
+    name: 'advancedFulfillment',
+    label: 'Advanced Fulfillment',
+    description: 'Advanced Order Fulfillment Tracking',
+    container: 'getoutfitted',
+    icon: 'fa fa-barcode',
+    template: 'fulfillmentOrders',
+    workflow: 'afWorkflow',
+    priority: 2
+  }, {
+    route: '/dashboard/advanced-fulfillment/settings',
+    provides: 'settings',
+    label: 'Advanced Fulfillment Settings',
+    name: 'advancedFulfillmentSettings',
+    template: 'advancedFulfillmentSettings'
+  }, {
+    route: '/dashboard/advanced-fulfillment/picker',
+    name: 'advancedFulfillment.picker',
+    template: 'advancedFulfillment.picker.search',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/shipping',
+    name: 'allShipping',
+    template: 'fulfillmentOrders',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/shipping/:date',
+    name: 'dateShipping',
+    template: 'fulfillmentOrders',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/order/:_id',
+    name: 'orderDetails',
+    template: 'orderDetails',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/orders/status/:status',
+    name: 'orderByStatus',
+    template: 'fulfillmentOrders',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/local-deliveries',
+    name: 'allLocalDeliveries',
+    template: 'fulfillmentOrders',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/local-deliveries/:date',
+    name: 'dateLocalDelivery',
+    template: 'fulfillmentOrders',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/order-queue',
+    name: 'orderQueue',
+    template: 'orderQueue',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/order/pdf/:_id',
+    name: 'advancedFulfillmentPDF',
+    template: 'advancedFulfillmentPDF',
+    workflow: 'afPrint'
+  }, {
+    route: '/dashboard/advanced-fulfillment/order/local-delivery-label-pdf/:_id',
+    name: 'localDeliveryLabelPDF',
+    template: 'localDeliveryLabelPDF',
+    workflow: 'afPrint'
+  }, {
+    route: '/dashboard/advanced-fulfillment/orders/pdf/date/:date',
+    name: 'orders.printAllForDate',
+    template: 'advancedFulfillmentOrdersPrint',
+    workflow: 'afPrint'
+  }, {
+    route: '/dashboard/advanced-fulfillment/orders/pdf/selected',
+    name: 'orders.printSelected',
+    template: 'advancedFulfillmentOrdersPrint',
+    workflow: 'afPrint'
+  }, {
+    route: '/dashboard/advanced-fulfillment/returns',
+    name: 'returns',
+    template: 'returnOrders',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/returns/:date',
+    name: 'dateReturning',
+    template: 'returnOrders',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/missing',
+    name: 'missing',
+    template: 'missingDamaged',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/damaged',
+    name: 'damaged',
+    template: 'missingDamaged',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/search',
+    name: 'searchOrders',
+    template: 'searchOrders',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/update-order/:_id',
+    name: 'updateOrder',
+    template: 'updateOrder',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/update-order/:orderId/:itemId',
+    name: 'updateOrderItem',
+    template: 'updateOrderItem',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/customer-service/impossible-dates',
+    name: 'impossibleDates',
+    template: 'impossibleDates',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/customer-service/missing-rental-dates',
+    name: 'missingRentalDates',
+    template: 'missingRentalDates',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/customer-service/missing-item-details',
+    name: 'missingItemDetails',
+    template: 'missingItemDetails',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/customer-service/missing-bundle-colors',
+    name: 'missingBundleColors',
+    template: 'missingBundleColors',
+    workflow: 'afWorkflow'
+  }, {
+    route: '/dashboard/advanced-fulfillment/customer-service/non-warehouse-orders',
+    name: 'nonWarehouseOrders',
+    template: 'nonWarehouseOrders',
+    workflow: 'afWorkflow'
+  }],
 
-    // Settings panel
-    {
-      label: 'Adavanced Fulfillment Settings',
-      route: 'dashboard/advanced-fulfillment',
-      provides: 'settings',
-      container: 'dashboard',
-      template: 'advancedFulfillmentSettings'
+  layout: [{
+    workflow: 'afWorkflow',
+    layout: 'coreLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'fulfillmentOrders',
+      layoutHeader: 'layoutHeader',
+      layoutFooter: '',
+      notFound: 'notFound',
+      dashboardHeader: 'afNavbar',
+      dashboardControls: 'accountsDashboardControls',
+      dashboardHeaderControls: '',
+      adminControlsFooter: 'adminControlsFooter'
     }
-  ],
-  permissions: [
-    {
-      label: 'Advanced Fulfillment',
-      permission: 'dashboard/advanced-fulfillment',
-      group: 'Shop Settings'
+  }, {
+    workflow: 'afPrint',
+    layout: 'coreLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'advancedFulfillmentOrdersPrint',
+      layoutHeader: '',
+      layoutFooter: '',
+      notFound: 'advancedFulfillmentPDF',
+      dashboardHeader: '',
+      dashboardControls: '',
+      dashboardHeaderControls: '',
+      adminControlsFooter: ''
     }
-  ]
+  }]
 });

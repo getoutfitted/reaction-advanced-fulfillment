@@ -40,6 +40,7 @@ Meteor.publish('afProducts', function () {
 });
 
 Meteor.publish('advancedFulfillmentOrder', function (orderId) {
+  // Check should be just string, but known flow router error is throwing errors when rerunning
   check(orderId, String);
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
@@ -55,14 +56,12 @@ Meteor.publish('searchOrders', function () {
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
-      'shopId': shopId,
-      'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderActive
-      }
+      'shopId': shopId
     }, {
       fields: {
         _id: 1,
-        shopifyOrderNumber: 1
+        shopifyOrderNumber: 1,
+        orderNumber: 1
       }
     });
   }
@@ -76,8 +75,7 @@ Meteor.publish('shippingOrders', function () {
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderShipping
-      },
-      'startTime': {$ne: undefined}
+      }
     }, {
       fields: AdvancedFulfillment.fields.ordersList
     });

@@ -1,17 +1,21 @@
 Template.registerHelper('displayOrderNumber', (order) => {
-  if (order.shopifyOrderId) {
+  if (order.orderNumber) {
+    return 'Order #' + order.orderNumber;
+  } else if (order.shopifyOrderId) {
     return '<a href="http://getoutfitted.myshopify.com/admin/orders/'
     + order.shopifyOrderId
     + '">Order #' + order.shopifyOrderNumber + '</a>';
   } else if (order.shopifyOrderNumber) {
     return 'Order #' + order.shopifyOrderNumber;
   }
-
   // Default
   return 'Order #' + order._id;
 });
 
 Template.registerHelper('formattedDate', (date) => {
+  if (!date) {
+    return '---------------';
+  }
   return moment(date).calendar(null, AdvancedFulfillment.shippingCalendarReference);
 });
 

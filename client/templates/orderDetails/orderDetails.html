@@ -1,6 +1,5 @@
 <template name='orderDetails'>
-  {{> afNavbar}}
-  {{#if Template.subscriptionsReady}}
+{{#if Template.subscriptionsReady}}
   {{#with order}}
     <div class='container-fluid'>
       {{#if orderCreated}}
@@ -59,7 +58,7 @@
             </td>
             <td>
               {{#if pastDate this.advancedFulfillment.shipmentDate}}
-                <span class='text-danger'><strong>Today</strong></span>
+                <span class='text-danger'><strong>Today</strong></span> -{{formattedDate advancedFulfillment.shipmentDate}}
               {{else}}
                 {{formattedDate advancedFulfillment.shipmentDate}}
               {{/if}}
@@ -116,9 +115,6 @@
           <p>Email: {{contactInfo}}</p>
           <p>Phone: {{phoneNumber}}</p>
         </div>
-        <!-- <div class='col-sm-5 col-sm-offset-2 hidden-xs'>
-          <div id='barcode'></div>
-        </div> -->
       </div>
       <hr>
       {{> Template.dynamic template=currentStatus}}

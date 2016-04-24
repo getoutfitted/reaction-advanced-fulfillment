@@ -12,8 +12,7 @@ function context(routeName) {
   let baseFilter = {
     'advancedFulfillment.workflow.status': {
       $in: AdvancedFulfillment.orderActive
-    },
-    'startTime': {$ne: undefined}
+    }
   };
   let baseSorting = {
     sort: {
@@ -23,7 +22,7 @@ function context(routeName) {
       'shopifyOrderNumber': 1
     }
   };
-  const rawDate = Router.current().params.date;
+  const rawDate = ReactionRouter.getParam('date');
   let dayTime;
   switch (routeName) {
   case 'allLocalDeliveries':
@@ -36,7 +35,7 @@ function context(routeName) {
       sortingOrder: baseSorting
     };
   case 'orderByStatus':
-    let status = Router.current().params.status;
+    let status = ReactionRouter.getParam('status');
     let byStatusFilter = _.extend(baseFilter, {
       'advancedFulfillment.workflow.status': status
     });
@@ -82,24 +81,23 @@ function context(routeName) {
 }
 
 Template.fulfillmentOrders.onCreated(function () {
-  let instance = this;
-  instance.autorun(function () {
-    let currentRoute = Router.current().route.getName();
+  this.autorun(() => {
+    let currentRoute = ReactionRouter.getRouteName();
     let result = context(currentRoute);
-    let params = Router.current().params.status || Router.current().params.date;
+    let params = ReactionRouter.getParam('status') || ReactionRouter.getParam('date');
 
     if (params) {
-      instance.subscribe(result.subscription, params);
+      this.subscribe(result.subscription, params);
     } else {
-      instance.subscribe(result.subscription);
+      this.subscribe(result.subscription);
     }
   });
-  Session.set('selectedOrders', []);
+  Session.setDefault('selectedOrders', []);
 });
 
 Template.fulfillmentOrders.helpers({
   orders: function () {
-    const currentRoute = Router.current().route.getName();
+    const currentRoute = ReactionRouter.getRouteName();
     let result = context(currentRoute);
     return ReactionCore.Collections.Orders.find(
       result.filters,
@@ -107,7 +105,11 @@ Template.fulfillmentOrders.helpers({
     );
   },
   routeStatus: function () {
-    let fullRoute = Router.current().url;
+    let fullRoute = ReactionRouter.current().path;
+    Tracker.autorun(() => {
+      ReactionRouter.watchPathChange();
+      fullRoute = ReactionRouter.current().path;
+    });
     let routeComponents = fullRoute.split('/');
     if (_.contains(routeComponents, 'shipping')) {
       return 'Orders Waiting to Be Shipped';
@@ -116,20 +118,20 @@ Template.fulfillmentOrders.helpers({
     } else if (_.contains(routeComponents, 'local-deliveries')) {
       return 'All Local Deliveries';
     } else if (_.contains(routeComponents, 'local-delivery')) {
-      return 'Local Deliveries for ' + Router.current().params.date;
-    } else if (Router.current().params.status) {
-      return AdvancedFulfillment.humanOrderStatuses[Router.current().params.status] + ' Orders';
+      return 'Local Deliveries for ' + ReactionRouter.getParam('date');
+    } else if (ReactionRouter.getParam('status')) {
+      return AdvancedFulfillment.humanOrderStatuses[ReactionRouter.getParam('status')] + ' Orders';
     }
   },
   showPrintOrdersLink: function () {
-    let currentRoute = Router.current().route.getName();
+    let currentRoute = ReactionRouter.getRouteName();
     if (currentRoute === 'dateShipping') {
       return true;
     }
     return false;
   },
   shippingDate: function () {
-    return Router.current().params.date;
+    return ReactionRouter.getParam('date');
   },
   ordersSelected: function () {
     return Session.get('selectedOrders').length;
@@ -160,7 +162,7 @@ Template.fulfillmentOrders.events({
     if (event.currentTarget.value === 'print') {
       localStorage.selectedOrdersToPrint = JSON.stringify(Session.get('selectedOrders'));
       Meteor.call('advancedFulfillment/printSelectedOrders', Session.get('selectedOrders'));
-      window.open(window.location.origin + Router.path('orders.printSelected'));
+      window.open(window.location.origin + ReactionRouter.path('orders.printSelected'));
     } else if (event.currentTarget.value === 'ship') {
       Meteor.call('advancedFulfillment/shipSelectedOrders', Session.get('selectedOrders'));
     } else if (event.currentTarget.value === 'undoShipped') {
@@ -173,19 +175,27 @@ Template.fulfillmentOrders.events({
 
 Template.fulfillmentOrder.helpers({
   orderNumber: function  () {
-    if (this.shopifyOrderNumber) {
+    if (this.orderNumber) {
+      return '#' + this.orderNumber;
+    } else if (this.shopifyOrderNumber) {
       return '#' + this.shopifyOrderNumber + ' ';
     }
-    return '';
+    return '#' + this._id;
   },
   shippingDate: function () {
     return moment(this.advancedFulfillment.shipmentDate).calendar(null, AdvancedFulfillment.shippingCalendarReference);
   },
   arrivalDay: function () {
-    return moment(this.advancedFulfillment.arriveBy).calendar(null, AdvancedFulfillment.shippingCalendarReference);
+    if (this.advancedFulfillment.arriveBy) {
+      return moment(this.advancedFulfillment.arriveBy).calendar(null, AdvancedFulfillment.shippingCalendarReference);
+    }
+    return '--------------';
   },
-  firstSkiDay: function () {
-    return moment(this.startTime).calendar(null, AdvancedFulfillment.shippingCalendarReference);
+  firstUseDay: function () {
+    if (this.startTime) {
+      return moment(this.startTime).calendar(null, AdvancedFulfillment.shippingCalendarReference);
+    }
+    return '--------------';
   },
   returningDate: function () {
     let longDate = this.advancedFulfillment.returnDate;
@@ -195,14 +205,13 @@ Template.fulfillmentOrder.helpers({
     return this.shipping[0].address.city + ', ' + this.shipping[0].address.region;
   },
   orderSelected: function () {
-    // Session.setDefault('selectedOrders', []);
     return Session.get('selectedOrders').indexOf(this._id) !== -1;
   },
   toBeShipped: function () {
-    let fullRoute = Router.current().url;
+    let fullRoute = ReactionRouter.current().path;
     let routeComponents = fullRoute.split('/');
     let toBeShipped = _.intersection(routeComponents, ['shipping', 'local-delivery', 'local-deliveries']);
-    let params = Router.current().params.status;
+    let params = ReactionRouter.getParam('status');
     let active = _.contains(AdvancedFulfillment.orderActive, params);
     if (toBeShipped.length > 0 || active) {
       return true;
@@ -220,22 +229,6 @@ Template.fulfillmentOrder.helpers({
   },
   phoneNumber: function () {
     return this.shipping[0].address.phone || '';
-  },
-  uniqueItemsCount: function () {
-    return this.advancedFulfillment.items.length;
-  },
-  totalItemsCount: function () {
-    let total = _.reduce(this.items, function (sum, item) {
-      return sum + item.quantity;
-    }, 0);
-    return total;
-  },
-  orderId: function () {
-    return this._id;
-  },
-  orderCreated: function () {
-    let valid = this.advancedFulfillment.workflow.status === 'orderCreated';
-    return valid;
   },
   readyForAssignment: function () {
     let status = this.advancedFulfillment.workflow.status;
@@ -277,7 +270,8 @@ Template.fulfillmentOrder.helpers({
 
 Template.fulfillmentOrder.events({
   'click .orderRow': function (event) {
-    Router.go('orderDetails', {_id: $(event.currentTarget).data('id')});
+    event.preventDefault();
+    ReactionRouter.go('orderDetails', {_id: event.currentTarget.dataset.id});
   },
   'click .advanceOrder': function (event) {
     event.preventDefault();
@@ -287,7 +281,7 @@ Template.fulfillmentOrder.events({
     let orderId = this._id;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
-    Router.go('orderDetails', {_id: orderId});
+    ReactionRouter.go('orderDetails', {_id: orderId});
   },
   'click .selfAssignOrder': function (event) {
     event.preventDefault();

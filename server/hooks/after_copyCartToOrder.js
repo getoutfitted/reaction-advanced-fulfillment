@@ -1,72 +1,70 @@
-// function shipmentChecker(date) {
-//   if (moment(date).isoWeekday() === 7) {
-//     return moment(date).subtract(2, 'days')._d;
-//   } else if (moment(date).isoWeekday() === 6) {
-//     return moment(date).subtract(1, 'days')._d;
-//   }
-//   return date;
-// }
+ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
+  const orderId = options.result || arguments[0];
+  const order = ReactionCore.Collections.Orders.findOne(orderId);
+  const afPackage = ReactionCore.Collections.Packages.findOne({
+    name: 'reaction-advanced-fulfillment',
+    shopId: ReactionCore.getShopId()
+  });
+  let af = {};
+  advancedFulfillment = af.advancedFulfillment = {};
+  advancedFulfillment.workflow = {
+    status: 'orderCreated',
+    workflow: []
+  };
+  advancedFulfillment.items = AdvancedFulfillment.itemsToAFItems(order.items);
+  let orderHasNoRentals = _.every(order.items, function (item) {
+    return item.variants.functionalType === 'variant';
+  });
+  const shippingAddress = AdvancedFulfillment.addressFormatForFedExApi(order.shipping[0].address);
+  // check if local delivery
+  advancedFulfillment.localDelivery = AdvancedFulfillment.determineLocalDelivery(order.shipping[0].address.postal);
+  if (orderHasNoRentals) {
+    let today = new Date();
+    advancedFulfillment.shipmentDate = AdvancedFulfillment.date.nextBusinessDay(today);
+  } else {
+    // if local set tranist time to 0 else call FedEx Api for tranist time
+    advancedFulfillment.transitTime = advancedFulfillment.localDelivery ? 0 : AdvancedFulfillment.determineShippingCarrier(afPackage.settings.selectedShipping, shippingAddress);
+    if (advancedFulfillment.transitTime === false) {
+      advancedFulfillment.transitTime = afPackage.settings.buffer.shipping || 4; // If no fedEx setting to general date
+    }
+    // set all the transit times - as we should have order.startTime and order.endtime
+    // TODO REMOVE!!!!!!!!!mocking random start date
+    let month = _.random(2, 11);
+    let date = _.random(1, 25);
+    if (!order.startTime) {
+      order.startTime = new Date (2016, month, date);
+      af.impossibleShipDate = true;
+    }
+    if (!order.endTime) {
+      order.endTime = new Date(2016, month, date + 3);
+    }
+    af.startTime = order.startTime;
+    af.endTime = order.endTime;
+    advancedFulfillment.arriveBy = AdvancedFulfillment.date.determineArrivalDate(order.startTime);
+    advancedFulfillment.shipReturnBy = AdvancedFulfillment.date.determineShipReturnByDate(order.endTime);
+    advancedFulfillment.shipmentDate = AdvancedFulfillment.date.determineShipmentDate(advancedFulfillment.arriveBy, advancedFulfillment.transitTime);
+    advancedFulfillment.returnDate = AdvancedFulfillment.date.determineReturnDate(advancedFulfillment.shipReturnBy, advancedFulfillment.transitTime);
+  }
 
-// function returnChecker(date) {
-//   if (moment(date).isoWeekday() === 7) {
-//     return moment(date).add(1, 'days')._d;
-//   }
-//   return date;
-// }
+  af.orderNumber =  AdvancedFulfillment.findAndUpdateNextOrderNumber();
 
-// ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
-//   let orderId = options.result || arguments[0];
-//   let order = ReactionCore.Collections.Orders.findOne(orderId);
-//   let itemList = order.items;
-//   let afPackage = ReactionCore.Collections.Packages.findOne({name: 'reaction-advanced-fulfillment'});
-//   if (!afPackage) {
-//     return orderId;
-//   }
-//   if (!afPackage.settings) {
-//     return orderId;
-//   }
-//   if (!afPackage.settings.buffer) {
-//     return orderId;
-//   }
-//   let shippingBuffer = buffer.shipping;
-//   let shipmentDate = new Date();
-//   let returnDate = new Date(2100, 8, 20); // XXX: This is a hack for not dealing with items that don't have return date. Sorry future programmer!
-//   let returnBuffer = buffer.returning;
-//   if (order.startTime && order.endTime) {
-//     shipmentDate = moment(order.startTime).subtract(shippingBuffer, 'days')._d;
-//     returnDate = moment(order.endTime).add(returnBuffer, 'days')._d;
-//   }
-
-//   let items = _.map(itemList, function (item) {
-//     return {
-//       _id: item._id,
-//       productId: item.productId,
-//       shopId: item.shopId,
-//       quantity: item.quantity,
-//       variantId: item.variants._id,
-//       itemDescription: item.variants.title,
-//       workflow: {
-//         status: 'In Stock',
-//         workflow: []
-//       },
-//       price: item.variants.price,
-//       sku: item.variants.sku,
-//       location: item.variants.location
-//     };
-//   });
-//   ReactionCore.Collections.Orders.update({_id: orderId}, {
-//     $set: {
-//       'advancedFulfillment.workflow.status': 'orderCreated',
-//       'advancedFulfillment.workflow.workflow': [],
-//       'advancedFulfillment.shipmentDate': shipmentChecker(shipmentDate),
-//       'advancedFulfillment.returnDate': returnChecker(returnDate)
-//     },
-//     $addToSet: {
-//       'advancedFulfillment.items': {
-//         $each: items
-//       }
-//     }
-//   });
-//   return orderId;
-// });
+  try {
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: af
+    });
+  } catch (error) {
+    af.orderNumber =  AdvancedFulfillment.findHighestOrderNumber();
+    ReactionCore.Collections.Orders.update({
+      _id: orderId
+    }, {
+      $set: af
+    });
+  }
+  if (afPackage.settings.shipstation) {
+    AdvancedFulfillment.Shipstation.createOrder(orderId);
+  }
+  return orderId;
+});
 

@@ -42,6 +42,13 @@ Template.orderPacking.helpers({
   },
   packingConfirmed: function () {
     return Session.get('confirm-' + this._id);
+  },
+  itemType: function (item) {
+    let itemType = item.functionalType;
+    if (itemType === 'variant') {
+      return 'purchased';
+    }
+    return 'rental';
   }
 });
 

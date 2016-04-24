@@ -108,7 +108,7 @@ Template.orderPicking.events({
     });
     if (allItemsPicked) {
       Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, 'orderPicking');
-      Router.go('advancedFulfillment.picker');
+      ReactionRouter.go('advancedFulfillment.picker');
     } else {
       Alerts.removeSeen();
       Alerts.add('All Items Have Not Been Picked', 'danger', {

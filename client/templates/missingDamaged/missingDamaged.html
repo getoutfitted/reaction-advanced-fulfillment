@@ -1,5 +1,4 @@
 <template name='missingDamaged'>
-  {{> afNavbar}}
   <div class='container'>
     <h1>{{typeOf}} Items</h1>
     <div class='row'>
@@ -39,7 +38,7 @@
       {{/each}}
     </div>
     <div class='col-sm-4'>
-      <p>Order Id: <a href="{{pathFor 'orderDetails'}}"><strong>{{shopifyOrderNumber}}</strong></a></p>
+      <p>Order Id: <a href="{{pathFor 'orderDetails' _id=_id}}"><strong>{{shopifyOrderNumber}}</strong></a></p>
       <p>OverDue: {{daysOverDue}} </p>
     </div>
     <div class='col-sm-3'>

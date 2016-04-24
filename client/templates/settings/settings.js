@@ -1,7 +1,8 @@
 Template.advancedFulfillmentSettings.helpers({
   packageData: function () {
     return ReactionCore.Collections.Packages.findOne({
-      name: 'reaction-advanced-fulfillment'
+      name: 'reaction-advanced-fulfillment',
+      shopId: ReactionCore.getShopId()
     });
   }
 });

@@ -1,9 +1,19 @@
 {
   "dependencies": {
+    "bootstrap-datepicker": {
+      "version": "1.6.0",
+      "resolved": "https://registry.npmjs.org/bootstrap-datepicker/-/bootstrap-datepicker-1.6.0.tgz",
+      "from": "bootstrap-datepicker@1.6.0"
+    },
     "faker": {
       "version": "3.0.1",
       "resolved": "https://registry.npmjs.org/faker/-/faker-3.0.1.tgz",
       "from": "https://registry.npmjs.org/faker/-/faker-3.0.1.tgz"
+    },
+    "jquery": {
+      "version": "2.2.3",
+      "resolved": "https://registry.npmjs.org/jquery/-/jquery-2.2.3.tgz",
+      "from": "jquery@2.2.3"
     },
     "shipping-fedex": {
       "version": "0.1.4",

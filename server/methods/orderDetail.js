@@ -327,9 +327,9 @@ Meteor.methods({
     let rentalLength = moment(endDate).diff(moment(startDate), 'days');
     let arrivalDate = startDate;
     let returnBy = endDate;
-    let shipmentDate = TransitTimes.calculateShippingDay(_.defaults({startTime: startDate}, order));
-    let returnDate = TransitTimes.calculateReturnDay(_.defaults({endTime: endDate}, order));
-    let shippingDays = TransitTimes.calculateTotalShippingDays(_.defaults({startTime: startDate}, order));
+    let shipmentDate = TransitTimes.calculateShippingDayByOrder(_.defaults({startTime: startDate}, order));
+    let returnDate = TransitTimes.calculateReturnDayByOrder(_.defaults({endTime: endDate}, order));
+    let shippingDays = TransitTimes.calculateTotalShippingDaysByOrder(_.defaults({startTime: startDate}, order));
 
     let rushOrder = rushRequired(arrivalDate, shippingDays, localDelivery);
     if (rushOrder && !localDelivery) {
@@ -383,8 +383,8 @@ Meteor.methods({
     const order = ReactionCore.Collections.Orders.findOne(orderId);
     const prevAddress = order.shipping[0].address;
     const localDelivery = TransitTimes.isLocalDelivery(address.postal);
-    const transitTime = TransitTimes.calculateTransitTimeFromAddress(address);
-    const transitTimeToPrevAddress = TransitTimes.calculateTransitTimeFromAddress(prevAddress);
+    const transitTime = TransitTimes.calculateTransitTime(address);
+    const transitTimeToPrevAddress = TransitTimes.calculateTransitTime(prevAddress);
 
     let returnDate = order.advancedFulfillment.returnDate;
     let shipmentDate = order.advancedFulfillment.shipmentDate;
@@ -395,12 +395,12 @@ Meteor.methods({
       order.shipping[0].address = address;
       const startDate = order.startTime;
       const endDate = order.endTime;
-      const totalShippingDays = TransitTimes.calculateTotalShippingDays(order);
+      const totalShippingDays = TransitTimes.calculateTotalShippingDaysByOrder(order);
 
-      shipmentDate = TransitTimes.calculateShippingDay(order);
+      shipmentDate = TransitTimes.calculateShippingDayByOrder(order);
       arrivalDate = startDate;
       returnBy = endDate;
-      returnDate = TransitTimes.calculateReturnDay(order);
+      returnDate = TransitTimes.calculateReturnDayByOrder(order);
 
       if (localDelivery) {
         shipmentDate = arrivalDate; // Remove transit day from local deliveries

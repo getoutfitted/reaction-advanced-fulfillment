@@ -36,8 +36,8 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
 
     advancedFulfillment.arriveBy = order.startTime;
     advancedFulfillment.shipReturnBy = order.endTime;
-    advancedFulfillment.shipmentDate = TransitTimes.calculateShippingDay(order);
-    advancedFulfillment.returnDate = TransitTimes.calculateReturnDay(order);
+    advancedFulfillment.shipmentDate = TransitTimes.calculateShippingDayByOrder(order);
+    advancedFulfillment.returnDate = TransitTimes.calculateReturnDayByOrder(order);
   }
   // Let's abstract the order number parts of this to a standalone package
   af.orderNumber = AdvancedFulfillment.findAndUpdateNextOrderNumber();

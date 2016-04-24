@@ -8,7 +8,9 @@ Package.describe({
 Npm.depends({
   'faker': '3.0.1',
   'shipping-fedex': '0.1.4',
-  'shipping-ups': '0.5.4'
+  'shipping-ups': '0.5.4',
+  'jquery': '2.2.3',
+  'bootstrap-datepicker': '1.6.0'
 });
 
 Package.onUse(function (api) {
@@ -26,7 +28,7 @@ Package.onUse(function (api) {
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
+  // api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
   api.use('kadira:blaze-layout');
   api.use('simple:json-routes');
   api.use('getoutfitted:transit-times');

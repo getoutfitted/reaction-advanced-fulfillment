@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import 'bootstrap-datepicker';
+
 Template.impossibleDates.onCreated(function () {
   this.subscribe('custServOrders');
 });

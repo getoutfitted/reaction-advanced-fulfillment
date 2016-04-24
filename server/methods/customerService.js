@@ -20,6 +20,7 @@ function anyOrderNotes(orderNotes) {
 }
 
 Meteor.methods({
+  // TODO: Cancelling order should cancel items reservations
   'advancedFulfillment/cancelOrder': function (orderId, userId) {
     check(orderId, String);
     check(userId, String);

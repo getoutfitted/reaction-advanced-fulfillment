@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import 'bootstrap-datepicker';
+
 function findOrderItem(order, itemId) {
   return _.findWhere(order.items, {_id: itemId});
 }

@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import 'bootstrap-datepicker';
+
 Template.missingRentalDates.onCreated(function () {
   this.subscribe('custServOrders');
 });

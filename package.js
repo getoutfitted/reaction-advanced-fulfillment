@@ -1,25 +1,26 @@
 Package.describe({
   summary: 'Advanced fulfillment tracking for orders through inbound, picking, packing, returns and inventory',
   name: 'getoutfitted:reaction-advanced-fulfillment',
-  version: '0.7.1',
+  version: '0.8.0',
   git: 'https://github.com/getoutfitted/reaction-advanced-fulfillment'
 });
 
 Npm.depends({
   'faker': '3.0.1',
   'shipping-fedex': '0.1.4',
-  'shipping-ups': '0.5.4'
+  'shipping-ups': '0.5.4',
+  'jquery': '2.2.3',
+  'bootstrap-datepicker': '1.6.0'
 });
 
-
 Package.onUse(function (api) {
-  api.versionsFrom('METEOR@1.2');
+  api.versionsFrom('METEOR@1.3.1');
   api.use('meteor-platform');
   api.use('less');
   api.use('http');
   api.use('underscore');
   api.use('standard-minifiers');
-  api.use('reactioncommerce:core@0.12.0');
+  api.use('reactioncommerce:core@0.13.0');
   api.use('reactioncommerce:reaction-router');
   api.use('reactioncommerce:reaction-collections');
   api.use('momentjs:moment@2.10.6');
@@ -27,13 +28,11 @@ Package.onUse(function (api) {
   api.use('steeve:jquery-barcode');
   api.use('d3js:d3');
   api.use('dburles:factory@0.3.10');
-  api.use('rajit:bootstrap3-datepicker@1.5.1', ['client']);
   api.use('kadira:blaze-layout');
   api.use('simple:json-routes');
+  api.use('getoutfitted:transit-times');
 
   api.addFiles('lib/advancedFulfillment.js');
-  api.addFiles('lib/fedex.js', 'server');
-  api.addFiles('lib/ups.js', 'server');
   api.addFiles('lib/advancedFulfillmentFunctions.js');
 
   api.addFiles([
@@ -126,7 +125,7 @@ Package.onUse(function (api) {
   api.addAssets('public/images/go-logo-1000.png', 'client');
   api.addAssets('public/images/logo-horizontal.png', 'client');
 
-  api.export("AdvancedFulfillment");
+  api.export('AdvancedFulfillment');
 });
 
 
@@ -140,7 +139,7 @@ Package.onTest(function (api) {
   api.use('velocity:helpers');
   api.use('reactioncommerce:reaction-factories');
 
-  api.use('reactioncommerce:core@0.12.0');
+  api.use('reactioncommerce:core@0.13.0');
   api.use('getoutfitted:reaction-advanced-fulfillment');
 
   api.addFiles('lib/advancedFulfillment.js');

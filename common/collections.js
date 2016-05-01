@@ -34,6 +34,10 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
       type: String,
       label: 'Pre Shared Key for authenticating webhooks',
       optional: true
+    },
+    'settings.klaviyo': {
+      type: Boolean,
+      label: 'Enable Klaviyo Event Triggers'
     }
   }
 ]);

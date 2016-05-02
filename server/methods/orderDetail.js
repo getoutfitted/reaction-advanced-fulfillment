@@ -165,6 +165,9 @@ Meteor.methods({
         'advancedFulfillment.workflow.status': workflow[status]
       }
     });
+    if (status === 'orderReadyToShip') {
+      Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Shipped Product');
+    }
   },
 
   'advancedFulfillment/reverseOrderWorkflow': function (orderId, userId, status) {

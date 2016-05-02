@@ -84,7 +84,7 @@ AdvancedFulfillment.Shipstation.createOrder = function (orderId) {
         ],
         createDate: order.createdAt,
         modifyDate: order.createdAt
-      }
+      };
       shipstation.items.push(i);
     });
     Shipstation.createOrder(shipstation);

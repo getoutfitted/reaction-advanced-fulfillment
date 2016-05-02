@@ -55,6 +55,8 @@ Meteor.methods({
           history: history
         }
       });
+      Meteor.call('advancedFulfillment/klaviyoEnabled', order._id, 'Shipped Product');
+
     } else {
       throw new Meteor.Error(403, 'Forbidden, method is only available from the server');
     }

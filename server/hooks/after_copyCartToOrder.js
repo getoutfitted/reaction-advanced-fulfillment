@@ -1,5 +1,5 @@
 ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
-  const orderId = options.result || arguments[0];
+  const orderId = options.result || options.arguments[0];
   const order = ReactionCore.Collections.Orders.findOne(orderId);
   const afPackage = ReactionCore.Collections.Packages.findOne({
     name: 'reaction-advanced-fulfillment',
@@ -56,8 +56,15 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
       $set: af
     });
   }
+  // Shipstation Utilization
   if (afPackage.settings.shipstation) {
     AdvancedFulfillment.Shipstation.createOrder(orderId);
+    ReactionCore.Log.info(`AdvancedFulfillment pushed order ${af.orderNumber} to ShipStation`);
   }
+  // Klaviyo Integration
+  if (afPackage.settings.klaviyo && order.email) {
+    Meteor.call('advancedFulfullment/createKlaviyoCheckOutEvent', orderId);
+  }
+
   return orderId;
 });

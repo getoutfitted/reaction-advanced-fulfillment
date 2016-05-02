@@ -46,7 +46,8 @@ Package.onUse(function (api) {
     'server/methods/customerService.js',
     'server/methods/bulkActions.js',
     'server/methods/aftership.js',
-    'server/publications/afOrders.js'
+    'server/publications/afOrders.js',
+    'server/methods/klaviyo.js'
   ], 'server');
 
   api.addFiles([

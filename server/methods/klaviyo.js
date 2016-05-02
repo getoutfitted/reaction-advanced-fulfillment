@@ -1,6 +1,19 @@
 Meteor.methods({
-  'advancedFulfullment/createKlaviyoItemPurchasedEvents': function (order) {
+  'advancedFulfillment/klaviyoEnabled': function (orderId, eventName) {
+    check(orderId, String);
+    check(eventName, Match.Optional(String));
+    const afPackage = ReactionCore.Collections.Packages.findOne({
+      name: 'reaction-advanced-fulfillment',
+      shopId: ReactionCore.getShopId()
+    });
+    const order = ReactionCore.Collections.Orders.findOne(orderId);
+    if (afPackage.settings && afPackage.settings.klaviyo && order.email) {
+      Meteor.call('advancedFulfullment/createKlaviyoItemEvents', order, eventName);
+    }
+  },
+  'advancedFulfullment/createKlaviyoItemEvents': function (order, eventName) {
     check(order, Object);
+    check(eventName, String);
     const billing = order.billing[0].address;
     let fullName = billing.fullName;
     let names = fullName.split(' ');
@@ -61,7 +74,7 @@ Meteor.methods({
         props.price = item.variants.price;
         props.quantity = item.quantity;
         props['Rental Length in Days'] = order.rentalDays;
-        klaviyoItem['event'] = `Ordered Product - ${product.pageTitle}`;
+        klaviyoItem['event'] = `${eventName} - ${product.pageTitle}`;
         Klaviyo.trackEvent(klaviyoItem);
         ReactionCore.Log.info(`Klaviyo Ordered Product Event Processed for ${order.orderNumber}`);
       }
@@ -127,7 +140,7 @@ Meteor.methods({
       }
       Klaviyo.trackEvent(klaviyo);
       ReactionCore.Log.info(`Klaviyo Checkout Event Processed for ${order.orderNumber}`);
-      Meteor.call('advancedFulfullment/createKlaviyoItemPurchasedEvents', order);
+      Meteor.call('advancedFulfullment/createKlaviyoItemEvents', order, 'Ordered Product');
     }
   }
 });

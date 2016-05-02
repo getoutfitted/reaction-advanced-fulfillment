@@ -15,7 +15,6 @@ JsonRoutes.add("post", "/dashboard/advanced-fullfillment/webhooks/aftership/post
 
   let keyMatches =  verifyPreSharedKey(req.query.key, 'aftership');
   if (keyMatches) {
-    console.log('req', req.body);
     Meteor.call('aftership/processHook', req.body);
     return JsonRoutes.sendResult(res, {code: 200});
   }

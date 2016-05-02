@@ -20,18 +20,18 @@ Template.orderPacked.helpers({
 
 Template.orderPacked.events({
   'click .local-delivery': function (event) {
-    let order = this;
-    let currentItemStatus = 'packed';
-    let status = this.advancedFulfillment.workflow.status;
-    let userId = Meteor.userId();
+    const order = this;
+    const currentItemStatus = 'packed';
+    const status = this.advancedFulfillment.workflow.status;
+    const userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateAllItems', order, currentItemStatus);
     Meteor.call('advancedFulfillment/updateOrderWorkflow', order._id, userId, status);
   },
   'click #labelPrint': function (event) {
-    let order = this;
-    let currentItemStatus = 'packed';
-    let status = this.advancedFulfillment.workflow.status;
-    let userId = Meteor.userId();
+    const order = this;
+    const currentItemStatus = 'packed';
+    const status = this.advancedFulfillment.workflow.status;
+    const userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateAllItems', order, currentItemStatus);
     Meteor.call('advancedFulfillment/updateOrderWorkflow', order._id, userId, status);
   }

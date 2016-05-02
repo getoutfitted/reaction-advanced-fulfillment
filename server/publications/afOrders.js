@@ -41,7 +41,7 @@ Meteor.publish('afProducts', function () {
 
 Meteor.publish('advancedFulfillmentOrder', function (orderId) {
   // Check should be just string, but known flow router error is throwing errors when rerunning
-  check(orderId, String);
+  check(orderId, Match.OneOf(String, null));
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({

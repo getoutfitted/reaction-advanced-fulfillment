@@ -206,10 +206,10 @@ Template.orderDetails.onRendered(function () {
 Template.orderDetails.events({
   'click .advanceOrder': function (event) {
     event.preventDefault();
-    let currentStatus = this.advancedFulfillment.workflow.status;
-    let orderId = this._id;
-    let userId = Meteor.userId();
-    let orderShipped = currentStatus === 'orderShipped';
+    const currentStatus = this.advancedFulfillment.workflow.status;
+    const orderId = this._id;
+    const userId = Meteor.userId();
+    const orderShipped = currentStatus === 'orderShipped';
     if (orderShipped) {
       Meteor.call('advancedFulfillment/updateItemsToShippedOrCompleted', this);
     }

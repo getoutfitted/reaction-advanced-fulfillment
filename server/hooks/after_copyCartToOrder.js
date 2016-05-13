@@ -63,7 +63,7 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
   }
   // Klaviyo Integration
   if (afPackage.settings.klaviyo && order.email) {
-    Meteor.call('advancedFulfullment/createKlaviyoCheckOutEvent', orderId);
+    Meteor.call('advancedFulfullment/createKlaviyoGeneralEvent', orderId, 'Checkout');
   }
 
   return orderId;

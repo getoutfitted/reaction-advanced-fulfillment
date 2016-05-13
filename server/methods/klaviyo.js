@@ -42,10 +42,10 @@ Meteor.methods({
         'Shipping State': order.shipping[0].address.region,
         'Shipping Country': order.shipping[0].address.country,
         'Shipping Zipcode': order.shipping[0].address.postal,
-        'Arrival Day': order.advancedFulfillment.arriveBy,
-        'Customer Return Date': order.advancedFulfillment.shipReturnBy,
-        'Shipment Date': order.advancedFulfillment.shipmentDate,
-        'Return To GO By Date': order.advancedFulfillment.returnDate
+        'Arrival Day': moment(order.advancedFulfillment.arriveBy).format('MMMM D, YYYY'),
+        'Customer Return Date': moment(order.advancedFulfillment.shipReturnBy).format('MMMM D, YYYY'),
+        'Shipment Date': moment(order.advancedFulfillment.shipmentDate).format('MMMM D, YYYY'),
+        'Return To GO By Date': moment(order.advancedFulfillment.returnDate).format('MMMM D, YYYY')
       }
     };
     if (names.length > 1) {
@@ -127,13 +127,13 @@ Meteor.methods({
           'Shipping State': order.shipping[0].address.region,
           'Shipping Country': order.shipping[0].address.country,
           'Shipping Zipcode': order.shipping[0].address.postal,
-          'Arrival Day': order.advancedFulfillment.arriveBy,
-          'Customer Return Date': order.advancedFulfillment.shipReturnBy,
+          'Arrival Day': moment(order.advancedFulfillment.arriveBy).format('MMMM D, YYYY'),
+          'Customer Return Date': moment(order.advancedFulfillment.shipReturnBy).format('MMMM D, YYYY'),
           'Product Descriptions': productDescriptions,
           'Product Ids': productIds,
           'Product Skus': skus,
-          'Shipment Date': order.advancedFulfillment.shipmentDate,
-          'Return To GO By Date': order.advancedFulfillment.returnDate,
+          'Shipment Date': moment(order.advancedFulfillment.shipmentDate).format('MMMM D, YYYY'),
+          'Return To GO By Date': moment(order.advancedFulfillment.returnDate).format('MMMM D, YYYY'),
           'Rental Length in Days': order.rentalDays
         }
       };

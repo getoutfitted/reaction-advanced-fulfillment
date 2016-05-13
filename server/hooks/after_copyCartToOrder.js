@@ -15,6 +15,7 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
 
   const shippingAddress = TransitTimes.formatAddress(order.shipping[0].address); // XXX: do we need this?
   // check if local delivery
+  advancedFulfillment.transitTime = TransitTimes.calculateTransitTime(shippingAddress);
   advancedFulfillment.localDelivery = TransitTimes.isLocalDelivery(shippingAddress.postal);
   advancedFulfillment.items = AdvancedFulfillment.itemsToAFItems(order.items);
 

@@ -166,7 +166,11 @@ Meteor.methods({
       }
     });
     if (status === 'orderReadyToShip') {
-      Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Shipped Product');
+      console.log('we got here!')
+      Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Shipped Product', 'advancedFulfullment/createKlaviyoItemEvents');
+      Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Shipped', 'advancedFulfullment/createKlaviyoGeneralEvent');
+    } else if (status === 'orderShipped') {
+      Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Returned', 'advancedFulfullment/createKlaviyoGeneralEvent');
     }
   },
 

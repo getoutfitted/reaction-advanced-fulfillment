@@ -212,7 +212,8 @@ Meteor.publish('afReturnOrders', function () {
         'advancedFulfillment.rushDelivery': 1,
         'advancedFulfillment.kayakRental.vendor': 1,
         'advancedFulfillment.kayakRental.qty': 1,
-        'advancedFulfillment.rushShippingPaid': 1
+        'advancedFulfillment.rushShippingPaid': 1,
+        'orderNumber': 1
       }
     });
   }
@@ -251,7 +252,8 @@ Meteor.publish('ordersReturningOnDate', function (date) {
         'advancedFulfillment.rushDelivery': 1,
         'advancedFulfillment.kayakRental.vendor': 1,
         'advancedFulfillment.kayakRental.qty': 1,
-        'advancedFulfillment.rushShippingPaid': 1
+        'advancedFulfillment.rushShippingPaid': 1,
+        'orderNumber': 1
       }
     });
   }

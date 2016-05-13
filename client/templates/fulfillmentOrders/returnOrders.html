@@ -54,7 +54,7 @@
         <input type="checkbox" name="order_{{_id}}" id="checkboxOrder_{{_id}}" class="hide" data-id={{_id}}><label for="order_{{_id}}" style="cursor: pointer;"><i class="fa fa-square-o fa-lg"></i></label>
       {{/if}}
     </td>
-    <td><strong>{{orderNumber}}</strong></td>
+    <td><strong>{{this.orderNumber}}</strong></td>
     <td>
       {{#if advancedFulfillment.localDelivery}}
         <span class="label label-info" style="font-size: 14px;">LOCAL</span>

@@ -1,19 +1,21 @@
 Meteor.methods({
-  'advancedFulfillment/klaviyoEnabled': function (orderId, eventName) {
+  'advancedFulfillment/klaviyoEnabled': function (orderId, eventName, methodName) {
     check(orderId, String);
-    check(eventName, Match.Optional(String));
+    check(eventName, String);
+    check(methodName, String);
     const afPackage = ReactionCore.Collections.Packages.findOne({
       name: 'reaction-advanced-fulfillment',
       shopId: ReactionCore.getShopId()
     });
     const order = ReactionCore.Collections.Orders.findOne(orderId);
     if (afPackage.settings && afPackage.settings.klaviyo && order.email) {
-      Meteor.call('advancedFulfullment/createKlaviyoItemEvents', order, eventName);
+      Meteor.call(methodName, order._id, eventName);
     }
   },
-  'advancedFulfullment/createKlaviyoItemEvents': function (order, eventName) {
-    check(order, Object);
+  'advancedFulfullment/createKlaviyoItemEvents': function (orderId, eventName) {
+    check(orderId, String);
     check(eventName, String);
+    const order = ReactionCore.Collections.Orders.findOne(orderId);
     const billing = order.billing[0].address;
     let fullName = billing.fullName;
     let names = fullName.split(' ');
@@ -40,10 +42,10 @@ Meteor.methods({
         'Shipping State': order.shipping[0].address.region,
         'Shipping Country': order.shipping[0].address.country,
         'Shipping Zipcode': order.shipping[0].address.postal,
-        'Arrival Day': order.advancedFulfillment.arriveBy,
-        'Customer Return Date': order.advancedFulfillment.shipReturnBy,
-        'Shipment Date': order.advancedFulfillment.shipmentDate,
-        'Return To GO By Date': order.advancedFulfillment.returnDate
+        'Arrival Day': moment(order.advancedFulfillment.arriveBy).format('MMMM D, YYYY'),
+        'Customer Return Date': moment(order.advancedFulfillment.shipReturnBy).format('MMMM D, YYYY'),
+        'Shipment Date': moment(order.advancedFulfillment.shipmentDate).format('MMMM D, YYYY'),
+        'Return To GO By Date': moment(order.advancedFulfillment.returnDate).format('MMMM D, YYYY')
       }
     };
     if (names.length > 1) {
@@ -80,8 +82,9 @@ Meteor.methods({
       }
     });
   },
-  'advancedFulfullment/createKlaviyoCheckOutEvent': function (orderId) {
+  'advancedFulfullment/createKlaviyoGeneralEvent': function (orderId, eventName) {
     check(orderId, String);
+    check(eventName, String);
     const order = ReactionCore.Collections.Orders.findOne(orderId);
     if (order) {
       const billing = order.billing[0].address;
@@ -101,7 +104,7 @@ Meteor.methods({
         skus.push(item.sku);
       });
       let klaviyo = {
-        'event': 'Checkout',
+        'event': eventName,
         'customer_properties': {
           '$email': order.email,
           '$first_name': firstName,
@@ -124,13 +127,13 @@ Meteor.methods({
           'Shipping State': order.shipping[0].address.region,
           'Shipping Country': order.shipping[0].address.country,
           'Shipping Zipcode': order.shipping[0].address.postal,
-          'Arrival Day': order.advancedFulfillment.arriveBy,
-          'Customer Return Date': order.advancedFulfillment.shipReturnBy,
+          'Arrival Day': moment(order.advancedFulfillment.arriveBy).format('MMMM D, YYYY'),
+          'Customer Return Date': moment(order.advancedFulfillment.shipReturnBy).format('MMMM D, YYYY'),
           'Product Descriptions': productDescriptions,
           'Product Ids': productIds,
           'Product Skus': skus,
-          'Shipment Date': order.advancedFulfillment.shipmentDate,
-          'Return To GO By Date': order.advancedFulfillment.returnDate,
+          'Shipment Date': moment(order.advancedFulfillment.shipmentDate).format('MMMM D, YYYY'),
+          'Return To GO By Date': moment(order.advancedFulfillment.returnDate).format('MMMM D, YYYY'),
           'Rental Length in Days': order.rentalDays
         }
       };
@@ -139,8 +142,10 @@ Meteor.methods({
         klaviyo.customer_properties['$last_name'] = names.join(' ');
       }
       Klaviyo.trackEvent(klaviyo);
-      ReactionCore.Log.info(`Klaviyo Checkout Event Processed for ${order.orderNumber}`);
-      Meteor.call('advancedFulfullment/createKlaviyoItemEvents', order, 'Ordered Product');
+      ReactionCore.Log.info(`Klaviyo ${eventName} Event Processed for ${order.orderNumber}`);
+      if (eventName === 'Checkout') {
+        Meteor.call('advancedFulfullment/createKlaviyoItemEvents', orderId, 'Ordered Product');
+      }
     }
   }
 });

@@ -166,6 +166,7 @@ Meteor.methods({
       }
     });
     if (status === 'orderReadyToShip') {
+      console.log('we got here!')
       Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Shipped Product', 'advancedFulfullment/createKlaviyoItemEvents');
       Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Shipped', 'advancedFulfullment/createKlaviyoGeneralEvent');
     } else if (status === 'orderShipped') {

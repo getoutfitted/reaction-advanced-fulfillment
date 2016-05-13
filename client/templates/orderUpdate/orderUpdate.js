@@ -1,25 +1,28 @@
+import $ from 'jquery';
+import 'bootstrap-datepicker';
+
 function findOrderItem(order, itemId) {
   return _.findWhere(order.items, {_id: itemId});
 }
 
 Template.updateOrder.onCreated(function () {
-  this.subscribe('afProducts');
-});
-
-Template.updateOrder.onRendered(function () {
-  const orderId = Router.current().params._id;
-  Session.setDefault('cancel-order-' + orderId, false);
-  $('.picker .input-daterange').datepicker({
-    startDate: 'today',
-    todayBtn: 'linked',
-    clearBtn: true,
-    calendarWeeks: true,
-    autoclose: true,
-    todayHighlight: true
+  this.autorun(() => {
+    let orderId = ReactionRouter.getParam('_id');
+    this.subscribe('afProducts');
+    this.subscribe('advancedFulfillmentOrder', orderId);
   });
 });
 
+Template.updateOrder.onRendered(function () {
+  const orderId = ReactionRouter.getParam('_id');
+  Session.setDefault('cancel-order-' + orderId, false);
+});
+
 Template.updateOrder.helpers({
+  order: function () {
+    const orderId = ReactionRouter.getParam('_id');
+    return ReactionCore.Collections.Orders.findOne({ _id: orderId});
+  },
   afItems: function () {
     return this.advancedFulfillment.items;
   },
@@ -90,7 +93,17 @@ Template.updateOrder.helpers({
   addingItems: function () {
     let addingItems = Session.get('addItems');
     return addingItems || false;
-  },
+  }
+});
+
+Template.updateCustomerDetails.onCreated(function () {
+  this.autorun(() => {
+    let orderId = ReactionRouter.getParam('_id');
+    this.subscribe('advancedFulfillmentOrder', orderId);
+  });
+});
+
+Template.updateCustomerDetails.helpers({
   address: function (param) {
     return this.shipping[0].address[param];
   },
@@ -103,7 +116,6 @@ Template.updateOrder.helpers({
     return userName;
   }
 });
-
 
 Template.updateOrder.events({
   'change .color-selector': function (event) {
@@ -132,7 +144,21 @@ Template.updateOrder.events({
     event.preventDefault();
     let addingItems = !Session.get('addItems') || false;
     Session.set('addItems', addingItems);
-  },
+  }
+});
+
+Template.updateCustomerDates.onRendered(function () {
+  $('.picker .input-daterange').datepicker({
+    startDate: 'today',
+    todayBtn: 'linked',
+    clearBtn: true,
+    calendarWeeks: true,
+    autoclose: true,
+    todayHighlight: true
+  });
+});
+
+Template.updateCustomerDates.events({
   'click .update-rental-dates': function (event) {
     event.preventDefault();
     let orderId = this._id;
@@ -144,7 +170,10 @@ Template.updateOrder.events({
     Alerts.add('Rental Dates updated', 'success', {
       autoHide: true
     });
-  },
+  }
+});
+
+Template.updateCustomerDetails.events({
   'submit #updateShippingAddressForm': function (event) {
     event.preventDefault();
     const form = event.currentTarget;

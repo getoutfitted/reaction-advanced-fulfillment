@@ -1,11 +1,11 @@
 <template name='csDetails'>
   <tr>
-    <td><a href="{{pathFor 'orderDetails'}}"><strong>{{shopifyOrderNumber}}</strong></a></td>
+    <td><a href="{{pathFor 'orderDetails' _id=_id}}"><strong>{{shopifyOrderNumber}}</strong></a></td>
     <td>{{formattedDate startTime}}</td>
-    <td>{{billingName this}}</td>
-    <td>{{billingPhone this}}</td>
-    <td>{{email this}}</td>
-    <td>{{shippingAddress this}}</td>
-    <td><a class='btn btn-info' href="{{pathFor 'updateOrder' _id=_id}}">Update</a></td>
+    <td>{{billingName}}</td>
+    <td>{{billingPhone}}</td>
+    <td>{{email}}</td>
+    <td>{{shippingAddress}}</td>
+    <td><a class='btn btn-info' href="{{pathFor 'updateOrder' _id=_id }}">Update</a></td>
   </tr>
 </template>

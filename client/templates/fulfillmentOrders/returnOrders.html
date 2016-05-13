@@ -1,5 +1,4 @@
 <template name='returnOrders'>
-  {{> afNavbar}}
   <div class='container-fluid'>
     <div class='col-md-9 col-sm-12'>
       <h1>Orders waiting to be Returned</h1>
@@ -31,7 +30,7 @@
           <th><i class='fa fa-truck'></i></th>
           <th>Expected Return On</th>
           <th class="hidden-xs hidden-sm">Customer Ship for Return</th>
-          <th class="hidden-xs hidden-sm">Last Ski Day</th>
+          <th class="hidden-xs hidden-sm">Last Use Day</th>
           <th>Customer</th>
           <th>Returning From</th>
           <th>Status</th>
@@ -55,7 +54,7 @@
         <input type="checkbox" name="order_{{_id}}" id="checkboxOrder_{{_id}}" class="hide" data-id={{_id}}><label for="order_{{_id}}" style="cursor: pointer;"><i class="fa fa-square-o fa-lg"></i></label>
       {{/if}}
     </td>
-    <td><strong>{{orderNumber}}</strong></td>
+    <td><strong>{{this.orderNumber}}</strong></td>
     <td>
       {{#if advancedFulfillment.localDelivery}}
         <span class="label label-info" style="font-size: 14px;">LOCAL</span>
@@ -67,7 +66,7 @@
       {{returningDate}}
     </td>
     <td class="hidden-xs hidden-sm">{{shippingDay}}</td>
-    <td class="hidden-xs hidden-sm">{{lastSkiDay}}</td>
+    <td class="hidden-xs hidden-sm">{{lastUseDay}}</td>
     <td>{{returnName}}</td>
     <td>{{shippingLoc}}</td>
     <td>{{status}}</td>

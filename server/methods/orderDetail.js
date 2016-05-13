@@ -1,5 +1,7 @@
-function shipmentDateChecker(date, isLocalDelivery, transitTime) {
-  if (isLocalDelivery) {
+// import _ from 'underscore';
+
+function shipmentDateChecker(date, localDelivery, transitTime) {
+  if (localDelivery) {
     return date;
   }
 
@@ -45,8 +47,8 @@ function shipmentDateChecker(date, isLocalDelivery, transitTime) {
   return shipDate.subtract(daysToAdd, 'days').toDate();
 }
 
-function arrivalDateChecker(date, isLocalDelivery) {
-  if (isLocalDelivery) {
+function arrivalDateChecker(date, localDelivery) {
+  if (localDelivery) {
     return date;
   }
   if (moment(date).isoWeekday() === 7) {
@@ -57,8 +59,8 @@ function arrivalDateChecker(date, isLocalDelivery) {
   return date;
 }
 
-function returnDateChecker(date, isLocalDelivery) {
-  if (isLocalDelivery) {
+function returnDateChecker(date, localDelivery) {
+  if (localDelivery) {
     return date;
   }
   if (moment(date).isoWeekday() === 7) {
@@ -80,8 +82,8 @@ function rushRequired(arriveBy, transitTime, isLocal) {
   if (isLocal) {
     return false;
   }
-  const possibleArrival = moment().startOf('day').add(transitTime, 'days'); // shipDate as start of day
-  return moment(possibleArrival).diff(moment(arriveBy)) > 0;
+  const estimatedArrival = moment().startOf('day').add(transitTime, 'days'); // shipDate as start of day
+  return moment(estimatedArrival).diff(moment(arriveBy)) > 0;
 }
 
 function isLocalDelivery(postal) {
@@ -96,125 +98,6 @@ function isLocalDelivery(postal) {
     '81657'
   ];
   return _.contains(localZips, postal);
-}
-
-function getFedexTransitTime(address) {
-  const shopifyOrders = ReactionCore.Collections.Packages.findOne({
-    name: 'reaction-shopify-orders'
-  });
-
-  if (!shopifyOrders || !shopifyOrders.settings.fedex) {
-    ReactionCore.Log.warn('Fedex API not setup. Transit Days will not be estimated');
-    return false;
-  }
-
-  let fedexTimeTable = {
-    'ONE_DAY': 1,
-    'TWO_DAYS': 2,
-    'THREE_DAYS': 3,
-    'FOUR_DAYS': 4,
-    'FIVE_DAYS': 5,
-    'SIX_DAYS': 6,
-    'SEVEN_DAYS': 7,
-    'EIGHT_DAYS': 8,
-    'NINE_DAYS': 9,
-    'TEN_DAYS': 10,
-    'ELEVEN_DAYS': 11,
-    'TWELVE_DAYS': 12,
-    'THIRTEEN_DAYS': 13,
-    'FOURTEEN_DAYS': 14,
-    'FIFTEEN_DAYS': 15,
-    'SIXTEEN_DAYS': 16,
-    'SEVENTEEN_DAYS': 17,
-    'EIGHTEEN_DAYS': 18,
-    'NINETEEN_DAYS': 19,
-    'TWENTY_DAYS': 20
-  };
-
-  let fedex = new Fedex({
-    'environment': shopifyOrders.settings.fedex.liveApi ? 'live' : 'sandbox',
-    'key': shopifyOrders.settings.fedex.key,
-    'password': shopifyOrders.settings.fedex.password,
-    'account_number': shopifyOrders.settings.fedex.accountNumber,
-    'meter_number': shopifyOrders.settings.fedex.meterNumber,
-    'imperial': true
-  });
-
-  let shipment = {
-    ReturnTransitAndCommit: true,
-    CarrierCodes: ['FDXE', 'FDXG'],
-    RequestedShipment: {
-      DropoffType: 'REGULAR_PICKUP',
-      ServiceType: 'FEDEX_GROUND', // GROUND_HOME_DELIVERY
-      PackagingType: 'YOUR_PACKAGING',
-      Shipper: {
-        Contact: {
-          PersonName: 'Shipper Person',
-          CompanyName: 'GetOutfitted',
-          PhoneNumber: '5555555555'
-        },
-        Address: {
-          StreetLines: [
-            '103 Main St'
-          ],
-          City: 'Dillon',
-          StateOrProvinceCode: 'CO',
-          PostalCode: '80435',
-          CountryCode: 'US'
-        }
-      },
-      Recipient: {
-        Contact: {
-          PersonName: address.fullName,
-          CompanyName: 'Place',
-          PhoneNumber: address.phone
-        },
-        Address: {
-          StreetLines: [
-            address.address1,
-            address.address2
-          ],
-          City: address.city,
-          StateOrProvinceCode: address.region,
-          PostalCode: address.postal,
-          CountryCode: address.country,
-          Residential: false // Or true
-        }
-      },
-      ShippingChargesPayment: {
-        PaymentType: 'SENDER',
-        Payor: {
-          ResponsibleParty: {
-            AccountNumber: fedex.options.account_number
-          }
-        }
-      },
-      PackageCount: '1',
-      RequestedPackageLineItems: {
-        SequenceNumber: 1,
-        GroupPackageCount: 1,
-        Weight: {
-          Units: 'LB',
-          Value: '7.0'
-        },
-        Dimensions: {
-          Length: 24,
-          Width: 14,
-          Height: 6,
-          Units: 'IN'
-        }
-      }
-    }
-  };
-
-  let fedexRatesSync = Meteor.wrapAsync(fedex.rates);
-
-  let rates = fedexRatesSync(shipment);
-  if (!rates.RateReplyDetails) {
-    return false;
-  }
-  let groundRate = rates.RateReplyDetails[0];
-  return fedexTimeTable[groundRate.TransitTime];
 }
 
 function buffer() {
@@ -282,6 +165,13 @@ Meteor.methods({
         'advancedFulfillment.workflow.status': workflow[status]
       }
     });
+    if (status === 'orderReadyToShip') {
+      console.log('we got here!')
+      Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Shipped Product', 'advancedFulfullment/createKlaviyoItemEvents');
+      Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Shipped', 'advancedFulfullment/createKlaviyoGeneralEvent');
+    } else if (status === 'orderShipped') {
+      Meteor.call('advancedFulfillment/klaviyoEnabled', orderId, 'Returned', 'advancedFulfullment/createKlaviyoGeneralEvent');
+    }
   },
 
   'advancedFulfillment/reverseOrderWorkflow': function (orderId, userId, status) {
@@ -332,7 +222,7 @@ Meteor.methods({
 
     let afItems = order.advancedFulfillment.items;
     let allItemsReturned = _.every(afItems, function (item) {
-      return item.workflow.status === 'returned';
+      return item.workflow.status === 'returned' || item.workflow.status === 'completed';
     });
     let orderStatus = 'orderIncomplete';
     if (allItemsReturned) {
@@ -424,6 +314,9 @@ Meteor.methods({
       }
     });
   },
+  // TODO: This should check availability and not allow updates if availability does not exist.
+  // TODO: This should also update the availability calendar
+  // Currently just switches dates in AF
   'advancedFulfillment/updateRentalDates': function (orderId, startDate, endDate, userObj) {
     check(orderId, String);
     check(startDate, Date);
@@ -438,32 +331,23 @@ Meteor.methods({
     const localDelivery = order.advancedFulfillment.localDelivery;
     let user = userNameDeterminer(userObj);
 
-    let impossibleShipDate = order.advancedFulfillment.impossibleShipDate;
-    if (order.advancedFulfillment.impossibleShipDate) {
-      impossibleShipDate = false; // Resetting impossibleShipDate here, but could probably just set it
-    }
-    let infoMissing = order.infoMissing;
-    if (order.infoMissing) {
-      infoMissing = false;
-    }
-    let fedexTransitTime = getFedexTransitTime(order.shipping[0].address);
-    let bufferObject = buffer();
-    let shippingBuffer = fedexTransitTime || bufferObject.shipping;
-    let returnBuffer = fedexTransitTime || bufferObject.returning;
-
     let rentalLength = moment(endDate).diff(moment(startDate), 'days');
-    let returnDate = returnDateChecker(moment(endDate).add(returnBuffer, 'days').toDate(), localDelivery);
-    let arrivalDate = arrivalDateChecker(moment(startDate).subtract(1, 'days').toDate(), localDelivery);
-    let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery, shippingBuffer);
-    let returnBy = moment(endDate).add(1, 'days').toDate();
-    let orderCreated = {status: 'orderCreated'};
-    let rushOrder = rushRequired(arrivalDate, fedexTransitTime, localDelivery);
+    let arrivalDate = startDate;
+    let returnBy = endDate;
+    let shipmentDate = TransitTimes.calculateShippingDayByOrder(_.defaults({startTime: startDate}, order));
+    let returnDate = TransitTimes.calculateReturnDayByOrder(_.defaults({endTime: endDate}, order));
+    let shippingDays = TransitTimes.calculateTotalShippingDaysByOrder(_.defaults({startTime: startDate}, order));
+
+    let rushOrder = rushRequired(arrivalDate, shippingDays, localDelivery);
     if (rushOrder && !localDelivery) {
-      shipmentDate = rushShipmentChecker(moment().startOf('day'));
+      shipmentDate = TransitTimes.date.nextBusinessDay(moment().startOf('day')); // Ship Next Business Day
     }
+
     if (localDelivery) {
-      shipmentDate = arrivalDate; // Remove transit day from local deliveries
+      shipmentDate = arrivalDate; // Local delivery should be delivered the day it's due.
     }
+
+    // TODO: Call some function in RentalProducts to update rental dates as stored in calendar
 
     let orderNotes = anyOrderNotes(order.orderNotes);
     orderNotes = orderNotes + '<p> Rental Dates updated to: '
@@ -476,13 +360,13 @@ Meteor.methods({
         'startTime': startDate,
         'endTime': endDate,
         'rentalDays': rentalLength,
-        'infoMissing': infoMissing,
+        'infoMissing': false,
         'advancedFulfillment.shipmentDate': shipmentDate,
         'advancedFulfillment.returnDate': returnDate,
-        'advancedFulfillment.workflow': orderCreated,
+        'advancedFulfillment.workflow': {status: 'orderCreated'},
         'advancedFulfillment.arriveBy': arrivalDate,
         'advancedFulfillment.shipReturnBy': returnBy,
-        'advancedFulfillment.impossibleShipDate': impossibleShipDate,
+        'advancedFulfillment.impossibleShipDate': false,
         'orderNotes': orderNotes
       },
       $addToSet: {
@@ -505,28 +389,38 @@ Meteor.methods({
     const userName = user.username || user.emails[0].address;
     const order = ReactionCore.Collections.Orders.findOne(orderId);
     const prevAddress = order.shipping[0].address;
-    const localDelivery = isLocalDelivery(address.postal);
-    const startDate = order.startTime;
-    const endDate = order.endTime;
-    let fedexTransitTime = getFedexTransitTime(address);
-    // Should abstract this section \/
-    let bufferObject = buffer();
-    let shippingBuffer = fedexTransitTime || bufferObject.shipping;
-    let returnBuffer = fedexTransitTime || bufferObject.returning;
-    let returnDate = returnDateChecker(moment(endDate).add(returnBuffer, 'days').toDate(), localDelivery);
-    let arrivalDate = arrivalDateChecker(moment(startDate).subtract(1, 'days').toDate(), localDelivery);
-    let shipmentDate = shipmentDateChecker(moment(arrivalDate).subtract(shippingBuffer, 'days').toDate(), localDelivery, shippingBuffer);
-    if (localDelivery) {
-      shipmentDate = arrivalDate; // Remove transit day from local deliveries
-    }
-    let returnBy = moment(endDate).add(1, 'days').toDate();
+    const localDelivery = TransitTimes.isLocalDelivery(address.postal);
+    const transitTime = TransitTimes.calculateTransitTime(address);
+    const transitTimeToPrevAddress = TransitTimes.calculateTransitTime(prevAddress);
 
-    let rushOrder = rushRequired(arrivalDate, fedexTransitTime, localDelivery);
-    if (rushOrder && !localDelivery) {
-      shipmentDate = rushShipmentChecker(moment().startOf('day'));
+    let returnDate = order.advancedFulfillment.returnDate;
+    let shipmentDate = order.advancedFulfillment.shipmentDate;
+    let arrivalDate = order.advancedFulfillment.arrivalDate;
+    let returnBy = order.advancedFulfillment.returnBy;
+
+    if (transitTime !== transitTimeToPrevAddress) {
+      order.shipping[0].address = address;
+      const startDate = order.startTime;
+      const endDate = order.endTime;
+      const totalShippingDays = TransitTimes.calculateTotalShippingDaysByOrder(order);
+
+      shipmentDate = TransitTimes.calculateShippingDayByOrder(order);
+      arrivalDate = startDate;
+      returnBy = endDate;
+      returnDate = TransitTimes.calculateReturnDayByOrder(order);
+
+      if (localDelivery) {
+        shipmentDate = arrivalDate; // Remove transit day from local deliveries
+      }
+
+      let rushOrder = rushRequired(arrivalDate, totalShippingDays, localDelivery);
+      if (rushOrder && !localDelivery) {
+        shipmentDate = TransitTimes.nextBusinessDay(moment().startOf('day'));
+      }
     }
 
     let orderNotes = anyOrderNotes(order.orderNotes);
+    // TODO: turn order notes into an array of strings
     // Build updated orderNotes
     orderNotes = orderNotes + '<br /><p> Shipping Address updated from: <br />'
     + prevAddress.fullName + '<br />'
@@ -543,7 +437,7 @@ Meteor.methods({
         $set: {
           'advancedFulfillment.localDelivery': localDelivery,
           // This line adds a day to transit time because we estimate from first ski day during import.
-          'advancedFulfillment.transitTime': localDelivery ? fedexTransitTime : fedexTransitTime + 1,
+          'advancedFulfillment.transitTime': transitTime,
           'advancedFulfillment.shipmentDate': shipmentDate,
           'advancedFulfillment.returnDate': returnDate,
           'advancedFulfillment.arriveBy': arrivalDate,
@@ -593,6 +487,7 @@ Meteor.methods({
     }
   },
 
+  // TODO: This will need to check availability of items before updating
   'advancedFulfillment/updateItemsColorAndSize': function (order, itemId, productId, variantId, userObj) {
     check(order, Object);
     check(itemId, String);
@@ -649,6 +544,7 @@ Meteor.methods({
     });
   },
 
+  // TODO: This should check item availability before swapping items
   'advancedFulfillment/itemExchange': function (order, oldItemId, type, gender, title, color, variantId, userObj) {
     check(order, Object);
     check(oldItemId, String);
@@ -741,6 +637,7 @@ Meteor.methods({
     });
   },
 
+  // TODO: Should check availability before updating items
   'advancedFulfillment/addItem': function (order, type, gender, title, color, variantId, userObj) {
     check(order, Object);
     check(type, String);

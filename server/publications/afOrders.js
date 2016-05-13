@@ -40,7 +40,8 @@ Meteor.publish('afProducts', function () {
 });
 
 Meteor.publish('advancedFulfillmentOrder', function (orderId) {
-  check(orderId, String);
+  // Check should be just string, but known flow router error is throwing errors when rerunning
+  check(orderId, Match.OneOf(String, null));
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
@@ -55,14 +56,12 @@ Meteor.publish('searchOrders', function () {
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
-      'shopId': shopId,
-      'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderActive
-      }
+      'shopId': shopId
     }, {
       fields: {
         _id: 1,
-        shopifyOrderNumber: 1
+        shopifyOrderNumber: 1,
+        orderNumber: 1
       }
     });
   }
@@ -76,8 +75,7 @@ Meteor.publish('shippingOrders', function () {
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderShipping
-      },
-      'startTime': {$ne: undefined}
+      }
     }, {
       fields: AdvancedFulfillment.fields.ordersList
     });
@@ -155,29 +153,21 @@ Meteor.publish('custServOrders', function () {
   return this.ready();
 });
 
-Meteor.publish('ordersWithMissingItems', function () {
+Meteor.publish('ordersWithMissing/DamagedItems', function () {
   shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       'shopId': shopId,
-      'advancedFulfillment.items.workflow.status': 'missing'
-    });
-  }
-  return this.ready();
-});
-
-Meteor.publish('ordersWithDamagedItems', function () {
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
-      'shopId': shopId,
-      'advancedFulfillment.items.workflow.status': 'damaged'
+      'advancedFulfillment.items.workflow.status': {
+        $in: ['missing', 'damaged']
+      }
     });
   }
   return this.ready();
 });
 
 Meteor.publish('ordersShippingOnDate', function (date) {
+  check(date, String);
   const shopId = ReactionCore.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
     const startOfDay = moment(date, 'MM-DD-YYYY').startOf('day').toDate();
@@ -222,9 +212,51 @@ Meteor.publish('afReturnOrders', function () {
         'advancedFulfillment.rushDelivery': 1,
         'advancedFulfillment.kayakRental.vendor': 1,
         'advancedFulfillment.kayakRental.qty': 1,
-        'advancedFulfillment.rushShippingPaid': 1
+        'advancedFulfillment.rushShippingPaid': 1,
+        'orderNumber': 1
       }
     });
   }
+  return this.ready();
+});
+
+Meteor.publish('ordersReturningOnDate', function (date) {
+  check(date, String);
+  const shopId = ReactionCore.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+    const startOfDay = moment(date, 'MM-DD-YYYY').startOf('day').toDate();
+    const endOfDay = moment(date, 'MM-DD-YYYY').endOf('day').toDate();
+    return ReactionCore.Collections.Orders.find({
+      'shopId': shopId,
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderReturning
+      },
+      'advancedFulfillment.returnDate': {
+        $gte: startOfDay,
+        $lte: endOfDay
+      }
+    }, {
+      fields: {
+        'endTime': 1,
+        'advancedFulfillment.returnDate': 1,
+        'advancedFulfillment.workflow.status': 1,
+        'advancedFulfillment.items._id': 1,
+        'advancedFulfillment.items.workflow': 1,
+        'advancedFulfillment.shipReturnBy': 1,
+        'shopifyOrderNumber': 1,
+        'history': 1,
+        'shipping.address.region': 1,
+        'shipping.address.city': 1,
+        'shipping.address.fullName': 1,
+        'advancedFulfillment.localDelivery': 1,
+        'advancedFulfillment.rushDelivery': 1,
+        'advancedFulfillment.kayakRental.vendor': 1,
+        'advancedFulfillment.kayakRental.qty': 1,
+        'advancedFulfillment.rushShippingPaid': 1,
+        'orderNumber': 1
+      }
+    });
+  }
+
   return this.ready();
 });

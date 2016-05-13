@@ -1,8 +1,54 @@
+function fullDay(rawDate) {
+  check(rawDate, String);
+  let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day').toDate();
+  let dayEnd = moment(rawDate, 'MM-DD-YYYY').endOf('day').toDate();
+  return {
+    dayStart: dayStart,
+    dayEnd: dayEnd
+  };
+}
 Template.returnOrders.onCreated(function () {
+  this.autorun(() => {
+    let date = ReactionRouter.getParam('date');
+    if (date) {
+      this.subscribe('ordersReturningOnDate', date);
+    } else {
+      this.subscribe('afReturnOrders');
+    }
+  });
   Session.setDefault('returnOrders', []);
 });
 
 Template.returnOrders.helpers({
+  orders: function () {
+    let params = ReactionRouter.getParam('date');
+    if (params) {
+      let dayTime = fullDay(params);
+      return ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.workflow.status': {
+          $in: AdvancedFulfillment.orderReturning
+        },
+        'advancedFulfillment.returnDate': {
+          $gte: dayTime.dayStart,
+          $lte: dayTime.dayEnd
+        }
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      });
+    }
+    return ReactionCore.Collections.Orders.find({
+      'advancedFulfillment.workflow.status': {
+        $in: AdvancedFulfillment.orderReturning
+      }
+    }, {
+      sort: {
+        'advancedFulfillment.returnDate': 1,
+        'shopifyOrderNumber': 1
+      }
+    });
+  },
   ordersSelected: function () {
     return Session.get('returnOrders').length;
   },
@@ -40,7 +86,6 @@ Template.returnOrder.helpers({
     return '';
   },
   orderSelected: function () {
-    // Session.setDefault('selectedOrders', []);
     return Session.get('returnOrders').indexOf(this._id) !== -1;
   },
   returningDate: function () {
@@ -49,7 +94,7 @@ Template.returnOrder.helpers({
   shippingDay: function () {
     return moment(this.advancedFulfillment.shipReturnBy).calendar(null, AdvancedFulfillment.calendarReferenceTime);
   },
-  lastSkiDay: function () {
+  lastUseDay: function () {
     return moment(this.endTime).calendar(null, AdvancedFulfillment.calendarReferenceTime);
   },
   returnName: function () {
@@ -65,7 +110,7 @@ Template.returnOrder.helpers({
 
 Template.returnOrder.events({
   'click .orderRow': function (event) {
-    Router.go('orderDetails', {_id: $(event.currentTarget).data('id')});
+    ReactionRouter.go('orderDetails', {_id: $(event.currentTarget).data('id')});
   },
   'click label .fa-check-square-o, click label .fa-square-o': function (event) {
     event.stopPropagation();
@@ -79,7 +124,6 @@ Template.returnOrder.events({
     } else {
       returnOrders = _.without(returnOrders, _id);
     }
-
     Session.set('returnOrders', returnOrders);
   }
 });

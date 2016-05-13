@@ -1,5 +1,15 @@
 Template.advancedFulfillmentOrdersPrint.onCreated(function () {
   Blaze._allowJavascriptUrls();
+  let date = ReactionRouter.getParam('date');
+  if (date) {
+    this.subscribe('ordersShippingOnDate', date);
+  } else {
+    this.subscribe('selectedOrders', JSON.parse(localStorage.getItem('selectedOrdersToPrint')));
+  }
+});
+
+Template.advancedFulfillmentOrdersPrint.onRendered(function () {
+  BlazeLayout.render("advancedFulfillmentOrdersPrint");
 });
 
 Template.advancedFulfillmentOrdersPrint.helpers({
@@ -28,6 +38,24 @@ Template.advancedFulfillmentOrdersPrint.helpers({
     return item.variants[attr];
   },
   orders: function () {
+    let day = ReactionRouter.getParam('date');
+    if (day) {
+      let startOfDay = moment(day, 'MM-DD-YYYY').startOf('day').toDate();
+      let endOfDay = moment(day, 'MM-DD-YYYY').endOf('day').toDate();
+      return ReactionCore.Collections.Orders.find({
+        'advancedFulfillment.workflow.status': {
+          $in: AdvancedFulfillment.orderActive
+        },
+        'advancedFulfillment.shipmentDate': {
+          $gte: startOfDay,
+          $lte: endOfDay
+        }
+      }, {
+        sort: {
+          shopifyOrderNumber: 1
+        }
+      });
+    }
     const selectedOrders = JSON.parse(localStorage.selectedOrdersToPrint || '[]');
     return ReactionCore.Collections.Orders.find({
       '_id': {

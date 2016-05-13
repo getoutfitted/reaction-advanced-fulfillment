@@ -1,17 +1,43 @@
+ReactionCore.Collections.AFCounter = AFCounter = this.AFCounter = new Mongo.Collection('AFCounter');
+
+ReactionCore.Schemas.AFCounter = new SimpleSchema({
+  shopId: {
+    type: String,
+    optional: true
+  },
+  seq: {
+    type: Number,
+    optional: true,
+    defaultValue: 10000
+  },
+  name: {
+    type: String,
+    optional: true
+  }
+});
+
+ReactionCore.Collections.AFCounter.attachSchema(ReactionCore.Schemas.AFCounter);
 
 ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
   ReactionCore.Schemas.PackageConfig, {
-    'settings.buffer.shipping': {
-      type: Number,
-      defaultValue: 3,
-      label: 'Number of days to customer receiving date that orders need to fulfilled.',
+    'settings.shipstation': {
+      type: Boolean,
+      label: 'Enable Intrgration from Shipstation Package',
       optional: true
     },
-    'settings.buffer.returning': {
-      type: Number,
-      defaultValue: 4,
-      label: 'Number of days past the customer use date, until orders should be returned.',
+    'settings.aftership.enabled': {
+      type: Boolean,
+      label: 'Enable Aftership webhook',
       optional: true
+    },
+    'settings.aftership.preSharedKey': {
+      type: String,
+      label: 'Pre Shared Key for authenticating webhooks',
+      optional: true
+    },
+    'settings.klaviyo': {
+      type: Boolean,
+      label: 'Enable Klaviyo Event Triggers'
     }
   }
 ]);
@@ -266,6 +292,14 @@ ReactionCore.Schemas.AdvancedFulfillmentItem = new SimpleSchema({
     type: String,
     optional: true
   },
+  ancestors: {
+    type: [String],
+    optional: true
+  },
+  functionalType: {
+    type: String,
+    optional: true
+  },
   productId: {
     type: String,
     index: 1,
@@ -432,6 +466,44 @@ ReactionCore.Schemas.AdvancedFulfillment = new SimpleSchema([ReactionCore.Schema
   },
   orderNotes: {
     type: String,
+    optional: true
+  },
+  shopifyOrderNumber: {
+    type: Number,
+    optional: true,
+    index: 1
+  },
+  shopifyOrderId: {
+    type: Number,
+    optional: true
+  },
+  shopifyOrderCreatedAt: {
+    type: Date,
+    optional: true
+  },
+  orderNumber: {
+    type: Number,
+    optional: true,
+    unique: true
+  },
+  infoMissing: {
+    type: Boolean,
+    optional: true
+  },
+  itemMissingDetails: {
+    type: Boolean,
+    optional: true
+  },
+  bundleMissingColor: {
+    type: Boolean,
+    optional: true
+  },
+  startTime: {
+    type: Date,
+    optional: true
+  },
+  endTime: {
+    type: Date,
     optional: true
   }
 }]);

@@ -19,7 +19,91 @@
         body {
           margin: 0;
           padding 0 !important;
-          min-width: 768px;
+
+        }
+
+        .container {
+          width: auto;
+          min-width: 95mm;
+        }
+
+        img {
+          max-width: 85mm;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class='container'>
+
+      <div class='row text-center'>
+        <div class='row' id='non-printable' >
+          <div class='col-md-6 col-md-offset-3'>
+            <a href='javascript:window.print()' style='text-align: center;'><button type='button' class='btn btn-info btn-lg btn-block'>Print</button></a>
+          </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div class="col-xs-12">
+          <img class='img-responsive' src="/packages/getoutfitted_reaction-advanced-fulfillment/public/images/go-logo-1000.png">
+        </div>
+      </div>
+      {{#with order}}
+        <div class='row'>
+          <div class='col-xs-12'><h1>Order #  {{displayOrderNumber}}</h1></div>
+        </div>
+        {{#if hasNoRentals }}
+          <div class='row'>
+            <div  class='col-xs-12'>
+              <h3><strong>Ship By: {{dateHelper advancedFulfillment.shipmentDate}}</strong></h3>
+            </div>
+          </div>
+        {{else}}
+          <div class='row'>
+            <div  class='col-xs-12'>
+              <h3><strong>Deliver By: {{dateHelper advancedFulfillment.arriveBy}}</strong></h3>
+            </div>
+          </div>
+        {{/if}}
+        <div class='row'>
+          <div class='col-xs-12'>
+            {{#with shippingAddress}}
+              <h4><strong>{{fullName}}</strong></h4>
+              <h4><strong>{{address1}} {{#if address2}}{{address2}}{{/if}}</strong></h4>
+              <h4><strong>{{city}}, {{region}} {{postal}} {{country}}</strong></h4>
+              <hr>
+            {{/with}}
+              <h4><strong>Primary #{{shippingPhone}} | Billing #{{billingPhone}}</strong></h4>
+
+          </div>
+        </div>
+      {{/with}}
+    </div>
+  </body>
+</template>
+<!-- <template name='localDeliveryLabelPDF'>
+
+  <head>
+    <style type='text/css'>
+
+      #non-printable {
+        padding: 20px 0;
+      }
+
+      @media print {
+        #non-printable {
+          display: none;
+        }
+
+        @page {
+          size: 95mm 147mm;
+          margin: 5mm;
+        }
+
+        body {
+          margin: 0;
+          padding 0 !important;
+
         }
 
         .container {
@@ -30,14 +114,15 @@
     </style>
   </head>
 <body>
-
-  <div id='non-printable' class='container'>
+  <div class='row' id='non-printable' >
     <div class='col-md-6 col-md-offset-3'>
       <a href='javascript:window.print()' style='text-align: center;'><button type='button' class='btn btn-info btn-lg btn-block'>Print</button></a>
     </div>
   </div>
 
 
+
+  {{#with order}}
   <header>
     <div class='container'>
       <div class='row'>
@@ -54,9 +139,6 @@
         <div  class='col-xs-12'>
           <h3><strong>Deliver By: {{dateHelper advancedFulfillment.arriveBy}}</strong></h3>
         </div>
-<!--         <div class='col-xs-12'>
-          <h3><strong>Pickup Date: </strong>{{dateHelper advancedFulfillment.shipReturnBy}}</h3>
-        </div> -->
       </div>
     </div>
   </header>
@@ -84,7 +166,7 @@
       <p><strong>Call: 888-618-0305</strong></p>
     </div>
   </div>
-
+  {{/with}}
 </body>
-</template>
+</template> -->
 

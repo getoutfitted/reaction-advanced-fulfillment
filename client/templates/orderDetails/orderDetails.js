@@ -10,7 +10,18 @@ function labelMaker(word, bootStrapColor = 'primary') {
   return '<span class="label label-' + bootStrapColor + '">' + word + '</span> ';
 }
 
+Template.orderDetails.onCreated(function () {
+  this.autorun(() => {
+    let orderId = ReactionRouter.getParam('_id');
+    this.subscribe('advancedFulfillmentOrder', orderId);
+  });
+});
+
 Template.orderDetails.helpers({
+  order: function () {
+    let orderId = ReactionRouter.getParam('_id');
+    return ReactionCore.Collections.Orders.findOne({_id: orderId});
+  },
   currentStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
     let generalTemplates = [
@@ -33,8 +44,7 @@ Template.orderDetails.helpers({
     return this.advancedFulfillment.workflow.status;
   },
   actualTransitTime: function () {
-    let transitTime = this.advancedFulfillment.transitTime - 1;
-    return transitTime > 0 ? transitTime : 0;
+    return this.advancedFulfillment.transitTime;
   },
   humanStatus: function () {
     return AdvancedFulfillment.humanOrderStatuses[this.advancedFulfillment.workflow.status];
@@ -183,7 +193,7 @@ Template.orderDetails.helpers({
 });
 
 Template.orderDetails.onRendered(function () {
-  let orderId = Router.current().params._id;
+  let orderId = ReactionRouter.getParam('_id');
   $('#barcode').barcode(orderId, 'code128', {
     barWidth: 2,
     barHeight: 150,
@@ -196,13 +206,21 @@ Template.orderDetails.onRendered(function () {
 Template.orderDetails.events({
   'click .advanceOrder': function (event) {
     event.preventDefault();
-    let currentStatus = this.advancedFulfillment.workflow.status;
-    let orderId = this._id;
-    let userId = Meteor.userId();
-    if (currentStatus === 'orderShipped') {
-      Meteor.call('advancedFulfillment/updateAllItemsToSpecificStatus', this, 'shipped');
+    const currentStatus = this.advancedFulfillment.workflow.status;
+    const orderId = this._id;
+    const userId = Meteor.userId();
+    const orderShipped = currentStatus === 'orderShipped';
+    if (orderShipped) {
+      Meteor.call('advancedFulfillment/updateItemsToShippedOrCompleted', this);
     }
-    Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+    let noRentals = _.every(this.advancedFulfillment.items, function (afItem) {
+      return afItem.functionalType === 'variant';
+    });
+    if (orderShipped && noRentals) {
+      Meteor.call('advancedFulfillment/bypassWorkflowAndComplete', orderId, userId);
+    } else {
+      Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
+    }
   },
   'submit .add-notes': function (event) {
     event.preventDefault();

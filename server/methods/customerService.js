@@ -20,6 +20,7 @@ function anyOrderNotes(orderNotes) {
 }
 
 Meteor.methods({
+  // TODO: Cancelling order should cancel items reservations
   'advancedFulfillment/cancelOrder': function (orderId, userId) {
     check(orderId, String);
     check(userId, String);
@@ -32,6 +33,7 @@ Meteor.methods({
       updatedAt: new Date()
     };
     const userObj = Meteor.users.findOne(userId);
+    // TODO: XXX: We shouldn'get get this clause because permission but should we throw an an error here instead
     let userName = 'Guest';
     if (userObj) {
       userName = userNameDeterminer(userObj);
@@ -91,6 +93,11 @@ Meteor.methods({
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
+    let history = {
+      event: 'updatedSkiInfoFromCustomer',
+      userId: userId,
+      updatedAt: new Date()
+    };
     ReactionCore.Collections.Orders.update({
       '_id': orderId,
       'advancedFulfillment.skiPackages._id': skiId
@@ -100,6 +107,9 @@ Meteor.methods({
         'advancedFulfillment.skiPackages.$.shoeSize': shoeSize,
         'advancedFulfillment.skiPackages.$.skiLevel': level,
         'advancedFulfillment.skiPackages.$.contactedCustomer': true
+      },
+      $addToSet: {
+        history: history
       }
     });
   },

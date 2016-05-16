@@ -25,7 +25,8 @@ Meteor.methods({
         ]
       });
       if (!order) {
-        throw new Meteor.Error('No Order Found');
+        ReactionCore.Log.error(`Could not find an exisiting Order that matched order number / shopify number with ${orderNumber}`)
+        throw new Meteor.Error('No Order Found for Aftership Hook');
       }
 
       let items = order.advancedFulfillment.items;
@@ -55,8 +56,8 @@ Meteor.methods({
           history: history
         }
       });
+      ReactionCore.Log.info('Successfully Processed Aftership Hook')
       Meteor.call('advancedFulfillment/klaviyoEnabled', order._id, 'Shipped Product');
-
     } else {
       throw new Meteor.Error(403, 'Forbidden, method is only available from the server');
     }

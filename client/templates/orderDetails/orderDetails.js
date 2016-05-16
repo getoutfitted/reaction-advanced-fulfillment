@@ -163,7 +163,27 @@ Template.orderDetails.helpers({
     return false;
   },
   hasShippingInfo: function () {
-    return this.advancedFulfillment.shippingHistory && this.advancedFulfillment.workflow.status === 'orderShipped';
+    return this.advancedFulfillment.shippingHistory;
+  },
+  fedExShipping: function () {
+    const transitTimes = ReactionCore.Collections.Packages.findOne({
+      name: 'transit-times',
+      shopId: ReactionCore.getShopId()
+    });
+    if (transitTimes && transitTimes.settings && transitTimes.settings.selectedShippingProvider === 'fedex') {
+      return true;
+    }
+    return false;
+  },
+  upsShipping: function () {
+    const transitTimes = ReactionCore.Collections.Packages.findOne({
+      name: 'transit-times',
+      shopId: ReactionCore.getShopId()
+    });
+    if (transitTimes && transitTimes.settings && transitTimes.settings.selectedShippingProvider === 'ups') {
+      return true;
+    }
+    return false;
   },
   hasCustomerServiceIssue: function () {
     let anyIssues = [

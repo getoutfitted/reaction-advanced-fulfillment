@@ -175,6 +175,16 @@ Template.orderDetails.helpers({
     }
     return false;
   },
+  upsShipping: function () {
+    const transitTimes = ReactionCore.Collections.Packages.findOne({
+      name: 'transit-times',
+      shopId: ReactionCore.getShopId()
+    });
+    if (transitTimes && transitTimes.settings && transitTimes.settings.selectedShippingProvider === 'ups') {
+      return true;
+    }
+    return false;
+  },
   hasCustomerServiceIssue: function () {
     let anyIssues = [
       this.infoMissing,

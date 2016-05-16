@@ -82,7 +82,13 @@
             </thead>
             <tbody>
               <tr>
-                <td><a  target='_blank' href="https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber={{advancedFulfillment.shippingHistory.trackingNumber}}&cntry_code=us">{{advancedFulfillment.shippingHistory.trackingNumber}}</a></td>
+                <td>
+                  {{#if fedExShipping}}
+                    <a  target='_blank' href="https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber={{advancedFulfillment.shippingHistory.trackingNumber}}&cntry_code=us">{{advancedFulfillment.shippingHistory.trackingNumber}}</a>
+                  {{else}}
+                    <a  target='_blank' href="https://wwwapps.ups.com/WebTracking/processInputRequest?tracknum={{advancedFulfillment.shippingHistory.trackingNumber}}">{{advancedFulfillment.shippingHistory.trackingNumber}}</a>
+                  {{/if}}
+                </td>
                 <td>{{advancedFulfillment.shippingHistory.currentStatus}}</td>
                 <td>{{advancedFulfillment.shippingHistory.currentMessage}}</td>
                 <td>{{advancedFulfillment.shippingHistory.currentCity}}, {{advancedFulfillment.shippingHistory.currentState}}</td>

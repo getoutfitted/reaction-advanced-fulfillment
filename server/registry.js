@@ -2,7 +2,7 @@ ReactionCore.registerPackage({
   label: 'Advanced Fulfillment',
   name: 'reaction-advanced-fulfillment',
   icon: 'fa fa-barcode',
-  autoEnable: false,
+  autoEnable: true,
   settings: {
     shipstation: false
   },

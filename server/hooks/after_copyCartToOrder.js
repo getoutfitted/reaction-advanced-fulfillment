@@ -60,7 +60,6 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
   // Shipstation Utilization
   if (afPackage.settings.shipstation) {
     AdvancedFulfillment.Shipstation.createOrder(orderId);
-    ReactionCore.Log.info(`AdvancedFulfillment pushed order ${af.orderNumber} to ShipStation`);
   }
   // Klaviyo Integration
   if (afPackage.settings.klaviyo && order.email) {

@@ -12,6 +12,20 @@ Template.registerHelper('displayOrderNumber', (order) => {
   return 'Order #' + order._id;
 });
 
+Template.registerHelper('showOrderNumber', (order) => {
+  if (order.orderNumber) {
+    return order.orderNumber;
+  } else if (order.shopifyOrderId) {
+    return '<a href="http://getoutfitted.myshopify.com/admin/orders/'
+    + order.shopifyOrderId
+    + '">' + order.shopifyOrderNumber + '</a>';
+  } else if (order.shopifyOrderNumber) {
+    return order.shopifyOrderNumber;
+  }
+  // Default
+  return  order._id;
+});
+
 Template.registerHelper('formattedDate', (date) => {
   if (!date) {
     return '---------------';

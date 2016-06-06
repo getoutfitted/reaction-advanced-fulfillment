@@ -7,7 +7,7 @@ Meteor.methods({
       let start = moment(order.startTime).format('M/D/YY');
       let end = moment(order.endTime).format('M/D/YY');
       let orderNumber = `Order #${order.orderNumber} items: `;
-      let orderLink = `https://getoutfitted.com/dashboard/advanced-fulfillment/order/${order._id}`;
+      let orderLink = `${process.env.ROOT_URL}/dashboard/advanced-fulfillment/order/${order._id}`;
       let orderText = `Order #${order.orderNumber} placed by: ${order.billing[0].address.fullName}
         Placed on: ${moment(order.createdAt).format('M/D/YY')}
         Rental Dates: ${start}-${end}

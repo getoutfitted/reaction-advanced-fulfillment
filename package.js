@@ -47,7 +47,8 @@ Package.onUse(function (api) {
     'server/methods/bulkActions.js',
     'server/methods/aftership.js',
     'server/publications/afOrders.js',
-    'server/methods/klaviyo.js'
+    'server/methods/klaviyo.js',
+    'server/methods/slack.js'
   ], 'server');
 
   api.addFiles([

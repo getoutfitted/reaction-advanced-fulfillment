@@ -38,6 +38,10 @@ ReactionCore.Schemas.AdvancedFulfillmentPackageConfig = new SimpleSchema([
     'settings.klaviyo': {
       type: Boolean,
       label: 'Enable Klaviyo Event Triggers'
+    },
+    'settings.slack': {
+      type: Boolean,
+      label: 'Enable Slack Messaging'
     }
   }
 ]);

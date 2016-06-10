@@ -65,8 +65,8 @@ ReactionCore.MethodHooks.after('cart/copyCartToOrder', function (options) {
   if (afPackage.settings.klaviyo && order.email) {
     Meteor.call('advancedFulfullment/createKlaviyoGeneralEvent', orderId, 'Checkout');
   }
-  if (afPackage.settings.slack) {
-    Meteor.call('advancedFulfullment/slackMessage', orderId);
+  if (afPackage.settings.slack && afPackage.settings.slackChannel) {
+    Meteor.call('advancedFulfullment/slackMessage', orderId, afPackage.settings.slackChannel);
   }
 
   return orderId;

@@ -1,6 +1,7 @@
 Meteor.methods({
-  'advancedFulfullment/slackMessage': function (orderId) {
+  'advancedFulfullment/slackMessage': function (orderId, channel) {
     check(orderId, String);
+    check(channel, String);
     // TODO : Lock down from client calling method:
     const order = ReactionCore.Collections.Orders.findOne(orderId);
     if (order) {
@@ -16,7 +17,7 @@ Meteor.methods({
         Shipping To: ${order.shipping[0].address.city}, ${order.shipping[0].address.region}
         *Order Total: $ ${order.billing[0].invoice.total}*`;
       let slackPost = {
-        channel: 'sales',
+        channel: channel,
         text: orderText,
         icon_url: 'https://cdn0.iconfinder.com/data/icons/kameleon-free-pack-rounded/110/Money-Increase-128.png',
         as_user: false,

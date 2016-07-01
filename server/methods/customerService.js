@@ -21,9 +21,9 @@ function anyOrderNotes(orderNotes) {
 
 Meteor.methods({
   // TODO: Cancelling order should cancel items reservations
-  'advancedFulfillment/cancelOrder': function (orderId, userId) {
+  'advancedFulfillment/cancelOrder': function (orderId) {
     check(orderId, String);
-    check(userId, String);
+    const userId = this.userId;
     if (!ReactionCore.hasPermission(AdvancedFulfillment.server.permissions)) {
       throw new Meteor.Error(403, 'Access Denied');
     }
@@ -60,6 +60,7 @@ Meteor.methods({
         'orderNotes': orderNotes
       }
     });
+    Meteor.call('rentalProducts/inventoryUnbook', orderId);
   },
   'advancedFulfillment/bundleColorConfirmation': function (orderId, userId) {
     check(orderId, String);

@@ -215,11 +215,17 @@ Template.updateCustomerDetails.events({
   'click .cancel-order': function (event) {
     event.preventDefault();
     const orderId = this._id;
-    Meteor.call('advancedFulfillment/cancelOrder', orderId, Meteor.userId());
-    Alerts.removeSeen();
-    Alerts.add('Order #' + this.shopifyOrderNumber + ' has been cancelled', 'info', {
-      autoHide: true
+    Meteor.call('advancedFulfillment/cancelOrder', orderId);
+    swal({
+      title: `#${this.orderNumber} Cancelled`,
+      text: 'Order has been canceled and Inventory Dates have been removed',
+      type: 'warning',
+      timer: 3000
     });
+    // Alerts.removeSeen();
+    // Alerts.add('Order #' + this.shopifyOrderNumber + ' has been cancelled', 'info', {
+    //   autoHide: true
+    // });
     Session.set('cancel-order-' + orderId, !Session.get('cancel-order-' + orderId));
   }
 });

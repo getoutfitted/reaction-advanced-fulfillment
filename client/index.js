@@ -1,2 +1,3 @@
-import './templates/settings/settings.js';
+import '../lib/collections';
+import './templates/settings/settings';
 

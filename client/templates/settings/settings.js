@@ -1,8 +1,18 @@
+import { Template } from 'meteor/templating';
+import { Reaction } from '/client/api';
+import { Packages } from '/lib/collections';
+import { AdvancedFulfillmentPackageConfig } from '../../../lib/collections/schemas';
+
+import './settings.html';
+
 Template.advancedFulfillmentSettings.helpers({
-  packageData: function () {
-    return ReactionCore.Collections.Packages.findOne({
+  AdvancedFulfillmentPackageConfig() {
+    return AdvancedFulfillmentPackageConfig;
+  },
+  packageData() {
+    return Packages.findOne({
       name: 'reaction-advanced-fulfillment',
-      shopId: ReactionCore.getShopId()
+      shopId: Reaction.getShopId()
     });
   }
 });

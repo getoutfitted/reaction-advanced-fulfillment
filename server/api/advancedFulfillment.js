@@ -41,7 +41,6 @@ AdvancedFulfillment.findAndUpdateNextOrderNumber = function () {
     name: 'advancedFulfillment',
     shopId: Reaction.getShopId()
   });
-  console.log('we in this one', counter);
   if (counter) {
     AFCounter.update({
       _id: counter._id

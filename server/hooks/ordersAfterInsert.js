@@ -28,6 +28,8 @@ Orders.after.insert(function () {
   const shippingAddress = TransitTimes.formatAddress(order.shipping[0].address); // XXX: do we need this?
   // check if local delivery
   advancedFulfillment.transitTime = TransitTimes.calculateTransitTime(shippingAddress);
+  advancedFulfillment.localDelivery = TransitTimes.isLocalDelivery(shippingAddress.postal);
+  advancedFulfillment.items = AdvancedFulfillment.itemsToAFItems(order.items);
   af.startTime = order.startTime || new Date();
   af.endTime = order.endTime || new Date();
   if (orderHasNoRentals) {

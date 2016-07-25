@@ -1,3 +1,18 @@
+import { Meteor } from 'meteor/meteor';
+import { Reaction } from '/client/api';
+import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
+import { Tracker } from 'meteor/tracker';
+import { check } from 'meteor/check';
+import _ from 'underscore';
+import moment from 'moment';
+import { Orders } from '/lib/collections';
+import * as commonAdvancedFulfillment from '../../../lib/api';
+import './fulfillmentOrders.html';
+
+// TODO review with Spencer why this comes as Default
+const AdvancedFulfillment = commonAdvancedFulfillment.default;
+
 function fullDay(rawDate) {
   check(rawDate, String);
   let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day').toDate();
@@ -22,7 +37,7 @@ function context(routeName) {
       'shopifyOrderNumber': 1
     }
   };
-  const rawDate = ReactionRouter.getParam('date');
+  const rawDate = Reaction.Router.getParam('date');
   let dayTime;
   switch (routeName) {
   case 'allLocalDeliveries':
@@ -35,7 +50,7 @@ function context(routeName) {
       sortingOrder: baseSorting
     };
   case 'orderByStatus':
-    let status = ReactionRouter.getParam('status');
+    let status = Reaction.Router.getParam('status');
     let byStatusFilter = _.extend(baseFilter, {
       'advancedFulfillment.workflow.status': status
     });
@@ -82,9 +97,9 @@ function context(routeName) {
 
 Template.fulfillmentOrders.onCreated(function () {
   this.autorun(() => {
-    let currentRoute = ReactionRouter.getRouteName();
+    let currentRoute = Reaction.Router.getRouteName();
     let result = context(currentRoute);
-    let params = ReactionRouter.getParam('status') || ReactionRouter.getParam('date');
+    let params = Reaction.Router.getParam('status') || Reaction.Router.getParam('date');
 
     if (params) {
       this.subscribe(result.subscription, params);
@@ -97,18 +112,20 @@ Template.fulfillmentOrders.onCreated(function () {
 
 Template.fulfillmentOrders.helpers({
   orders: function () {
-    const currentRoute = ReactionRouter.getRouteName();
+    const currentRoute = Reaction.Router.getRouteName();
+    console.log('current', currentRoute);
     let result = context(currentRoute);
-    return ReactionCore.Collections.Orders.find(
+    console.log('result', result);
+    return Orders.find(
       result.filters,
       result.sortingOrder
     );
   },
   routeStatus: function () {
-    let fullRoute = ReactionRouter.current().path;
+    let fullRoute = Reaction.Router.current().path;
     Tracker.autorun(() => {
-      ReactionRouter.watchPathChange();
-      fullRoute = ReactionRouter.current().path;
+      Reaction.Router.watchPathChange();
+      fullRoute = Reaction.Router.current().path;
     });
     let routeComponents = fullRoute.split('/');
     if (_.contains(routeComponents, 'shipping')) {
@@ -118,20 +135,20 @@ Template.fulfillmentOrders.helpers({
     } else if (_.contains(routeComponents, 'local-deliveries')) {
       return 'All Local Deliveries';
     } else if (_.contains(routeComponents, 'local-delivery')) {
-      return 'Local Deliveries for ' + ReactionRouter.getParam('date');
-    } else if (ReactionRouter.getParam('status')) {
-      return AdvancedFulfillment.humanOrderStatuses[ReactionRouter.getParam('status')] + ' Orders';
+      return 'Local Deliveries for ' + Reaction.Router.getParam('date');
+    } else if (Reaction.Router.getParam('status')) {
+      return AdvancedFulfillment.humanOrderStatuses[Reaction.Router.getParam('status')] + ' Orders';
     }
   },
   showPrintOrdersLink: function () {
-    let currentRoute = ReactionRouter.getRouteName();
+    let currentRoute = Reaction.Router.getRouteName();
     if (currentRoute === 'dateShipping') {
       return true;
     }
     return false;
   },
   shippingDate: function () {
-    return ReactionRouter.getParam('date');
+    return Reaction.Router.getParam('date');
   },
   ordersSelected: function () {
     return Session.get('selectedOrders').length;
@@ -162,7 +179,7 @@ Template.fulfillmentOrders.events({
     if (event.currentTarget.value === 'print') {
       localStorage.selectedOrdersToPrint = JSON.stringify(Session.get('selectedOrders'));
       Meteor.call('advancedFulfillment/printSelectedOrders', Session.get('selectedOrders'));
-      window.open(window.location.origin + ReactionRouter.path('orders.printSelected'));
+      window.open(window.location.origin + Reaction.Router.path('orders.printSelected'));
     } else if (event.currentTarget.value === 'ship') {
       Meteor.call('advancedFulfillment/shipSelectedOrders', Session.get('selectedOrders'));
     } else if (event.currentTarget.value === 'undoShipped') {
@@ -208,10 +225,10 @@ Template.fulfillmentOrder.helpers({
     return Session.get('selectedOrders').indexOf(this._id) !== -1;
   },
   toBeShipped: function () {
-    let fullRoute = ReactionRouter.current().path;
+    let fullRoute = Reaction.Router.current().path;
     let routeComponents = fullRoute.split('/');
     let toBeShipped = _.intersection(routeComponents, ['shipping', 'local-delivery', 'local-deliveries']);
-    let params = ReactionRouter.getParam('status');
+    let params = Reaction.Router.getParam('status');
     let active = _.contains(AdvancedFulfillment.orderActive, params);
     if (toBeShipped.length > 0 || active) {
       return true;
@@ -271,7 +288,7 @@ Template.fulfillmentOrder.helpers({
 Template.fulfillmentOrder.events({
   'click .orderRow': function (event) {
     event.preventDefault();
-    ReactionRouter.go('orderDetails', {_id: event.currentTarget.dataset.id});
+    Reaction.Router.go('orderDetails', {_id: event.currentTarget.dataset.id});
   },
   'click .advanceOrder': function (event) {
     event.preventDefault();
@@ -281,7 +298,7 @@ Template.fulfillmentOrder.events({
     let orderId = this._id;
     let userId = Meteor.userId();
     Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, currentStatus);
-    ReactionRouter.go('orderDetails', {_id: orderId});
+    Reaction.Router.go('orderDetails', {_id: orderId});
   },
   'click .selfAssignOrder': function (event) {
     event.preventDefault();

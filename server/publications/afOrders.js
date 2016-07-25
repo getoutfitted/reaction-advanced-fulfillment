@@ -1,8 +1,16 @@
-Meteor.publish('afOrders', function () {
-  shopId = ReactionCore.getShopId();
+import { Meteor } from 'meteor/meteor';
+import { Reaction } from '/server/api';
+import { AdvancedFulfillment } from '../api';
+import { Products, Orders } from '/lib/collections';
+import { check } from 'meteor/check';
+import moment from 'moment';
 
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+
+Meteor.publish('afOrders', function () {
+  shopId = Reaction.getShopId();
+
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       shopId: shopId
     }, {
       fields: {
@@ -33,8 +41,8 @@ Meteor.publish('afOrders', function () {
 });
 
 Meteor.publish('afProducts', function () {
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Products.find({});
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Products.find({});
   }
   return this.ready();
 });
@@ -42,8 +50,8 @@ Meteor.publish('afProducts', function () {
 Meteor.publish('advancedFulfillmentOrder', function (orderId) {
   // Check should be just string, but known flow router error is throwing errors when rerunning
   check(orderId, Match.OneOf(String, null));
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+  shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
     return ReactionCore.Collections.Orders.find({
       _id: orderId,
       shopId: shopId
@@ -54,8 +62,8 @@ Meteor.publish('advancedFulfillmentOrder', function (orderId) {
 
 Meteor.publish('searchOrders', function () {
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       'shopId': shopId
     }, {
       fields: {
@@ -69,12 +77,13 @@ Meteor.publish('searchOrders', function () {
 });
 
 Meteor.publish('shippingOrders', function () {
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  console.log('AF?', AdvancedFulfillment.default.orderShipping);
+  shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.orderShipping
+        $in: AdvancedFulfillment.default.orderShipping
       }
     }, {
       fields: AdvancedFulfillment.fields.ordersList
@@ -85,9 +94,9 @@ Meteor.publish('shippingOrders', function () {
 
 Meteor.publish('ordersByStatus', function (status) {
   check(status, String);
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': status
     }, {
@@ -100,8 +109,8 @@ Meteor.publish('ordersByStatus', function (status) {
 Meteor.publish('selectedOrders', function (orderIds) {
   check(orderIds, [String]);
   shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       _id: {
         $in: orderIds
       }
@@ -116,9 +125,9 @@ Meteor.publish('selectedOrders', function (orderIds) {
 });
 
 Meteor.publish('nonWarehouseOrders', function () {
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': 'nonWarehouseOrder'
     });
@@ -127,9 +136,9 @@ Meteor.publish('nonWarehouseOrders', function () {
 });
 
 Meteor.publish('userOrderQueue', function () {
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderInQueue
@@ -141,9 +150,9 @@ Meteor.publish('userOrderQueue', function () {
 });
 
 Meteor.publish('custServOrders', function () {
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderShipping
@@ -154,9 +163,9 @@ Meteor.publish('custServOrders', function () {
 });
 
 Meteor.publish('ordersWithMissing/DamagedItems', function () {
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.items.workflow.status': {
         $in: ['missing', 'damaged']
@@ -168,11 +177,11 @@ Meteor.publish('ordersWithMissing/DamagedItems', function () {
 
 Meteor.publish('ordersShippingOnDate', function (date) {
   check(date, String);
-  const shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+  const shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
     const startOfDay = moment(date, 'MM-DD-YYYY').startOf('day').toDate();
     const endOfDay = moment(date, 'MM-DD-YYYY').endOf('day').toDate();
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderActive
@@ -188,9 +197,9 @@ Meteor.publish('ordersShippingOnDate', function (date) {
 });
 
 Meteor.publish('afReturnOrders', function () {
-  shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], ReactionCore.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+  shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, ['admin', 'owner', 'dashboard/advanced-fulfillment', 'reaction-advanced-fulfillment'], Reaction.getShopId())) {
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderReturning
@@ -222,11 +231,11 @@ Meteor.publish('afReturnOrders', function () {
 
 Meteor.publish('ordersReturningOnDate', function (date) {
   check(date, String);
-  const shopId = ReactionCore.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, ReactionCore.getShopId())) {
+  const shopId = Reaction.getShopId();
+  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
     const startOfDay = moment(date, 'MM-DD-YYYY').startOf('day').toDate();
     const endOfDay = moment(date, 'MM-DD-YYYY').endOf('day').toDate();
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderReturning

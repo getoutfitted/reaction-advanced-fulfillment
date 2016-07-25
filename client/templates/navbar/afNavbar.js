@@ -1,3 +1,11 @@
+import { Template } from 'meteor/templating';
+import { Orders } from '/lib/collections';
+import { Reaction } from '/client/api';
+import moment from 'moment';
+import $ from 'jquery';
+
+import './afNavbar.html';
+
 Template.afNavbar.onCreated(function () {
   this.subscribe('searchOrders');
 });
@@ -18,17 +26,17 @@ Template.afNavbar.helpers({
     return moment().subtract(1, 'days').format('MM-DD-YYYY');
   },
   missingItemsFromOrder: function () {
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       itemMissingDetails: true
     }).count();
   },
   impossibleDates: function () {
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       'advancedFulfillment.impossibleShipDate': true
     }).count();
   },
   missingRentalDates: function () {
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       infoMissing: true,
       $or: [{
         startTime: {$exists: false}
@@ -40,27 +48,27 @@ Template.afNavbar.helpers({
     }).count();
   },
   missingBundleInfo: function () {
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       bundleMissingColor: true
     }).count();
   },
-  getOrders: function () {
-    return OrderSearch.getData();
-  }
+  // getOrders: function () {
+  //   return OrderSearch.getData();
+  // }
 });
 
 Template.afNavbar.events({
   'submit .subnav-search-form, submit .navbar-search-form': function (event) {
     event.preventDefault();
     let searchValue = event.target.orderNumber.value;
-    let order = ReactionCore.Collections.Orders.findOne({
+    let order = Orders.findOne({
       $or : [
         { shopifyOrderNumber: parseInt(searchValue, 10)},
         { orderNumber: parseInt(searchValue, 10)}
       ]
     });
     if (order) {
-      ReactionRouter.go('orderDetails', {_id: order._id});
+      Reaction.Router.go('orderDetails', {_id: order._id});
       event.target.orderNumber.value = '';
     } else {
       Alerts.removeSeen();
@@ -93,7 +101,7 @@ Template.afNavbar.events({
     let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
     if (verifiedDate) {
       let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
-      ReactionRouter.go('dateReturning', {date: date});
+      Reaction.Router.go('dateReturning', {date: date});
     }
   }
 });

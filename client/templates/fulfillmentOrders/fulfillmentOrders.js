@@ -7,11 +7,13 @@ import { check } from 'meteor/check';
 import _ from 'underscore';
 import moment from 'moment';
 import { Orders } from '/lib/collections';
-import * as commonAdvancedFulfillment from '../../../lib/api';
+import AdvancedFulfillment from '../../../lib/api';
+import '../helpers';
+import '../deliveryLabels/deliveryLabels.html';
 import './fulfillmentOrders.html';
 
 // TODO review with Spencer why this comes as Default
-const AdvancedFulfillment = commonAdvancedFulfillment.default;
+// const AdvancedFulfillment = commonAdvancedFulfillment.default;
 
 function fullDay(rawDate) {
   check(rawDate, String);
@@ -113,9 +115,7 @@ Template.fulfillmentOrders.onCreated(function () {
 Template.fulfillmentOrders.helpers({
   orders: function () {
     const currentRoute = Reaction.Router.getRouteName();
-    console.log('current', currentRoute);
     let result = context(currentRoute);
-    console.log('result', result);
     return Orders.find(
       result.filters,
       result.sortingOrder

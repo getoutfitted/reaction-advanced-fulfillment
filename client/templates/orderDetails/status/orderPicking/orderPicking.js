@@ -1,3 +1,10 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
+import { Reaction } from '/client/api';
+import _ from 'underscore';
+import './orderPicking.html';
+
 function findOrderItem(order, itemId) {
   return _.findWhere(order.items, {_id: itemId});
 }
@@ -108,7 +115,7 @@ Template.orderPicking.events({
     });
     if (allItemsPicked) {
       Meteor.call('advancedFulfillment/updateOrderWorkflow', orderId, userId, 'orderPicking');
-      ReactionRouter.go('advancedFulfillment.picker');
+      Reaction.Router.go('advancedFulfillment.picker');
     } else {
       Alerts.removeSeen();
       Alerts.add('All Items Have Not Been Picked', 'danger', {

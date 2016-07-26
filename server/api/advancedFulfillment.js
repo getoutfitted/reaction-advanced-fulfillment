@@ -3,10 +3,8 @@ import { check } from 'meteor/check';
 import { Reaction } from '/server/api';
 import { Products, Orders } from '/lib/collections';
 import { AFCounter } from '../../lib/collections';
-import * as commonAdvancedFulfillment from '../../lib/api';
-
-export const AdvancedFulfillment = commonAdvancedFulfillment;
-
+// import * as commonAdvancedFulfillment from '../../lib/api';
+import AdvancedFulfillment from '../../lib/api';
 
 AdvancedFulfillment.itemsToAFItems = function (items) {
   check(items, [Object]);
@@ -121,6 +119,7 @@ AdvancedFulfillment.fields.custServOrders = {
   'shipping.address.fullName': 1,
   'orderNumber': 1
 };
+
 // AdvancedFulfillment.Shipstation = {};
 // AdvancedFulfillment.Shipstation.createOrder = function (orderId) {
 //   check(orderId, String);
@@ -205,3 +204,4 @@ AdvancedFulfillment.fields.custServOrders = {
 //     Shipstation.createOrder(shipstation);
 //   }
 // };
+export default AdvancedFulfillment;

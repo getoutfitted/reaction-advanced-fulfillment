@@ -1,3 +1,10 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
+import { Reaction } from '/client/api';
+import _ from 'underscore';
+import './orderReturned.html';
+
 function findOrderItem(order, itemId) {
   return _.findWhere(order.items, {_id: itemId});
 }

@@ -1,4 +1,6 @@
-// import _ from 'underscore';
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+import _ from 'underscore';
 
 function shipmentDateChecker(date, localDelivery, transitTime) {
   if (localDelivery) {

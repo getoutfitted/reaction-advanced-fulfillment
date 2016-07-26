@@ -1,12 +1,12 @@
+import { Template } from 'meteor/templating';
+import { check } from 'meteor/check';
+import moment from 'moment';
+import 'twix';
+import AdvancedFulfillment from '../../lib/api';
+
 Template.registerHelper('displayOrderNumber', (order) => {
   if (order.orderNumber) {
     return 'Order #' + order.orderNumber;
-  } else if (order.shopifyOrderId) {
-    return '<a href="http://getoutfitted.myshopify.com/admin/orders/'
-    + order.shopifyOrderId
-    + '">Order #' + order.shopifyOrderNumber + '</a>';
-  } else if (order.shopifyOrderNumber) {
-    return 'Order #' + order.shopifyOrderNumber;
   }
   // Default
   return 'Order #' + order._id;
@@ -15,12 +15,6 @@ Template.registerHelper('displayOrderNumber', (order) => {
 Template.registerHelper('showOrderNumber', (order) => {
   if (order.orderNumber) {
     return order.orderNumber;
-  } else if (order.shopifyOrderId) {
-    return '<a href="http://getoutfitted.myshopify.com/admin/orders/'
-    + order.shopifyOrderId
-    + '">' + order.shopifyOrderNumber + '</a>';
-  } else if (order.shopifyOrderNumber) {
-    return order.shopifyOrderNumber;
   }
   // Default
   return  order._id;

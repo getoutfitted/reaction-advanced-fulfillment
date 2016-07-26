@@ -1,3 +1,18 @@
+import { Meteor } from 'meteor/meteor';
+import { Reaction } from '/client/api';
+import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
+import { Tracker } from 'meteor/tracker';
+import { check } from 'meteor/check';
+import _ from 'underscore';
+import moment from 'moment';
+import { Orders } from '/lib/collections';
+import AdvancedFulfillment from '../../../lib/api';
+
+import '../helpers';
+import './orderDetails.html';
+import './status';
+
 function getIndexBy(array, name, value) {
   for (let i = 0; i < array.length; i++) {
     if (array[i][name] === value) {
@@ -12,15 +27,15 @@ function labelMaker(word, bootStrapColor = 'primary') {
 
 Template.orderDetails.onCreated(function () {
   this.autorun(() => {
-    let orderId = ReactionRouter.getParam('_id');
+    let orderId = Reaction.Router.getParam('_id');
     this.subscribe('advancedFulfillmentOrder', orderId);
   });
 });
 
 Template.orderDetails.helpers({
   order: function () {
-    let orderId = ReactionRouter.getParam('_id');
-    return ReactionCore.Collections.Orders.findOne({_id: orderId});
+    let orderId = Reaction.Router.getParam('_id');
+    return Orders.findOne({_id: orderId});
   },
   currentStatus: function () {
     let currentStatus = this.advancedFulfillment.workflow.status;
@@ -66,12 +81,6 @@ Template.orderDetails.helpers({
     let status = this.advancedFulfillment.workflow.status;
     let updateableStatuses = AdvancedFulfillment.assignmentStatuses;
     return _.contains(updateableStatuses, status);
-  },
-  shopifyOrder: function () {
-    if (this.shopifyOrderNumber) {
-      return true;
-    }
-    return false;
   },
   shippingTo: function () {
     return this.shipping[0].address.fullName;
@@ -212,16 +221,16 @@ Template.orderDetails.helpers({
   }
 });
 
-Template.orderDetails.onRendered(function () {
-  let orderId = ReactionRouter.getParam('_id');
-  $('#barcode').barcode(orderId, 'code128', {
-    barWidth: 2,
-    barHeight: 150,
-    moduleSize: 15,
-    showHRI: true,
-    fontSize: 14
-  });
-});
+// Template.orderDetails.onRendered(function () {
+//   let orderId = ReactionRouter.getParam('_id');
+//   $('#barcode').barcode(orderId, 'code128', {
+//     barWidth: 2,
+//     barHeight: 150,
+//     moduleSize: 15,
+//     showHRI: true,
+//     fontSize: 14
+//   });
+// });
 
 Template.orderDetails.events({
   'click .advanceOrder': function (event) {

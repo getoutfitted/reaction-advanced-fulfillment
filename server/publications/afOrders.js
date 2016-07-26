@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Reaction } from '/server/api';
-import { AdvancedFulfillment } from '../api';
+import AdvancedFulfillment from '../api';
 import { Products, Orders } from '/lib/collections';
 import { check } from 'meteor/check';
 import moment from 'moment';
@@ -8,7 +8,6 @@ import moment from 'moment';
 
 Meteor.publish('afOrders', function () {
   shopId = Reaction.getShopId();
-
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
     return Orders.find({
       shopId: shopId
@@ -52,7 +51,7 @@ Meteor.publish('advancedFulfillmentOrder', function (orderId) {
   check(orderId, Match.OneOf(String, null));
   shopId = Reaction.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       _id: orderId,
       shopId: shopId
     });
@@ -61,7 +60,7 @@ Meteor.publish('advancedFulfillmentOrder', function (orderId) {
 });
 
 Meteor.publish('searchOrders', function () {
-  shopId = ReactionCore.getShopId();
+  shopId = Reaction.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
     return Orders.find({
       'shopId': shopId
@@ -77,13 +76,12 @@ Meteor.publish('searchOrders', function () {
 });
 
 Meteor.publish('shippingOrders', function () {
-  console.log('AF?', AdvancedFulfillment.default.orderShipping);
   shopId = Reaction.getShopId();
   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
     return Orders.find({
       'shopId': shopId,
       'advancedFulfillment.workflow.status': {
-        $in: AdvancedFulfillment.default.orderShipping
+        $in: AdvancedFulfillment.orderShipping
       }
     }, {
       fields: AdvancedFulfillment.fields.ordersList

@@ -2,7 +2,7 @@ import _ from 'underscore';
 // import { Meteor } from 'meteor/meteor';
 import { Orders, Packages } from '/lib/collections';
 import { Logger, Reaction } from '/server/api';
-import { TransitTimes } from '/imports/plugins/getoutfitted/transit-times/server';
+import { TransitTimes } from '/imports/plugins/custom/transit-times/server';
 import  AdvancedFulfillment from '../api';
 
 Orders.after.insert(function () {

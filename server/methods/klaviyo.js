@@ -3,7 +3,7 @@ import { check } from 'meteor/check';
 import { Logger, Reaction } from '/server/api';
 import { Packages, Orders, Products } from '/lib/collections';
 import moment from 'moment';
-import _ from 'underscore';
+import { _ } from 'meteor/underscore';
 
 Meteor.methods({
   'advancedFulfillment/klaviyoEnabled': function (orderId, eventName, methodName) {

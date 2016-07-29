@@ -4,7 +4,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { Tracker } from 'meteor/tracker';
 import { check } from 'meteor/check';
-import _ from 'underscore';
+import { _ } from 'meteor/underscore';
 import moment from 'moment';
 import { Orders } from '/lib/collections';
 import AdvancedFulfillment from '../../../lib/api';

@@ -4,7 +4,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { Tracker } from 'meteor/tracker';
 import { check } from 'meteor/check';
-import _ from 'underscore';
+import { _ } from 'meteor/underscore';
 import moment from 'moment';
 import { Orders } from '/lib/collections';
 import AdvancedFulfillment from '../../../lib/api';
@@ -159,17 +159,6 @@ Template.orderDetails.helpers({
     myOrders.prevOrderId = prevOrder ? prevOrder._id : undefined;
     myOrders.count = orders.length;
     return myOrders;
-  },
-  hasNonPickableItems: function () {
-    const af = this.advancedFulfillment;
-    if (!af.damageCoverage) {
-      return false;
-    }
-    const damageCoverage = af.damageCoverage.packages.qty > 0 || af.damageCoverage.products.qty > 0;
-    if (af.skiPackagesPurchased || af.kayakRental || af.other || damageCoverage) {
-      return true;
-    }
-    return false;
   },
   hasShippingInfo: function () {
     return this.advancedFulfillment.shippingHistory;

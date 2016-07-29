@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import _ from 'underscore';
+import { _ } from 'meteor/underscore';
 import './orderReadyToShip.html';
 Template.orderReadyToShip.events({
   'click .update-to-shipped': function (event) {

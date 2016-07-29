@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import { _ } from 'meteor/underscore';
 import { check } from 'meteor/check';
 import { Reaction } from '/server/api';
 import { Products, Orders } from '/lib/collections';

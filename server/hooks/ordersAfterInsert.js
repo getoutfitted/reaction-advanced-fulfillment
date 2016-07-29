@@ -1,5 +1,4 @@
-import _ from 'underscore';
-// import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { Orders, Packages } from '/lib/collections';
 import { Logger, Reaction } from '/server/api';
 import { TransitTimes } from '/imports/plugins/custom/transit-times/server';

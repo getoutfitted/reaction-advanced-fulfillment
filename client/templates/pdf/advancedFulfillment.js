@@ -5,7 +5,6 @@ import { Blaze } from 'meteor/blaze';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import moment from 'moment';
 
-import './'
 import './advancedFulfillment.html';
 
 Template.advancedFulfillmentPDF.onCreated(function () {

@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import _ from 'underscore';
+import { _ } from 'meteor/underscore';
 import moment from 'moment';
 // import $ from 'jquery';
 // import 'bootstrap-datepicker';

@@ -1,3 +1,4 @@
 import './orderDetail';
 import './itemDetails';
 import './klaviyo';
+import './bulkActions';

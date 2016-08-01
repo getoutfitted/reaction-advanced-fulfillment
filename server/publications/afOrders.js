@@ -122,16 +122,16 @@ Meteor.publish('selectedOrders', function (orderIds) {
   return this.ready();
 });
 
-Meteor.publish('nonWarehouseOrders', function () {
-  shopId = Reaction.getShopId();
-  if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
-    return Orders.find({
-      'shopId': shopId,
-      'advancedFulfillment.workflow.status': 'nonWarehouseOrder'
-    });
-  }
-  return this.ready();
-});
+// Meteor.publish('nonWarehouseOrders', function () {
+//   shopId = Reaction.getShopId();
+//   if (Roles.userIsInRole(this.userId, AdvancedFulfillment.server.permissions, Reaction.getShopId())) {
+//     return Orders.find({
+//       'shopId': shopId,
+//       'advancedFulfillment.workflow.status': 'nonWarehouseOrder'
+//     });
+//   }
+//   return this.ready();
+// });
 
 Meteor.publish('userOrderQueue', function () {
   shopId = Reaction.getShopId();

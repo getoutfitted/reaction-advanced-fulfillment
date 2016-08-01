@@ -1,5 +1,12 @@
+import { Template } from 'meteor/templating';
+import { _ } from 'meteor/underscore';
+import { Reaction } from '/client/api';
+import { Orders, Products } from '/lib/collections';
+import { Session } from 'meteor/session';
 import $ from 'jquery';
 import 'bootstrap-datepicker';
+
+import './orderUpdate.html';
 
 function findOrderItem(order, itemId) {
   return _.findWhere(order.items, {_id: itemId});
@@ -7,35 +14,35 @@ function findOrderItem(order, itemId) {
 
 Template.updateOrder.onCreated(function () {
   this.autorun(() => {
-    let orderId = ReactionRouter.getParam('_id');
+    let orderId = Reaction.Router.getParam('_id');
     this.subscribe('afProducts');
     this.subscribe('advancedFulfillmentOrder', orderId);
   });
 });
 
 Template.updateOrder.onRendered(function () {
-  const orderId = ReactionRouter.getParam('_id');
+  const orderId = Reaction.Router.getParam('_id');
   Session.setDefault('cancel-order-' + orderId, false);
 });
 
 Template.updateOrder.helpers({
   order: function () {
-    const orderId = ReactionRouter.getParam('_id');
-    return ReactionCore.Collections.Orders.findOne({ _id: orderId});
+    const orderId = Reaction.Router.getParam('_id');
+    return Orders.findOne({ _id: orderId});
   },
   afItems: function () {
     return this.advancedFulfillment.items;
   },
   colorOptions: function (item) {
     let productId = item.productId;
-    let product = ReactionCore.Collections.Products.findOne(productId);
+    let product = Products.findOne(productId);
     if (product) {
       return product.colors;
     }
   },
   sizeOptions: function (item) {
     let productId = item.productId;
-    let product = ReactionCore.Collections.Products.findOne(productId);
+    let product = Products.findOne(productId);
     let selectedColor = Session.get('colorSelectorFor-' + item._id);
     let variantsWithSelectedColor = _.where(product.variants, {color: selectedColor});
     return _.map(variantsWithSelectedColor, function (variant) {
@@ -98,7 +105,7 @@ Template.updateOrder.helpers({
 
 Template.updateCustomerDetails.onCreated(function () {
   this.autorun(() => {
-    let orderId = ReactionRouter.getParam('_id');
+    let orderId = Reaction.Router.getParam('_id');
     this.subscribe('advancedFulfillmentOrder', orderId);
   });
 });

@@ -24,34 +24,34 @@ Template.afNavbar.helpers({
   },
   yesterdaysDate: function () {
     return moment().subtract(1, 'days').format('MM-DD-YYYY');
-  },
-  missingItemsFromOrder: function () {
-    return Orders.find({
-      itemMissingDetails: true
-    }).count();
-  },
-  impossibleDates: function () {
-    return Orders.find({
-      'advancedFulfillment.impossibleShipDate': true
-    }).count();
-  },
-  missingRentalDates: function () {
-    return Orders.find({
-      infoMissing: true,
-      $or: [{
-        startTime: {$exists: false}
-      }, {
-        endTime: {$exists: false}
-      }, {
-        rentalDays: {$exists: false}
-      }]
-    }).count();
-  },
-  missingBundleInfo: function () {
-    return Orders.find({
-      bundleMissingColor: true
-    }).count();
-  },
+  }
+  // missingItemsFromOrder: function () {
+  //   return Orders.find({
+  //     itemMissingDetails: true
+  //   }).count();
+  // },
+  // impossibleDates: function () {
+  //   return Orders.find({
+  //     'advancedFulfillment.impossibleShipDate': true
+  //   }).count();
+  // },
+  // missingRentalDates: function () {
+  //   return Orders.find({
+  //     infoMissing: true,
+  //     $or: [{
+  //       startTime: {$exists: false}
+  //     }, {
+  //       endTime: {$exists: false}
+  //     }, {
+  //       rentalDays: {$exists: false}
+  //     }]
+  //   }).count();
+  // },
+  // missingBundleInfo: function () {
+  //   return Orders.find({
+  //     bundleMissingColor: true
+  //   }).count();
+  // },
   // getOrders: function () {
   //   return OrderSearch.getData();
   // }
@@ -63,7 +63,7 @@ Template.afNavbar.events({
     let searchValue = event.target.orderNumber.value;
     let order = Orders.findOne({
       $or : [
-        { shopifyOrderNumber: parseInt(searchValue, 10)},
+        { _id: searchValue},
         { orderNumber: parseInt(searchValue, 10)}
       ]
     });
@@ -83,7 +83,7 @@ Template.afNavbar.events({
     let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
     if (verifiedDate) {
       let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
-      ReactionRouter.go('dateShipping', {date: date});
+      Reaction.Router.go('dateShipping', {date: date});
     }
   },
   'click #afLocalDeliveryButton': function (event) {
@@ -92,7 +92,7 @@ Template.afNavbar.events({
     let verifiedDate = moment(unfilteredDate, 'MM-DD-YYYY').isValid();
     if (verifiedDate) {
       let date = moment(unfilteredDate, 'MM-DD-YYYY').format('MM-DD-YYYY');
-      ReactionRouter.go('dateLocalDelivery', {date: date});
+      Reaction.Router.go('dateLocalDelivery', {date: date});
     }
   },
   'click #afReturnButton': function (event) {

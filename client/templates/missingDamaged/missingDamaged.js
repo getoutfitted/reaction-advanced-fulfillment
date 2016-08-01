@@ -1,33 +1,40 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { Reaction } from '/client/api';
+import { Orders } from '/lib/collections';
+
+import './missingDamaged.html';
+
 Template.missingDamaged.onCreated(function () {
   this.autorun(() => {
-    ReactionRouter.watchPathChange();
+    Reaction.Router.watchPathChange();
     this.subscribe('ordersWithMissing/DamagedItems');
   });
 });
 
 Template.missingDamaged.helpers({
   orders: function () {
-    let thisRoute = ReactionRouter.getRouteName();
+    let thisRoute = Reaction.Router.getRouteName();
     if (thisRoute === 'damaged') {
-      return ReactionCore.Collections.Orders.find({
+      return Orders.find({
         'advancedFulfillment.items.workflow.status': 'damaged'
       }, {
         sort: {
-          shopifyOrderNumber: 1
+          orderNumber: 1
         }
       });
     } else if (thisRoute === 'missing') {
-      return ReactionCore.Collections.Orders.find({
+      return Orders.find({
         'advancedFulfillment.items.workflow.status': 'missing'
       }, {
         sort: {
-          shopifyOrderNumber: 1
+          orderNumber: 1
         }
       });
     }
   },
   typeOf: function () {
-    let thisRoute = ReactionRouter.getRouteName();
+    let thisRoute = Reaction.Router.getRouteName();
     if (thisRoute === 'damaged') {
       return 'Damaged';
     } else if (thisRoute === 'missing') {
@@ -39,7 +46,7 @@ Template.missingDamaged.helpers({
 Template.missingDamagedOrder.helpers({
   missingDamagedItems: function () {
     let items = this.advancedFulfillment.items;
-    let thisRoute = ReactionRouter.getRouteName();
+    let thisRoute = Reaction.Router.getRouteName();
     if (thisRoute === 'damaged') {
       return  _.filter(items, function (item) {
         return item.workflow.status === 'damaged';
@@ -63,18 +70,11 @@ Template.missingDamagedOrder.helpers({
 
 Template.missingDamagedItem.helpers({
   missing: function () {
-    let missing = ReactionRouter.getRouteName();
+    let missing = Reaction.Router.getRouteName();
     if (missing === 'missing') {
       return true;
     }
     return false;
-  },
-  value: function (productId, variantId) {
-    return 12.99;
-  //   let variants = Products.findOne(productId).variants;
-  //   let thisVariant = _.findWhere(variants, {_id: variantId});
-  //   let parent = thisVariant.parentId;
-  //   let msrp = _.findWhere(variants, {_id: parent});
   }
 });
 

@@ -46,10 +46,6 @@ Template.registerHelper('pastDate', (date) => {
 
 Template.registerHelper('hasCustomerServiceIssue', (order) => {
   let anyIssues = [
-    order.infoMissing,
-    order.itemMissingDetails,
-    order.bundleMissingColor,
-    order.advancedFulfillment.impossibleShipDate,
     order.advancedFulfillment.items.length === 0
   ];
   return _.some(anyIssues);

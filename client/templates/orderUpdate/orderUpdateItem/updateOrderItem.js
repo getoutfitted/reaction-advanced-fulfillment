@@ -1,18 +1,27 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { Reaction } from '/client/api';
+import { _ } from 'meteor/underscore';
+import { Session } from 'meteor/session';
+import { Products, Orders } from '/lib/collections';
+
+import './updateOrderItem.html';
+
 function uniqueFieldValues(allProducts, field) {
   let uniq = _.uniq(_.pluck(allProducts, field));
   return _.without(uniq, undefined);
 }
 
 Template.updateOrderItem.onCreated(function () {
-  this.subscribe('advancedFulfillmentOrder', ReactionRouter.getParam('orderId'));
+  this.subscribe('advancedFulfillmentOrder', Reaction.Router.getParam('orderId'));
 });
 Template.updateOrderItem.helpers({
   order: function () {
-    let orderId = ReactionRouter.getParam('orderId');
-    return ReactionCore.Collections.Orders.findOne({ _id: orderId});
+    let orderId = Reaction.Router.getParam('orderId');
+    return Orders.findOne({ _id: orderId});
   },
   item: function () {
-    let itemId = ReactionRouter.getParam('itemId');
+    let itemId = Reaction.Router.getParam('itemId');
     let order = this;
     let regItem = _.findWhere(order.items, {_id: itemId});
     let afItem = _.findWhere(order.advancedFulfillment.items, {_id: itemId});
@@ -38,8 +47,8 @@ Template.productSelector.onRendered(function () {
 
 Template.productSelector.helpers({
   addItem: function () {
-    let orderId = ReactionRouter.getParam('orderId');
-    let itemId = ReactionRouter.getParam('itemId');
+    let orderId = Reaction.Router.getParam('orderId');
+    let itemId = Reaction.Router.getParam('itemId');
     if (orderId && itemId) {
       return false;
     }

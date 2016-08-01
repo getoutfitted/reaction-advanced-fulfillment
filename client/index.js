@@ -7,3 +7,5 @@ import './templates/dashboard/dashboard';
 import './templates/orderDetails/orderDetails';
 import './templates/pdf';
 import './templates/picker/search';
+import './templates/orderUpdate';
+import './templates/missingDamaged/missingDamaged';

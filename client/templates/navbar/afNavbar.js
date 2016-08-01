@@ -25,36 +25,6 @@ Template.afNavbar.helpers({
   yesterdaysDate: function () {
     return moment().subtract(1, 'days').format('MM-DD-YYYY');
   }
-  // missingItemsFromOrder: function () {
-  //   return Orders.find({
-  //     itemMissingDetails: true
-  //   }).count();
-  // },
-  // impossibleDates: function () {
-  //   return Orders.find({
-  //     'advancedFulfillment.impossibleShipDate': true
-  //   }).count();
-  // },
-  // missingRentalDates: function () {
-  //   return Orders.find({
-  //     infoMissing: true,
-  //     $or: [{
-  //       startTime: {$exists: false}
-  //     }, {
-  //       endTime: {$exists: false}
-  //     }, {
-  //       rentalDays: {$exists: false}
-  //     }]
-  //   }).count();
-  // },
-  // missingBundleInfo: function () {
-  //   return Orders.find({
-  //     bundleMissingColor: true
-  //   }).count();
-  // },
-  // getOrders: function () {
-  //   return OrderSearch.getData();
-  // }
 });
 
 Template.afNavbar.events({

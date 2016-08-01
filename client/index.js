@@ -9,3 +9,4 @@ import './templates/pdf';
 import './templates/picker/search';
 import './templates/orderUpdate';
 import './templates/missingDamaged/missingDamaged';
+import './templates/customerService/missingRentalDates/missingRentalDates';

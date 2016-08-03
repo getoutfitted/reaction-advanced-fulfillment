@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Orders, Packages } from '/lib/collections';
 import { Logger, Reaction } from '/server/api';
@@ -51,4 +52,8 @@ Orders.after.insert(function () {
     $set: af
   });
   Logger.info(`Backpack information added to ${this._id}`);
+
+  if (afPackage.settings.slack && afPackage.settings.slackChannel) {
+    Meteor.call('advancedFulfullment/slackMessage', this._id, afPackage.settings.slackChannel);
+  }
 });

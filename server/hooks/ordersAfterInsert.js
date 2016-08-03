@@ -52,6 +52,14 @@ Orders.after.insert(function () {
     $set: af
   });
   Logger.info(`Backpack information added to ${this._id}`);
+    // Shipstation Utilization
+  if (afPackage.settings.shipstation) {
+    AdvancedFulfillment.Shipstation.createOrder(this._id);
+  }
+  // Klaviyo Integration
+  // if (afPackage.settings.klaviyo && order.email) {
+  //   Meteor.call('advancedFulfullment/createKlaviyoGeneralEvent', orderId, 'Checkout');
+  // }
 
   if (afPackage.settings.slack && afPackage.settings.slackChannel) {
     Meteor.call('advancedFulfullment/slackMessage', this._id, afPackage.settings.slackChannel);

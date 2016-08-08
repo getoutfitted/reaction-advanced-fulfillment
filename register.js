@@ -1,4 +1,6 @@
-ReactionCore.registerPackage({
+import { Reaction } from '/server/api';
+
+Reaction.registerPackage({
   label: 'Advanced Fulfillment',
   name: 'reaction-advanced-fulfillment',
   icon: 'fa fa-barcode',

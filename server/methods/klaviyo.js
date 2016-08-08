@@ -5,6 +5,8 @@ import { Packages, Orders, Products } from '/lib/collections';
 import moment from 'moment';
 import { _ } from 'meteor/underscore';
 
+import { Klaviyo } from '/imports/plugins/custom/reaction-klaviyo/lib/api';
+
 Meteor.methods({
   'advancedFulfillment/klaviyoEnabled': function (orderId, eventName, methodName) {
     check(orderId, String);

@@ -57,9 +57,9 @@ Orders.after.insert(function () {
     AdvancedFulfillment.Shipstation.createOrder(this._id);
   }
   // Klaviyo Integration
-  // if (afPackage.settings.klaviyo && order.email) {
-  //   Meteor.call('advancedFulfullment/createKlaviyoGeneralEvent', orderId, 'Checkout');
-  // }
+  if (afPackage.settings.klaviyo && order.email) {
+    Meteor.call('advancedFulfullment/createKlaviyoGeneralEvent', this._id, 'Checkout');
+  }
 
   if (afPackage.settings.slack && afPackage.settings.slackChannel) {
     Meteor.call('advancedFulfullment/slackMessage', this._id, afPackage.settings.slackChannel);

@@ -1,4 +1,5 @@
-ReactionCore.registerPackage({
+import { Reaction } from "/server/api";
+Reaction.registerPackage({
   label: 'Advanced Fulfillment',
   name: 'reaction-advanced-fulfillment',
   icon: 'fa fa-barcode',
@@ -147,6 +148,21 @@ ReactionCore.registerPackage({
 
   layout: [{
     workflow: 'afWorkflow',
+    layout: 'getoutfittedLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'fulfillmentOrders',
+      layoutHeader: 'layoutHeader',
+      layoutFooter: '',
+      notFound: 'notFound',
+      dashboardHeader: 'afNavbar',
+      dashboardControls: 'accountsDashboardControls',
+      dashboardHeaderControls: '',
+      adminControlsFooter: 'adminControlsFooter'
+    }
+  }, {
+    workflow: 'afWorkflow',
     layout: 'coreLayout',
     theme: 'default',
     enabled: true,
@@ -159,6 +175,21 @@ ReactionCore.registerPackage({
       dashboardControls: 'accountsDashboardControls',
       dashboardHeaderControls: '',
       adminControlsFooter: 'adminControlsFooter'
+    }
+  }, {
+    workflow: 'afPrint',
+    layout: 'getoutfittedLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'advancedFulfillmentOrdersPrint',
+      layoutHeader: '',
+      layoutFooter: '',
+      notFound: 'advancedFulfillmentPDF',
+      dashboardHeader: '',
+      dashboardControls: '',
+      dashboardHeaderControls: '',
+      adminControlsFooter: ''
     }
   }, {
     workflow: 'afPrint',

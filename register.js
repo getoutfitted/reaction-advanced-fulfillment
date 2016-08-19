@@ -149,6 +149,21 @@ Reaction.registerPackage({
 
   layout: [{
     workflow: 'afWorkflow',
+    layout: 'getoutfittedLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'fulfillmentOrders',
+      layoutHeader: 'layoutHeader',
+      layoutFooter: '',
+      notFound: 'notFound',
+      dashboardHeader: 'afNavbar',
+      dashboardControls: 'accountsDashboardControls',
+      dashboardHeaderControls: '',
+      adminControlsFooter: 'adminControlsFooter'
+    }
+  }, {
+    workflow: 'afWorkflow',
     layout: 'coreLayout',
     theme: 'default',
     enabled: true,
@@ -161,6 +176,21 @@ Reaction.registerPackage({
       dashboardControls: 'accountsDashboardControls',
       dashboardHeaderControls: '',
       adminControlsFooter: 'adminControlsFooter'
+    }
+  }, {
+    workflow: 'afPrint',
+    layout: 'getoutfittedLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'advancedFulfillmentOrdersPrint',
+      layoutHeader: '',
+      layoutFooter: '',
+      notFound: 'advancedFulfillmentPDF',
+      dashboardHeader: '',
+      dashboardControls: '',
+      dashboardHeaderControls: '',
+      adminControlsFooter: ''
     }
   }, {
     workflow: 'afPrint',

@@ -1,9 +1,17 @@
+import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
+import { Orders } from '/lib/collections';
+import moment from 'moment';
+import { _ } from 'meteor/underscore';
+
+import { Slack } from '../../../slack/server/api';
+
 Meteor.methods({
   'advancedFulfullment/slackMessage': function (orderId, channel) {
     check(orderId, String);
     check(channel, String);
     // TODO : Lock down from client calling method:
-    const order = ReactionCore.Collections.Orders.findOne(orderId);
+    const order = Orders.findOne(orderId);
     if (order) {
       let start = moment(order.startTime).format('M/D/YY');
       let end = moment(order.endTime).format('M/D/YY');

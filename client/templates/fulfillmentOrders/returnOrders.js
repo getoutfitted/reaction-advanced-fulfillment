@@ -1,3 +1,13 @@
+import { Meteor } from 'meteor/meteor';
+import { Reaction } from '/client/api';
+import { Orders } from '/lib/collections';
+import AdvancedFulfillment from '../../../lib/api';
+import { Session } from 'meteor/session';
+import $ from 'jquery';
+import moment from 'moment';
+
+import './returnOrders.html';
+
 function fullDay(rawDate) {
   check(rawDate, String);
   let dayStart = moment(rawDate, 'MM-DD-YYYY').startOf('day').toDate();
@@ -9,7 +19,7 @@ function fullDay(rawDate) {
 }
 Template.returnOrders.onCreated(function () {
   this.autorun(() => {
-    let date = ReactionRouter.getParam('date');
+    let date = Reaction.Router.getParam('date');
     if (date) {
       this.subscribe('ordersReturningOnDate', date);
     } else {
@@ -21,10 +31,10 @@ Template.returnOrders.onCreated(function () {
 
 Template.returnOrders.helpers({
   orders: function () {
-    let params = ReactionRouter.getParam('date');
+    let params = Reaction.Router.getParam('date');
     if (params) {
       let dayTime = fullDay(params);
-      return ReactionCore.Collections.Orders.find({
+      return Orders.find({
         'advancedFulfillment.workflow.status': {
           $in: AdvancedFulfillment.orderReturning
         },
@@ -38,7 +48,7 @@ Template.returnOrders.helpers({
         }
       });
     }
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       'advancedFulfillment.workflow.status': {
         $in: AdvancedFulfillment.orderReturning
       }
@@ -79,12 +89,6 @@ Template.returnOrders.events({
 });
 
 Template.returnOrder.helpers({
-  orderNumber: function  () {
-    if (this.shopifyOrderNumber) {
-      return '#' + this.shopifyOrderNumber + ' ';
-    }
-    return '';
-  },
   orderSelected: function () {
     return Session.get('returnOrders').indexOf(this._id) !== -1;
   },
@@ -110,7 +114,7 @@ Template.returnOrder.helpers({
 
 Template.returnOrder.events({
   'click .orderRow': function (event) {
-    ReactionRouter.go('orderDetails', {_id: $(event.currentTarget).data('id')});
+    Reaction.Router.go('orderDetails', {_id: $(event.currentTarget).data('id')});
   },
   'click label .fa-check-square-o, click label .fa-square-o': function (event) {
     event.stopPropagation();

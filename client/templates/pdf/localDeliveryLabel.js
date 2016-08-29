@@ -1,6 +1,16 @@
+import { Template } from 'meteor/templating';
+import { Reaction } from '/client/api';
+import { Orders } from '/lib/collections';
+import { Blaze } from 'meteor/blaze';
+import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import AdvancedFulfillment from '../../../lib/api';
+import { _ } from 'meteor/underscore';
+import moment from 'moment';
+import './localDeliveryLabel.html';
+
 Template.localDeliveryLabelPDF.onCreated(function () {
   Blaze._allowJavascriptUrls();
-  const orderId = ReactionRouter.getParam('_id');
+  const orderId = Reaction.Router.getParam('_id');
   this.subscribe('advancedFulfillmentOrder', orderId);
 });
 
@@ -10,8 +20,8 @@ Template.localDeliveryLabelPDF.onRendered(function () {
 
 Template.localDeliveryLabelPDF.helpers({
   order: function () {
-    const orderId = ReactionRouter.getParam('_id');
-    return ReactionCore.Collections.Orders.findOne({
+    const orderId = Reaction.Router.getParam('_id');
+    return Orders.findOne({
       _id: orderId
     });
   },

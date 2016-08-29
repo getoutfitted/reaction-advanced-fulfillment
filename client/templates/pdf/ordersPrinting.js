@@ -1,6 +1,17 @@
+import { Template } from 'meteor/templating';
+import { Reaction } from '/client/api';
+import { Orders } from '/lib/collections';
+import { Blaze } from 'meteor/blaze';
+import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import AdvancedFulfillment from '../../../lib/api';
+import { _ } from 'meteor/underscore';
+import moment from 'moment';
+
+import './ordersPrinting.html';
+
 Template.advancedFulfillmentOrdersPrint.onCreated(function () {
   Blaze._allowJavascriptUrls();
-  let date = ReactionRouter.getParam('date');
+  let date = Reaction.Router.getParam('date');
   if (date) {
     this.subscribe('ordersShippingOnDate', date);
   } else {
@@ -38,11 +49,11 @@ Template.advancedFulfillmentOrdersPrint.helpers({
     return item.variants[attr];
   },
   orders: function () {
-    let day = ReactionRouter.getParam('date');
+    let day = Reaction.Router.getParam('date');
     if (day) {
       let startOfDay = moment(day, 'MM-DD-YYYY').startOf('day').toDate();
       let endOfDay = moment(day, 'MM-DD-YYYY').endOf('day').toDate();
-      return ReactionCore.Collections.Orders.find({
+      return Orders.find({
         'advancedFulfillment.workflow.status': {
           $in: AdvancedFulfillment.orderActive
         },
@@ -57,7 +68,7 @@ Template.advancedFulfillmentOrdersPrint.helpers({
       });
     }
     const selectedOrders = JSON.parse(localStorage.selectedOrdersToPrint || '[]');
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       '_id': {
         $in: selectedOrders
       },

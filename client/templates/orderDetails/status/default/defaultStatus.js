@@ -1,3 +1,8 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { _ } from 'meteor/underscore';
+import './defaultStatus.html';
+
 function findOrderItem(order, itemId) {
   return _.findWhere(order.items, {_id: itemId});
 }

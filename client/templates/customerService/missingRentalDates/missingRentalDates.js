@@ -1,5 +1,9 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { Orders } from '/lib/collections';
 import $ from 'jquery';
 import 'bootstrap-datepicker';
+import './missingRentalDates.html';
 
 Template.missingRentalDates.onCreated(function () {
   this.subscribe('custServOrders');
@@ -7,7 +11,7 @@ Template.missingRentalDates.onCreated(function () {
 
 Template.missingRentalDates.helpers({
   missingRentalDates: function () {
-    return ReactionCore.Collections.Orders.find({
+    return Orders.find({
       infoMissing: true,
       $or: [{
         startTime: {$exists: false}

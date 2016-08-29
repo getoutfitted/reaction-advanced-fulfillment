@@ -1,4 +1,6 @@
-ReactionCore.registerPackage({
+import { Reaction } from '/server/api';
+
+Reaction.registerPackage({
   label: 'Advanced Fulfillment',
   name: 'reaction-advanced-fulfillment',
   icon: 'fa fa-barcode',
@@ -118,34 +120,49 @@ ReactionCore.registerPackage({
     name: 'updateOrderItem',
     template: 'updateOrderItem',
     workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/impossible-dates',
-    name: 'impossibleDates',
-    template: 'impossibleDates',
-    workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/missing-rental-dates',
-    name: 'missingRentalDates',
-    template: 'missingRentalDates',
-    workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/missing-item-details',
-    name: 'missingItemDetails',
-    template: 'missingItemDetails',
-    workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/missing-bundle-colors',
-    name: 'missingBundleColors',
-    template: 'missingBundleColors',
-    workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/non-warehouse-orders',
-    name: 'nonWarehouseOrders',
-    template: 'nonWarehouseOrders',
-    workflow: 'afWorkflow'
-  }],
+  }], //, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/impossible-dates',
+  //   name: 'impossibleDates',
+  //   template: 'impossibleDates',
+  //   workflow: 'afWorkflow'
+  // }, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/missing-rental-dates',
+  //   name: 'missingRentalDates',
+  //   template: 'missingRentalDates',
+  //   workflow: 'afWorkflow'
+  // }, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/missing-item-details',
+  //   name: 'missingItemDetails',
+  //   template: 'missingItemDetails',
+  //   workflow: 'afWorkflow'
+  // }, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/missing-bundle-colors',
+  //   name: 'missingBundleColors',
+  //   template: 'missingBundleColors',
+  //   workflow: 'afWorkflow'
+  // }, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/non-warehouse-orders',
+  //   name: 'nonWarehouseOrders',
+  //   template: 'nonWarehouseOrders',
+  //   workflow: 'afWorkflow'
+  // }],
 
   layout: [{
+    workflow: 'afWorkflow',
+    layout: 'getoutfittedLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'fulfillmentOrders',
+      layoutHeader: 'layoutHeader',
+      layoutFooter: '',
+      notFound: 'notFound',
+      dashboardHeader: 'afNavbar',
+      dashboardControls: 'accountsDashboardControls',
+      dashboardHeaderControls: '',
+      adminControlsFooter: 'adminControlsFooter'
+    }
+  }, {
     workflow: 'afWorkflow',
     layout: 'coreLayout',
     theme: 'default',
@@ -159,6 +176,21 @@ ReactionCore.registerPackage({
       dashboardControls: 'accountsDashboardControls',
       dashboardHeaderControls: '',
       adminControlsFooter: 'adminControlsFooter'
+    }
+  }, {
+    workflow: 'afPrint',
+    layout: 'getoutfittedLayout',
+    theme: 'default',
+    enabled: true,
+    structure: {
+      template: 'advancedFulfillmentOrdersPrint',
+      layoutHeader: '',
+      layoutFooter: '',
+      notFound: 'advancedFulfillmentPDF',
+      dashboardHeader: '',
+      dashboardControls: '',
+      dashboardHeaderControls: '',
+      adminControlsFooter: ''
     }
   }, {
     workflow: 'afPrint',

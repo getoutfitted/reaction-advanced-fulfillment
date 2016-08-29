@@ -8,10 +8,7 @@
             <h3>{{typeOf}} Item</h3>
           </div>
           <div class='col-sm-4'>
-            <h3>Variant Id</h3>
-          </div>
-          <div class='col-sm-1'>
-            <h3>Value</h3>
+            <h3>Notes</h3>
           </div>
         </div>
       </div>
@@ -38,7 +35,7 @@
       {{/each}}
     </div>
     <div class='col-sm-4'>
-      <p>Order Id: <a href="{{pathFor 'orderDetails' _id=_id}}"><strong>{{shopifyOrderNumber}}</strong></a></p>
+      <p>Order #: <a href="{{pathFor 'orderDetails' _id=_id}}"><strong>{{orderNumber}}</strong></a></p>
       <p>OverDue: {{daysOverDue}} </p>
     </div>
     <div class='col-sm-3'>
@@ -56,10 +53,7 @@
       {{itemDescription}}
     </div>
     <div class='col-sm-4'>
-      <small>{{variantId}}</small>
-    </div>
-    <div class='col-sm-1 '>
-      ${{value productId variantId}}
+      <small>{{{../orderNotes}}}</small>
     </div>
   </div>
   {{#if missing}}

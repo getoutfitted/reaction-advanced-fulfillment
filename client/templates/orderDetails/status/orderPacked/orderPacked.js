@@ -1,3 +1,9 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { _ } from 'meteor/underscore';
+import AdvancedFulfillment from '../../../../../lib/api';
+import './orderPacked.html';
+
 Template.orderPacked.helpers({
   shippingInfo: function () {
     let shippingInfo = this.shipping[0].address;

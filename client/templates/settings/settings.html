@@ -1,8 +1,8 @@
 <template name='advancedFulfillmentSettings'>
   <div class="panel-body">
     {{#autoForm
-        collection="ReactionCore.Collections.Packages"
-        schema="ReactionCore.Schemas.AdvancedFulfillmentPackageConfig"
+        collection=Collections.Packages
+        schema=AdvancedFulfillmentPackageConfig
         doc=packageData
         type="update"
         id="advanced-fulfillment-update-form"
@@ -21,6 +21,8 @@
     <p>Enable Slack</p>
     {{>afQuickField  name='settings.slack'}}
     {{>afQuickField  name='settings.slackChannel'}}
+    <p>Enable Ambassador</p>
+    {{>afQuickField  name='settings.ambassador'}}
     <button type="submit" class="btn btn-primary pull-right">Save Changes</button>
       {{/autoForm}}
   </div>

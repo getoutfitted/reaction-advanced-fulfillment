@@ -1,6 +1,14 @@
+import { Template } from 'meteor/templating';
+import { Reaction } from '/client/api';
+import { Orders } from '/lib/collections';
+import { Blaze } from 'meteor/blaze';
+import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import moment from 'moment';
+import './advancedFulfillment.html';
+
 Template.advancedFulfillmentPDF.onCreated(function () {
   Blaze._allowJavascriptUrls();
-  const orderId = ReactionRouter.getParam('_id');
+  const orderId = Reaction.Router.getParam('_id');
   this.subscribe('advancedFulfillmentOrder', orderId);
 });
 
@@ -10,8 +18,8 @@ Template.advancedFulfillmentPDF.onRendered(function () {
 
 Template.advancedFulfillmentPDF.helpers({
   order: function () {
-    const orderId = ReactionRouter.getParam('_id');
-    return ReactionCore.Collections.Orders.findOne({
+    const orderId = Reaction.Router.getParam('_id');
+    return Orders.findOne({
       _id: orderId
     });
   },
@@ -31,14 +39,14 @@ Template.advancedFulfillmentPDF.helpers({
   }
 });
 
-Template.barcode.onRendered(function () {
-  $('.admin-controls-menu').remove();
-  let orderId = ReactionRouter.getParam('_id');
-  $('#barcode').barcode(orderId, 'code128', {
-    barWidth: 2,
-    barHeight: 100,
-    moduleSize: 15,
-    showHRI: true,
-    fontSize: 14
-  });
-});
+// Template.barcode.onRendered(function () {
+//   $('.admin-controls-menu').remove();
+//   let orderId = ReactionRouter.getParam('_id');
+//   $('#barcode').barcode(orderId, 'code128', {
+//     barWidth: 2,
+//     barHeight: 100,
+//     moduleSize: 15,
+//     showHRI: true,
+//     fontSize: 14
+//   });
+// });

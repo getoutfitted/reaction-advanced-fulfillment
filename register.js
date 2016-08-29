@@ -120,32 +120,32 @@ Reaction.registerPackage({
     name: 'updateOrderItem',
     template: 'updateOrderItem',
     workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/impossible-dates',
-    name: 'impossibleDates',
-    template: 'impossibleDates',
-    workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/missing-rental-dates',
-    name: 'missingRentalDates',
-    template: 'missingRentalDates',
-    workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/missing-item-details',
-    name: 'missingItemDetails',
-    template: 'missingItemDetails',
-    workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/missing-bundle-colors',
-    name: 'missingBundleColors',
-    template: 'missingBundleColors',
-    workflow: 'afWorkflow'
-  }, {
-    route: '/dashboard/advanced-fulfillment/customer-service/non-warehouse-orders',
-    name: 'nonWarehouseOrders',
-    template: 'nonWarehouseOrders',
-    workflow: 'afWorkflow'
-  }],
+  }], //, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/impossible-dates',
+  //   name: 'impossibleDates',
+  //   template: 'impossibleDates',
+  //   workflow: 'afWorkflow'
+  // }, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/missing-rental-dates',
+  //   name: 'missingRentalDates',
+  //   template: 'missingRentalDates',
+  //   workflow: 'afWorkflow'
+  // }, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/missing-item-details',
+  //   name: 'missingItemDetails',
+  //   template: 'missingItemDetails',
+  //   workflow: 'afWorkflow'
+  // }, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/missing-bundle-colors',
+  //   name: 'missingBundleColors',
+  //   template: 'missingBundleColors',
+  //   workflow: 'afWorkflow'
+  // }, {
+  //   route: '/dashboard/advanced-fulfillment/customer-service/non-warehouse-orders',
+  //   name: 'nonWarehouseOrders',
+  //   template: 'nonWarehouseOrders',
+  //   workflow: 'afWorkflow'
+  // }],
 
   layout: [{
     workflow: 'afWorkflow',
